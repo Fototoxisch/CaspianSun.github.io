@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Наши работы // CASPIAN SOLAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <header class="header">
+    <div class="logo-container">
+      <a href="index.html" class="logo"><span class="logo-icon">✦</span> CASPIAN<span class="highlight">SOLAR</span></a>
+    </div>
+    <nav class="nav">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-link">Главная</a></li>
+        <li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a>
+          <ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul>
+        </li>
+        <li><a href="services.html" class="nav-link">Услуги</a></li>
+        <li><a href="portfolio.html" class="nav-link active">Наши работы</a></li>
+        <li class="dropdown"><a href="javascript:void(0)" class="nav-link dropdown-toggle" style="cursor: default;">Контакты ▾</a><ul class="dropdown-menu" id="header-contacts-list"><li><a href="#">Загрузка...</a></li></ul></li>
+      </ul>
+    </nav>
+    <div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div>
+  </header>
+  <main>
+    <section class="services-section" style="padding-top: 60px;">
+      <div class="section-header" style="text-align: center;"><h1 class="hero-title">НАШ <span class="gradient-text">ОПЫТ РАБОТЫ</span></h1><p class="hero-subtitle">Реализованные проекты: от частных домов до коммерческих электростанций.</p></div>
+      <div class="grid-cards" id="portfolio-grid"></div>
+    </section>
+  </main>
+  <div class="drawer-overlay" id="port-drawer-overlay"></div>
+  <div class="drawer-panel" id="port-drawer">
+    <div class="drawer-header"><h2 id="port-drawer-title">Объект</h2><button class="close-btn" id="close-port-drawer">&times;</button></div>
+    <div class="drawer-body"><div class="mock-img drawer-img" id="port-drawer-img-container" style="overflow:hidden; height:200px;">📸</div><div class="drawer-specs-title">Детали проекта</div><p class="drawer-desc" id="port-drawer-desc"></p><ul class="modal-specs" id="port-drawer-specs-list"></ul></div>
+    <div class="drawer-footer"><div id="port-drawer-price" class="modal-price" style="margin-bottom:0; color:var(--accent-neon); font-size:24px;">0 ₽</div><button class="btn" id="close-port-drawer-btn2">Закрыть</button></div>
+  </div>
+  <footer class="footer" id="contacts"><div class="footer-content"><div><a href="index.html" class="logo">✦ CASPIAN<span class="highlight">SOLAR</span></a><p class="footer-desc">Автономная энергетика будущего.</p></div><div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div></div></footer>
+  <script src="script.js"></script>
+</body>
+</html>

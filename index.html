@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Главная // CASPIAN SOLAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <header class="header">
+    <div class="logo-container">
+      <a href="index.html" class="logo"><span class="logo-icon">✦</span> CASPIAN<span class="highlight">SOLAR</span></a>
+    </div>
+    <nav class="nav">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-link active">Главная</a></li>
+        <li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a>
+          <ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul>
+        </li>
+        <li><a href="services.html" class="nav-link">Услуги</a></li>
+        <li><a href="portfolio.html" class="nav-link">Наши работы</a></li>
+        <li class="dropdown"><a href="javascript:void(0)" class="nav-link dropdown-toggle" style="cursor: default;">Контакты ▾</a><ul class="dropdown-menu" id="header-contacts-list"><li><a href="#">Загрузка...</a></li></ul></li>
+      </ul>
+    </nav>
+    <div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div>
+  </header>
+  
+  <main>
+    <section class="hero-section">
+      <h1 class="hero-title">ЭНЕРГИЯ БУДУЩЕГО<br><span class="gradient-text">В ВАШИХ РУКАХ</span></h1>
+      <p class="hero-subtitle">Проектирование и монтаж солнечных электростанций под ключ. Обеспечьте свой дом независимой энергией.</p>
+      <div style="display: flex; gap: 16px; justify-content: center; margin-top: 32px;"><a href="catalog.html" class="btn" style="padding: 16px 32px; font-size: 16px;">Перейти в каталог</a><a href="services.html" class="btn" style="padding: 16px 32px; font-size: 16px; background: rgba(0,0,0,0.4); border-color: var(--bg-card-border); color: var(--text-main);">Наши услуги</a></div>
+    </section>
+    
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-num">50+</span><span class="stat-desc">Реализованных проектов</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><span class="stat-num">10 ЛЕТ</span><span class="stat-desc">Гарантия на монтаж</span></div>
+    </div>
+    
+    <section class="calc-section" id="calculator">
+      <div class="section-header" style="text-align: center;"><h2 class="section-title">КАЛЬКУЛЯТОР <span class="gradient-text">ОКУПАЕМОСТИ</span></h2><p class="section-desc">Рассчитайте примерную мощность станции</p></div>
+      <div class="calc-card">
+        <div class="calc-inputs">
+          <div class="input-group"><div class="input-header"><label>Площадь кровли (м²)</label><input type="number" class="num-input" id="roofAreaNum" value="50"></div><input type="range" class="tech-slider" id="roofArea" min="10" max="1000" value="50"></div>
+          <div class="input-group"><div class="input-header"><label>Счет за ЭЭ (₽/мес)</label><input type="number" class="num-input" id="monthlyBillNum" value="5000"></div><input type="range" class="tech-slider" id="monthlyBill" min="500" max="100000" step="500" value="5000"></div>
+        </div>
+        <div class="calc-results">
+          <div class="result-box"><span class="res-label">Рекомендуемая мощность:</span><span class="res-value" id="powerRes">0 кВт</span></div>
+          <div class="result-box"><span class="res-label">Экономия в год:</span><span class="res-value" id="savingsRes">0 ₽</span></div>
+          <div class="result-box" style="border-bottom: none;"><span class="res-label">Ориентировочная окупаемость:</span><span class="res-value" style="color: var(--accent-neon);" id="paybackRes">0 лет</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <footer class="footer" id="contacts">
+    <div class="footer-content">
+      <div><a href="index.html" class="logo">✦ CASPIAN<span class="highlight">SOLAR</span></a><p class="footer-desc">Автономная энергетика будущего.</p></div>
+      <div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div>
+    </div>
+  </footer>
+  
+  <script src="script.js"></script>
+</body>
+</html>
