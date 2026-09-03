@@ -1,36 +1,115 @@
 // =========================================================
-// 💾 БАЗЫ ДАННЫХ И НАСТРОЙКИ
+// 🌐 ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ SUPABASE (API + AUTH)
 // =========================================================
-if (!localStorage.getItem('tg_token')) localStorage.setItem('tg_token', '8909009037:AAE1Zd8l3w2JuWhBIyBGe5Kxpdls5-Z4eLA');
-if (!localStorage.getItem('tg_chat_ids')) localStorage.setItem('tg_chat_ids', JSON.stringify([{ id: '1000892889', label: 'Администратор (Главный)' }]));
-function getTelegramConfig() { return { token: localStorage.getItem('tg_token') || '', chatIds: JSON.parse(localStorage.getItem('tg_chat_ids')) || [] }; }
+const SUPABASE_URL = 'https://khlmhyzhzpbpirmudbxg.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_RVxWpPNclnP2ATXQBUQlPQ_6NcmHMCa';
 
-const DEFAULT_CONTACTS = ['+7 (800) 000-00-00', '', ''];
-if (!localStorage.getItem('caspian_contacts')) localStorage.setItem('caspian_contacts', JSON.stringify(DEFAULT_CONTACTS));
-function getContacts() { return JSON.parse(localStorage.getItem('caspian_contacts')) || DEFAULT_CONTACTS; }
+// Динамические заголовки: если админ залогинен, подставляем его личный токен (JWT), иначе публичный ключ
+function getHeaders() {
+    const sessionToken = sessionStorage.getItem('supabase_admin_token');
+    return {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${sessionToken || SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+    };
+}
 
-const DEFAULT_DATABASE = [
-  { title: "SolarBlack Pro 550W", category: "panels", brand: "other", stock: "in-stock", power: "500", cell: "n-type", efficiency: "21-22", frame: "black", phase: "all", voltage: "all", capacity: "all", subtitle: "Монокристалл N-Type / Черная рамка", desc: "Премиальная солнечная панель. Технология N-Type минимизирует деградацию.", price: "21 400 ₽", image: "", specsCard: [ { label: "Доступно:", value: "10 шт." }, { label: "КПД:", value: "22.3%" } ], specsFull: [ { label: "В наличии:", value: "10 шт." } ] },
-  { title: "Caspian Inv Hybrid 5kW", category: "inverters", brand: "deye", stock: "preorder", power: "all", cell: "all", efficiency: "all", frame: "all", phase: "1", voltage: "48", capacity: "all", subtitle: "Интеллектуальный гибридный инвертор", desc: "Современный гибридный инвертор.", price: "65 000 ₽", image: "", specsCard: [ { label: "Бренд:", value: "Deye" } ], specsFull: [ { label: "В наличии:", value: "0 шт." } ] },
-  { title: "LiFePO4 100Ah 48V", category: "batteries", brand: "lvtopsun", stock: "in-stock", power: "all", cell: "all", efficiency: "all", frame: "all", phase: "all", voltage: "48", capacity: "100", subtitle: "Надежный литиевый накопитель", desc: "До 6000 циклов заряда/разряда. Идеально для автономных станций.", price: "85 000 ₽", image: "", specsCard: [ { label: "Емкость:", value: "100 Ah" } ], specsFull: [ { label: "В наличии:", value: "5 шт." } ] }
-];
-if (!localStorage.getItem('caspian_products')) localStorage.setItem('caspian_products', JSON.stringify(DEFAULT_DATABASE));
-function getProducts() { return JSON.parse(localStorage.getItem('caspian_products')) || []; }
+let dbProducts = [];
+let dbServices = [];
+let dbPortfolio = [];
+let dbSettings = { tg_token: '', tg_chat_ids: [], contacts: ['+7 (800) 000-00-00', '', ''] };
 
-const DEFAULT_SERVICES = [
-  { title: "Электростанция \"Под ключ\"", price: "от 150 000 ₽", desc: "Полный цикл работ: проектирование, подбор оборудования, доставка и профессиональный монтаж." },
-  { title: "Энергоаудит и расчет", price: "от 5 000 ₽", desc: "Инженерный анализ объекта. Точный расчет требуемой мощности, прогнозирование генерации." },
-  { title: "Профессиональный монтаж", price: "от 50 000 ₽", desc: "Квалифицированная установка вашего оборудования по стандартам ГОСТ." }
-];
-if (!localStorage.getItem('caspian_services')) localStorage.setItem('caspian_services', JSON.stringify(DEFAULT_SERVICES));
-function getServices() { return JSON.parse(localStorage.getItem('caspian_services')) || []; }
+// Функции работы с базой данных
+async function fetchDB(table) {
+    try { const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=id.asc`, { headers: getHeaders() }); return await res.json(); } 
+    catch (e) { console.error('Ошибка загрузки', e); return []; }
+}
+async function insertDB(table, data) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, { method: 'POST', headers: getHeaders(), body: JSON.stringify(data) });
+    if(!res.ok) { alert("Ошибка доступа: У вас нет прав на запись. Войдите как администратор."); throw new Error('Auth required'); }
+}
+async function updateDB(table, id, data) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'PATCH', headers: getHeaders(), body: JSON.stringify(data) });
+    if(!res.ok) { alert("Ошибка доступа: У вас нет прав на редактирование."); throw new Error('Auth required'); }
+}
+async function deleteDB(table, id) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: getHeaders() });
+    if(!res.ok) { alert("Ошибка доступа: У вас нет прав на удаление."); throw new Error('Auth required'); }
+}
 
-const DEFAULT_PORTFOLIO = [
-  { title: "Частный дом, пос. Солнечный", savings: "~95 000 ₽ / год", price: "450 000 ₽", equipment: "Deye 8kW, 16 панелей SolarBlack 550W", images: "", desc: "Полная автономность для загородного дома." },
-  { title: "Турбаза у озера", savings: "~320 000 ₽ / год", price: "1 200 000 ₽", equipment: "Инвертор 15kW, 40 панелей, 4 АКБ", images: "", desc: "Обеспечение базы отдыха электроэнергией без подключения к сети." }
-];
-if (!localStorage.getItem('caspian_portfolio')) localStorage.setItem('caspian_portfolio', JSON.stringify(DEFAULT_PORTFOLIO));
-function getPortfolio() { return JSON.parse(localStorage.getItem('caspian_portfolio')) || []; }
+// Инициализация сайта (загрузка данных с сервера)
+async function initApp() {
+    const [p, s, port, set] = await Promise.all([ fetchDB('products'), fetchDB('services'), fetchDB('portfolio'), fetchDB('settings') ]);
+    dbProducts = p || []; dbServices = s || []; dbPortfolio = port || [];
+    
+    if (set && set.length > 0) {
+        dbSettings = set[0];
+        if(typeof dbSettings.tg_chat_ids === 'string') dbSettings.tg_chat_ids = JSON.parse(dbSettings.tg_chat_ids);
+        if(typeof dbSettings.contacts === 'string') dbSettings.contacts = JSON.parse(dbSettings.contacts);
+    }
+
+    renderContacts();
+    if (document.getElementById('catalog-grid')) { renderCatalog(); applyAdvancedFilters(); }
+    if (document.getElementById('services-grid')) renderServices();
+    if (document.getElementById('portfolio-grid')) renderPortfolio();
+    
+    // Логика защиты страницы администратора
+    if (document.getElementById('admin-login-screen')) {
+        const token = sessionStorage.getItem('supabase_admin_token');
+        if (token) {
+            document.getElementById('admin-login-screen').style.display = 'none';
+            document.getElementById('admin-workspace').style.display = 'block';
+            document.getElementById('btn-logout').style.display = 'inline-block';
+            renderAdminLists(); initAdminSettings();
+        }
+    }
+}
+document.addEventListener('DOMContentLoaded', initApp);
+
+// =========================================================
+// 🔒 АВТОРИЗАЦИЯ АДМИНИСТРАТОРА
+// =========================================================
+const authForm = document.getElementById('auth-form');
+if (authForm) {
+    authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        const btn = document.getElementById('auth-submit-btn');
+        const err = document.getElementById('auth-error');
+        
+        btn.innerText = 'Вход...'; err.style.display = 'none';
+        
+        try {
+            const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+                method: 'POST',
+                headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            
+            if (data.access_token) {
+                sessionStorage.setItem('supabase_admin_token', data.access_token);
+                window.location.reload(); // Перезагружаем для загрузки рабочей области
+            } else {
+                err.innerText = data.error_description || 'Неверный логин или пароль';
+                err.style.display = 'block';
+                btn.innerText = 'Войти в систему';
+            }
+        } catch (error) {
+            err.innerText = 'Ошибка соединения'; err.style.display = 'block'; btn.innerText = 'Войти в систему';
+        }
+    });
+}
+
+const btnLogout = document.getElementById('btn-logout');
+if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+        sessionStorage.removeItem('supabase_admin_token');
+        window.location.reload();
+    });
+}
 
 // =========================================================
 // 📸 ЗАГРУЗКА ФОТО (DRAG & DROP)
@@ -133,94 +212,121 @@ let editProductId=null, editServiceId=null, editPortId=null;
 function renderAdminLists() {
   const prodList = document.getElementById('admin-products-list');
   if (prodList) {
-    prodList.innerHTML = ''; getProducts().forEach((p, idx) => {
-      let specs = ''; if(p.specsCard) p.specsCard.forEach(s => specs+=`<div><span>${s.label}</span> <strong>${s.value}</strong></div>`);
+    prodList.innerHTML = ''; dbProducts.forEach((p, idx) => {
+      let specs = ''; if(p.specs_card) p.specs_card.forEach(s => specs+=`<div><span>${s.label}</span> <strong>${s.value}</strong></div>`);
       prodList.innerHTML += `<div class="tech-card" data-id="${idx}">${p.image?`<img src="${p.image}" class="product-image-rendered">`:''}<h3>${p.title}</h3><p class="card-sub">${p.subtitle}</p><div class="card-specs">${specs}</div><div class="card-footer" style="flex-wrap:wrap;gap:8px;"><span class="price">${p.price}</span><div style="display:flex;gap:6px;width:100%;margin-top:10px;"><button type="button" class="btn btn-sm btn-drawer" style="flex:1">👀 Вид</button><button type="button" class="btn btn-sm btn-edit" onclick="editProduct(${idx})" style="flex:1">Ред.</button><button type="button" class="btn btn-sm btn-delete" onclick="deleteProduct(${idx})" style="flex:1">Удал.</button></div></div></div>`;
     });
   }
   const servList = document.getElementById('admin-services-list');
   if (servList) {
-    servList.innerHTML = ''; getServices().forEach((s, idx) => {
-      servList.innerHTML += `<div class="service-card"><h3 class="service-title">${s.title}</h3><div class="service-price">${s.price}</div><p class="service-desc">${s.desc}</p><div style="display:flex;gap:8px;margin-top:auto;"><button type="button" class="btn btn-sm btn-edit" onclick="editService(${idx})" style="flex:1">Редактировать</button><button type="button" class="btn btn-sm btn-delete" onclick="deleteService(${idx})" style="flex:1">Удал.</button></div></div>`;
+    servList.innerHTML = ''; dbServices.forEach((s, idx) => {
+      servList.innerHTML += `<div class="service-card"><h3 class="service-title">${s.title}</h3><div class="service-price">${s.price}</div><p class="service-desc">${s.desc_text}</p><div style="display:flex;gap:8px;margin-top:auto;"><button type="button" class="btn btn-sm btn-edit" onclick="editService(${idx})" style="flex:1">Редактировать</button><button type="button" class="btn btn-sm btn-delete" onclick="deleteService(${idx})" style="flex:1">Удал.</button></div></div>`;
     });
   }
   const portList = document.getElementById('admin-portfolio-list');
   if (portList) {
-    portList.innerHTML = ''; getPortfolio().forEach((p, idx) => {
+    portList.innerHTML = ''; dbPortfolio.forEach((p, idx) => {
       let img = p.images?`<img src="${p.images}" style="width:100%;height:200px;object-fit:cover;border-radius:8px 8px 0 0;">`:`<div class="mock-img" style="height:200px;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-radius:8px 8px 0 0;">📸</div>`;
-      portList.innerHTML += `<div class="portfolio-card" data-id="${idx}" style="background:var(--bg-card);border:1px solid var(--bg-card-border);border-radius:12px;display:flex;flex-direction:column;">${img}<div style="padding:24px;display:flex;flex-direction:column;flex:1;"><h3 style="font-size:20px;color:var(--accent-neon);margin-bottom:8px;">${p.title}</h3><p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">${p.desc}</p><div style="display:flex;gap:6px;margin-top:auto;"><button type="button" class="btn btn-sm btn-drawer-port" style="flex:1">👀 Вид</button><button type="button" class="btn btn-sm btn-edit" onclick="editPortfolio(${idx})" style="flex:1">Ред.</button><button type="button" class="btn btn-sm btn-delete" onclick="deletePortfolio(${idx})" style="flex:1">Удал.</button></div></div></div>`;
+      portList.innerHTML += `<div class="portfolio-card" data-id="${idx}" style="background:var(--bg-card);border:1px solid var(--bg-card-border);border-radius:12px;display:flex;flex-direction:column;">${img}<div style="padding:24px;display:flex;flex-direction:column;flex:1;"><h3 style="font-size:20px;color:var(--accent-neon);margin-bottom:8px;">${p.title}</h3><p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;flex-grow:1;">${p.desc_text}</p><div style="display:flex;gap:6px;margin-top:auto;"><button type="button" class="btn btn-sm btn-drawer-port" style="flex:1">👀 Вид</button><button type="button" class="btn btn-sm btn-edit" onclick="editPortfolio(${idx})" style="flex:1">Ред.</button><button type="button" class="btn btn-sm btn-delete" onclick="deletePortfolio(${idx})" style="flex:1">Удал.</button></div></div></div>`;
     });
   }
 }
 
-window.deleteProduct=function(i){if(confirm("Удалить?")){let db=getProducts();db.splice(i,1);localStorage.setItem('caspian_products',JSON.stringify(db));renderAdminLists();}}
-window.deleteService=function(i){if(confirm("Удалить?")){let db=getServices();db.splice(i,1);localStorage.setItem('caspian_services',JSON.stringify(db));renderAdminLists();}}
-window.deletePortfolio=function(i){if(confirm("Удалить?")){let db=getPortfolio();db.splice(i,1);localStorage.setItem('caspian_portfolio',JSON.stringify(db));renderAdminLists();}}
+window.deleteProduct = async function(i) { if(confirm("Удалить?")) { await deleteDB('products', dbProducts[i].id); await initApp(); } }
+window.deleteService = async function(i) { if(confirm("Удалить?")) { await deleteDB('services', dbServices[i].id); await initApp(); } }
+window.deletePortfolio = async function(i) { if(confirm("Удалить?")) { await deleteDB('portfolio', dbPortfolio[i].id); await initApp(); } }
 
 window.editProduct = function(i) {
-  const p = getProducts()[i]; editProductId = i;
-  ['admin-title','admin-price','admin-subtitle','admin-desc'].forEach(k=>document.getElementById(k).value=p[k.replace('admin-','')]);
-  document.getElementById('admin-quantity').value=parseInt(p.specsCard[0]?.value)||0; loadImg(p.image,'product-preview','admin-image','product-drop-text');
-  ['category','stock','brand','power','cell-type','efficiency','frame','phase','voltage','capacity'].forEach(k=>setCustomSelectValue('admin-'+k, p[k.replace('-type','')]||'all'));
+  const p = dbProducts[i]; editProductId = p.id;
+  document.getElementById('admin-title').value = p.title; document.getElementById('admin-price').value = p.price;
+  document.getElementById('admin-subtitle').value = p.subtitle || ''; document.getElementById('admin-desc').value = p.desc_text || '';
+  document.getElementById('admin-quantity').value = parseInt(p.specs_card?.[0]?.value) || 0; 
+  loadImg(p.image,'product-preview','admin-image','product-drop-text');
+  ['category','stock','brand','power','efficiency','frame','phase','voltage','capacity'].forEach(k=>setCustomSelectValue('admin-'+k, p[k]||'all'));
+  setCustomSelectValue('admin-cell-type', p.cell||'all');
   document.getElementById('btn-submit-product').innerText='Сохранить изменения'; document.getElementById('btn-cancel-product').style.display='inline-block'; window.scrollTo(0,0);
 }
 if(document.getElementById('btn-cancel-product')) document.getElementById('btn-cancel-product').onclick = () => {editProductId=null;document.getElementById('admin-product-form').reset();resetImg('product-preview','admin-image','product-drop-text');document.getElementById('btn-submit-product').innerText='+ Сохранить';document.getElementById('btn-cancel-product').style.display='none';}
 
 window.editService = function(i) {
-  const s = getServices()[i]; editServiceId = i; ['service-title','service-price','service-desc'].forEach(k=>document.getElementById(k).value=s[k.split('-')[1]]);
+  const s = dbServices[i]; editServiceId = s.id; 
+  document.getElementById('service-title').value = s.title; document.getElementById('service-price').value = s.price; document.getElementById('service-desc').value = s.desc_text;
   document.getElementById('btn-submit-service').innerText='Сохранить изменения'; document.getElementById('btn-cancel-service').style.display='inline-block'; window.scrollTo(0,0);
 }
 if(document.getElementById('btn-cancel-service')) document.getElementById('btn-cancel-service').onclick = () => {editServiceId=null;document.getElementById('admin-service-form').reset();document.getElementById('btn-submit-service').innerText='+ Сохранить';document.getElementById('btn-cancel-service').style.display='none';}
 
 window.editPortfolio = function(i) {
-  const p = getPortfolio()[i]; editPortId = i; ['port-title','port-savings','port-price','port-equipment','port-desc'].forEach(k=>document.getElementById(k).value=p[k.split('-')[1]]);
-  loadImg(p.images,'port-preview','port-image','port-drop-text');
+  const p = dbPortfolio[i]; editPortId = p.id;
+  document.getElementById('port-title').value = p.title; document.getElementById('port-savings').value = p.savings || '';
+  document.getElementById('port-price').value = p.price || ''; document.getElementById('port-equipment').value = p.equipment || '';
+  document.getElementById('port-desc').value = p.desc_text || ''; loadImg(p.images,'port-preview','port-image','port-drop-text');
   document.getElementById('btn-submit-portfolio').innerText='Сохранить изменения'; document.getElementById('btn-cancel-portfolio').style.display='inline-block'; window.scrollTo(0,0);
 }
 if(document.getElementById('btn-cancel-portfolio')) document.getElementById('btn-cancel-portfolio').onclick = () => {editPortId=null;document.getElementById('admin-portfolio-form').reset();resetImg('port-preview','port-image','port-drop-text');document.getElementById('btn-submit-portfolio').innerText='+ Опубликовать';document.getElementById('btn-cancel-portfolio').style.display='none';}
 
-if (document.getElementById('admin-product-form')) document.getElementById('admin-product-form').onsubmit = (e) => {
-    e.preventDefault(); const getV = id => document.getElementById(id).getAttribute('data-value'); const cat = getV('admin-category');
-    const newP = {
-      title:document.getElementById('admin-title').value, subtitle:document.getElementById('admin-subtitle').value||'', desc:document.getElementById('admin-desc').value||'', price:document.getElementById('admin-price').value, image:document.getElementById('admin-image').value, category:cat, stock:getV('admin-stock'), brand:getV('admin-brand'),
-      power:cat==='panels'?getV('admin-power'):'all', cell:cat==='panels'?getV('admin-cell-type'):'all', efficiency:cat==='panels'?getV('admin-efficiency'):'all', frame:cat==='panels'?getV('admin-frame'):'all',
-      phase:cat==='inverters'?getV('admin-phase'):'all', voltage:(cat==='inverters'||cat==='batteries')?getV('admin-voltage'):'all', capacity:cat==='batteries'?getV('admin-capacity'):'all',
-      specsCard:[{label:"Доступно:",value:document.getElementById('admin-quantity').value+" шт."}], specsFull:[{label:"В наличии:",value:document.getElementById('admin-quantity').value+" шт."}]
+if (document.getElementById('admin-product-form')) {
+    document.getElementById('admin-product-form').onsubmit = async (e) => {
+        e.preventDefault(); const getV = id => document.getElementById(id).getAttribute('data-value'); const cat = getV('admin-category');
+        const newP = {
+          title: document.getElementById('admin-title').value, subtitle: document.getElementById('admin-subtitle').value||'', desc_text: document.getElementById('admin-desc').value||'', price: document.getElementById('admin-price').value, image: document.getElementById('admin-image').value, category: cat, stock: getV('admin-stock'), brand: getV('admin-brand'),
+          power: cat==='panels'?getV('admin-power'):'all', cell: cat==='panels'?getV('admin-cell-type'):'all', efficiency: cat==='panels'?getV('admin-efficiency'):'all', frame: cat==='panels'?getV('admin-frame'):'all', phase: cat==='inverters'?getV('admin-phase'):'all', voltage: (cat==='inverters'||cat==='batteries')?getV('admin-voltage'):'all', capacity: cat==='batteries'?getV('admin-capacity'):'all',
+          specs_card: [{label:"Доступно:",value:document.getElementById('admin-quantity').value+" шт."}], specs_full: [{label:"В наличии:",value:document.getElementById('admin-quantity').value+" шт."}]
+        };
+        const btn = document.getElementById('btn-submit-product'); btn.innerText = "Отправка в базу...";
+        if(editProductId !== null) { await updateDB('products', editProductId, newP); editProductId=null; } else { await insertDB('products', newP); }
+        showAdminSuccess(); e.target.reset(); resetImg('product-preview','admin-image','product-drop-text'); await initApp(); btn.innerText='+ Сохранить'; document.getElementById('btn-cancel-product').style.display='none';
     };
-    let db=getProducts(); if(editProductId!==null){db[editProductId]=newP;editProductId=null;}else db.push(newP);
-    localStorage.setItem('caspian_products',JSON.stringify(db)); showAdminSuccess(); e.target.reset(); resetImg('product-preview','admin-image','product-drop-text'); renderAdminLists(); document.getElementById('btn-submit-product').innerText='+ Сохранить'; document.getElementById('btn-cancel-product').style.display='none';
-};
-
-if (document.getElementById('admin-service-form')) document.getElementById('admin-service-form').onsubmit = (e) => {
-    e.preventDefault(); const newS = {title:document.getElementById('service-title').value,price:document.getElementById('service-price').value,desc:document.getElementById('service-desc').value};
-    let db=getServices(); if(editServiceId!==null){db[editServiceId]=newS;editServiceId=null;}else db.push(newS);
-    localStorage.setItem('caspian_services',JSON.stringify(db)); showAdminSuccess(); e.target.reset(); renderAdminLists(); document.getElementById('btn-submit-service').innerText='+ Сохранить'; document.getElementById('btn-cancel-service').style.display='none';
-};
-
-if (document.getElementById('admin-portfolio-form')) document.getElementById('admin-portfolio-form').onsubmit = (e) => {
-    e.preventDefault(); const newP = {title:document.getElementById('port-title').value,savings:document.getElementById('port-savings').value,price:document.getElementById('port-price').value,equipment:document.getElementById('port-equipment').value,images:document.getElementById('port-image').value,desc:document.getElementById('port-desc').value};
-    let db=getPortfolio(); if(editPortId!==null){db[editPortId]=newP;editPortId=null;}else db.push(newP);
-    localStorage.setItem('caspian_portfolio',JSON.stringify(db)); showAdminSuccess(); e.target.reset(); resetImg('port-preview','port-image','port-drop-text'); renderAdminLists(); document.getElementById('btn-submit-portfolio').innerText='+ Опубликовать'; document.getElementById('btn-cancel-portfolio').style.display='none';
-};
-
-if (document.getElementById('admin-telegram-form')) {
-  renderAdminLists();
-  const rTg = () => { const c = document.getElementById('tg-chatids-list'); const cfg = getTelegramConfig(); document.getElementById('tg-token-input').value = cfg.token; c.innerHTML = cfg.chatIds.length ? cfg.chatIds.map((chat,i)=>`<div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.05);padding:8px;border-radius:4px"><div><strong style="color:var(--accent-neon);font-size:14px">${chat.label}</strong><br><span style="font-size:12px;color:var(--text-muted)">${chat.id}</span></div><button type="button" class="btn btn-sm btn-delete" onclick="const f=getTelegramConfig();f.chatIds.splice(${i},1);localStorage.setItem('tg_chat_ids',JSON.stringify(f.chatIds));document.getElementById('tg-chatids-list').parentElement.click()">Удалить</button></div>`).join('') : '<span style="color:gray;font-size:13px">Пусто</span>'; };
-  rTg(); document.getElementById('tg-chatids-list').parentElement.onclick = rTg;
-  document.getElementById('tg-add-btn').onclick = () => { const l=document.getElementById('tg-new-label').value.trim()||'Без имени', i=document.getElementById('tg-new-chatid').value.trim(); if(!i)return; const f=getTelegramConfig(); if(!f.chatIds.find(c=>c.id===i)){f.chatIds.push({id:i,label:l});localStorage.setItem('tg_chat_ids',JSON.stringify(f.chatIds));document.getElementById('tg-new-label').value='';document.getElementById('tg-new-chatid').value='';rTg();} };
-  document.getElementById('admin-telegram-form').onsubmit = (e) => { e.preventDefault(); localStorage.setItem('tg_token',document.getElementById('tg-token-input').value.trim()); showAdminSuccess(); };
 }
 
-if (document.getElementById('admin-contacts-form')) {
-  const c = getContacts(); document.getElementById('contact-1').value = c[0]||''; document.getElementById('contact-2').value = c[1]||''; document.getElementById('contact-3').value = c[2]||'';
-  document.getElementById('admin-contacts-form').onsubmit = (e) => {
-    e.preventDefault(); const newC = [document.getElementById('contact-1').value.trim(), document.getElementById('contact-2').value.trim(), document.getElementById('contact-3').value.trim()];
-    localStorage.setItem('caspian_contacts', JSON.stringify(newC)); showAdminSuccess(); renderContacts();
-  };
+if (document.getElementById('admin-service-form')) {
+    document.getElementById('admin-service-form').onsubmit = async (e) => {
+        e.preventDefault(); const newS = {title: document.getElementById('service-title').value, price: document.getElementById('service-price').value, desc_text: document.getElementById('service-desc').value};
+        const btn = document.getElementById('btn-submit-service'); btn.innerText = "Отправка в базу...";
+        if(editServiceId !== null){ await updateDB('services', editServiceId, newS); editServiceId=null; } else { await insertDB('services', newS); }
+        showAdminSuccess(); e.target.reset(); await initApp(); btn.innerText='+ Сохранить'; document.getElementById('btn-cancel-service').style.display='none';
+    };
+}
+
+if (document.getElementById('admin-portfolio-form')) {
+    document.getElementById('admin-portfolio-form').onsubmit = async (e) => {
+        e.preventDefault(); const newP = {title: document.getElementById('port-title').value, savings: document.getElementById('port-savings').value, price: document.getElementById('port-price').value, equipment: document.getElementById('port-equipment').value, images: document.getElementById('port-image').value, desc_text: document.getElementById('port-desc').value};
+        const btn = document.getElementById('btn-submit-portfolio'); btn.innerText = "Отправка в базу...";
+        if(editPortId !== null){ await updateDB('portfolio', editPortId, newP); editPortId=null; } else { await insertDB('portfolio', newP); }
+        showAdminSuccess(); e.target.reset(); resetImg('port-preview','port-image','port-drop-text'); await initApp(); btn.innerText='+ Опубликовать'; document.getElementById('btn-cancel-portfolio').style.display='none';
+    };
+}
+
+function initAdminSettings() {
+    if (document.getElementById('admin-contacts-form')) {
+        const c = dbSettings.contacts || [];
+        document.getElementById('contact-1').value = c[0]||''; document.getElementById('contact-2').value = c[1]||''; document.getElementById('contact-3').value = c[2]||'';
+        document.getElementById('admin-contacts-form').onsubmit = async (e) => {
+            e.preventDefault(); const newC = [document.getElementById('contact-1').value.trim(), document.getElementById('contact-2').value.trim(), document.getElementById('contact-3').value.trim()];
+            await updateDB('settings', 1, { contacts: JSON.stringify(newC) }); showAdminSuccess(); await initApp();
+        };
+    }
+    if (document.getElementById('admin-telegram-form')) {
+        document.getElementById('tg-token-input').value = dbSettings.tg_token || '';
+        const cList = document.getElementById('tg-chatids-list');
+        cList.innerHTML = (dbSettings.tg_chat_ids && dbSettings.tg_chat_ids.length) ? dbSettings.tg_chat_ids.map((chat,i)=>`<div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.05);padding:8px;border-radius:4px"><div><strong style="color:var(--accent-neon);font-size:14px">${chat.label}</strong><br><span style="font-size:12px;color:var(--text-muted)">${chat.id}</span></div><button type="button" class="btn btn-sm btn-delete" onclick="deleteTgChat(${i})">Удалить</button></div>`).join('') : '<span style="color:gray;font-size:13px">Пусто</span>';
+        
+        document.getElementById('tg-add-btn').onclick = async () => { 
+            const l=document.getElementById('tg-new-label').value.trim()||'Без имени', i=document.getElementById('tg-new-chatid').value.trim(); if(!i)return; 
+            const chatIds = [...(dbSettings.tg_chat_ids||[])];
+            if(!chatIds.find(c=>c.id===i)){ chatIds.push({id:i,label:l}); await updateDB('settings', 1, { tg_chat_ids: JSON.stringify(chatIds) }); document.getElementById('tg-new-label').value=''; document.getElementById('tg-new-chatid').value=''; await initApp(); } 
+        };
+        document.getElementById('admin-telegram-form').onsubmit = async (e) => { 
+            e.preventDefault(); await updateDB('settings', 1, { tg_token: document.getElementById('tg-token-input').value.trim() }); showAdminSuccess(); await initApp(); 
+        };
+    }
+}
+window.deleteTgChat = async function(idx) {
+    const chatIds = [...(dbSettings.tg_chat_ids||[])]; chatIds.splice(idx, 1);
+    await updateDB('settings', 1, { tg_chat_ids: JSON.stringify(chatIds) }); await initApp();
 }
 
 function renderContacts() {
-    const contacts = getContacts();
+    const contacts = dbSettings.contacts || [];
     const headerList = document.getElementById('header-contacts-list');
     if (headerList) {
         headerList.innerHTML = '';
@@ -234,19 +340,17 @@ function renderContacts() {
         } else { footerPhone.style.display = 'none'; }
     }
 }
-renderContacts();
 
 // =========================================================
 // 🛒 КАТАЛОГ И ПОРТФОЛИО РЕНДЕР
 // =========================================================
 function renderCatalog() {
   const g = document.getElementById('catalog-grid'); if(!g) return; g.innerHTML='';
-  getProducts().forEach((p,i) => {
-    let s=''; if(p.specsCard) p.specsCard.forEach(sc=>s+=`<div><span>${sc.label}</span> <strong>${sc.value}</strong></div>`);
+  dbProducts.forEach((p,i) => {
+    let s=''; if(p.specs_card) p.specs_card.forEach(sc=>s+=`<div><span>${sc.label}</span> <strong>${sc.value}</strong></div>`);
     g.innerHTML += `<div class="tech-card" data-id="${i}" data-category="${p.category}" data-stock="${p.stock}" data-brand="${p.brand||'all'}" data-power="${p.power}" data-cell="${p.cell}" data-efficiency="${p.efficiency||'all'}" data-frame="${p.frame||'all'}" data-phase="${p.phase}" data-voltage="${p.voltage||'all'}" data-capacity="${p.capacity}">${p.image?`<img src="${p.image}" class="product-image-rendered">`:''}<h3>${p.title}</h3><p class="card-sub">${p.subtitle}</p><div class="card-specs">${s}</div><div class="card-footer"><span class="price">${p.price}</span><button class="btn btn-sm btn-drawer">Посмотреть</button></div></div>`;
   });
 }
-if(document.getElementById('catalog-grid')) renderCatalog();
 
 function applyAdvancedFilters() {
     const cards = document.querySelectorAll('.tech-card'); if(!cards.length) return;
@@ -260,29 +364,24 @@ function applyAdvancedFilters() {
         card.style.display = ok ? 'flex' : 'none'; if(ok) card.style.animation='fadeInSlide 0.4s ease-out';
     });
 }
-if (document.getElementById('catalog-grid')) {
-    const urlCat = new URLSearchParams(window.location.search).get('category');
-    if (urlCat) setCustomSelectValue('custom-category', urlCat); else applyAdvancedFilters();
-}
 
 function renderServices() {
   const sGrid = document.getElementById('services-grid'); if (!sGrid) return; sGrid.innerHTML = '';
-  getServices().forEach(service => {
-    sGrid.insertAdjacentHTML('beforeend', `<div class="service-card"><h3 class="service-title">${service.title}</h3><div class="service-price">${service.price}</div><p class="service-desc">${service.desc}</p><button class="btn btn-sm btn-full mt-auto btn-lead" data-service="${service.title}">Оставить заявку</button></div>`);
+  dbServices.forEach(service => {
+    sGrid.insertAdjacentHTML('beforeend', `<div class="service-card"><h3 class="service-title">${service.title}</h3><div class="service-price">${service.price}</div><p class="service-desc">${service.desc_text}</p><button class="btn btn-sm btn-full mt-auto btn-lead" data-service="${service.title}">Оставить заявку</button></div>`);
   });
 }
-if (document.getElementById('services-grid')) renderServices();
 
-if (document.getElementById('portfolio-grid')) {
-  const pg = document.getElementById('portfolio-grid'); pg.innerHTML='';
-  getPortfolio().forEach((p,i) => {
+function renderPortfolio() {
+  const pg = document.getElementById('portfolio-grid'); if(!pg) return; pg.innerHTML='';
+  dbPortfolio.forEach((p,i) => {
     let img = p.images?`<img src="${p.images}" style="width:100%;height:200px;object-fit:cover;border-radius:8px 8px 0 0;">`:`<div class="mock-img" style="height:200px;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-radius:8px 8px 0 0;">📸</div>`;
-    pg.innerHTML += `<div class="portfolio-card" data-id="${i}" style="background:var(--bg-card);border:1px solid var(--bg-card-border);border-radius:12px;display:flex;flex-direction:column;">${img}<div style="padding:24px;display:flex;flex-direction:column;flex:1;"><h3 style="font-size:20px;color:var(--accent-neon);margin-bottom:8px;">${p.title}</h3><p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">${p.desc}</p><button class="btn btn-sm btn-drawer-port mt-auto" style="width:100%">Посмотреть детали</button></div></div>`;
+    pg.innerHTML += `<div class="portfolio-card" data-id="${i}" style="background:var(--bg-card);border:1px solid var(--bg-card-border);border-radius:12px;display:flex;flex-direction:column;">${img}<div style="padding:24px;display:flex;flex-direction:column;flex:1;"><h3 style="font-size:20px;color:var(--accent-neon);margin-bottom:8px;">${p.title}</h3><p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;flex-grow:1;">${p.desc_text}</p><button class="btn btn-sm btn-drawer-port mt-auto" style="width:100%">Посмотреть детали</button></div></div>`;
   });
 }
 
 // =========================================================
-// 🚀 ИНТЕРАКТИВ И ШТОРКИ + УСЛУГИ (ЗАЯВКА)
+// 🚀 ИНТЕРАКТИВ И ШТОРКИ
 // =========================================================
 document.addEventListener('click', (e) => {
   const btnLead = e.target.closest('.btn-lead');
@@ -294,19 +393,19 @@ document.addEventListener('click', (e) => {
   }
 
   if (e.target.closest('.btn-drawer')) {
-    const card = e.target.closest('.tech-card'); if (!card) return; const p = getProducts()[card.dataset.id];
+    const card = e.target.closest('.tech-card'); if (!card) return; const p = dbProducts[card.dataset.id];
     if(p) {
-      document.getElementById('drawer-title').innerText=p.title; document.getElementById('drawer-desc').innerText=p.desc; document.getElementById('drawer-price').innerText=p.price;
+      document.getElementById('drawer-title').innerText=p.title; document.getElementById('drawer-desc').innerText=p.desc_text; document.getElementById('drawer-price').innerText=p.price;
       const ic = document.getElementById('drawer-img-container'); if(ic) ic.innerHTML = p.image?`<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;">`:'📸';
-      document.getElementById('drawer-specs-list').innerHTML = p.specsFull?p.specsFull.map(s=>`<li><strong>${s.label}</strong> ${s.value}</li>`).join(''):'';
+      document.getElementById('drawer-specs-list').innerHTML = p.specs_full?p.specs_full.map(s=>`<li><strong>${s.label}</strong> ${s.value}</li>`).join(''):'';
       document.getElementById('drawer-overlay')?.classList.add('active'); document.getElementById('product-drawer')?.classList.add('active'); document.body.style.overflow='hidden';
     }
   }
   
   if (e.target.closest('.btn-drawer-port')) {
-    const card = e.target.closest('.portfolio-card'); if (!card) return; const p = getPortfolio()[card.dataset.id];
+    const card = e.target.closest('.portfolio-card'); if (!card) return; const p = dbPortfolio[card.dataset.id];
     if(p) {
-      document.getElementById('port-drawer-title').innerText=p.title; document.getElementById('port-drawer-desc').innerText=p.desc; document.getElementById('port-drawer-price').innerText=p.price||'-';
+      document.getElementById('port-drawer-title').innerText=p.title; document.getElementById('port-drawer-desc').innerText=p.desc_text; document.getElementById('port-drawer-price').innerText=p.price||'-';
       const ic = document.getElementById('port-drawer-img-container'); if(ic) ic.innerHTML = p.images?`<img src="${p.images}" style="width:100%;height:100%;object-fit:cover;">`:'📸';
       let sHtml=''; if(p.equipment) sHtml+=`<li><strong>Оборудование:</strong> ${p.equipment}</li>`; if(p.savings) sHtml+=`<li><strong>Экономия:</strong> ${p.savings}</li>`;
       document.getElementById('port-drawer-specs-list').innerHTML=sHtml;
@@ -327,14 +426,14 @@ const tgForm = document.getElementById('telegram-form');
 if (tgForm) {
   tgForm.addEventListener('submit', function(e) {
     e.preventDefault();
-    const config = getTelegramConfig();
-    if (!config.token || config.chatIds.length === 0) { alert("Настройте токен и Chat ID в панели администратора!"); return; }
+    const token = dbSettings.tg_token; const chatIds = dbSettings.tg_chat_ids || [];
+    if (!token || chatIds.length === 0) { alert("Настройте токен и Chat ID в панели администратора!"); return; }
 
     const btn = document.getElementById('lead-submit-btn'); btn.innerText = "Отправка..."; btn.disabled = true;
     const name = document.getElementById('lead-name').value; const phone = document.getElementById('lead-phone').value; const service = document.getElementById('lead-hidden-service').value; const comment = document.getElementById('lead-comment').value;
-    const text = `🔔 *Новая заявка с сайта Caspian Solar*\n\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n💼 *Услуга:* ${service}\n💬 *Комментарий:* ${comment ? comment : 'Без комментария'}`;
+    const text = `🔔 *Новая заявка с сайта CASPIAN SUN*\n\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n💼 *Услуга:* ${service}\n💬 *Комментарий:* ${comment ? comment : 'Без комментария'}`;
 
-    let requests = config.chatIds.map(chat => fetch(`https://api.telegram.org/bot${config.token}/sendMessage?chat_id=${chat.id}&text=${encodeURIComponent(text)}&parse_mode=Markdown`));
+    let requests = chatIds.map(chat => fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat.id}&text=${encodeURIComponent(text)}&parse_mode=Markdown`));
 
     Promise.all(requests).then(responses => {
         if(responses.every(res => res.ok)) {
@@ -348,3 +447,31 @@ if (tgForm) {
 const rs=document.getElementById('roofArea'), rn=document.getElementById('roofAreaNum'), bs=document.getElementById('monthlyBill'), bn=document.getElementById('monthlyBillNum');
 function calc(){ const r=Number(rs.value), b=Number(bs.value); if(rn)rn.value=r; if(bn)bn.value=b; const m=(r*0.16).toFixed(1); if(document.getElementById('powerRes'))document.getElementById('powerRes').innerText=`${m} кВт`; const s=Math.round(b*12*0.8); if(document.getElementById('savingsRes'))document.getElementById('savingsRes').innerText=`~${s.toLocaleString('ru-RU')} ₽`; if(document.getElementById('paybackRes'))document.getElementById('paybackRes').innerText=`~${((m*85000)/s).toFixed(1)} года`; }
 if(rs){ rs.oninput=calc; bs.oninput=calc; rn.oninput=e=>{rs.value=e.target.value;calc()}; bn.oninput=e=>{bs.value=e.target.value;calc()}; calc(); }
+
+// =========================================================
+// 📱 МОБИЛЬНОЕ МЕНЮ (БУРГЕР)
+// =========================================================
+const burgerBtn = document.getElementById('burger-btn');
+const mobileNav = document.querySelector('.nav');
+
+if (burgerBtn && mobileNav) {
+  burgerBtn.addEventListener('click', () => {
+    mobileNav.classList.toggle('active');
+    if (mobileNav.classList.contains('active')) {
+      burgerBtn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+      document.body.style.overflow = 'hidden';
+    } else {
+      burgerBtn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+      document.body.style.overflow = '';
+    }
+  });
+
+  document.querySelectorAll('.dropdown-toggle').forEach(drop => {
+    drop.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768) {
+        e.preventDefault();
+        e.target.closest('.dropdown').classList.toggle('mobile-open');
+      }
+    });
+  });
+}
