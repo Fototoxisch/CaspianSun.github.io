@@ -68,18 +68,20 @@ async function initApp() {
 document.addEventListener('DOMContentLoaded', initApp);
 
 // =========================================================
-// 🔒 АВТОРИЗАЦИЯ АДМИНИСТРАТОРА
+// 🔒 АВТОРИЗАЦИЯ АДМИНИСТРАТОРА (С ОБРАБОТКОЙ ОШИБОК)
 // =========================================================
 const authForm = document.getElementById('auth-form');
 if (authForm) {
     authForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Блокируем перезагрузку страницы при отправке формы
+        
         const email = document.getElementById('auth-email').value;
         const password = document.getElementById('auth-password').value;
         const btn = document.getElementById('auth-submit-btn');
         const err = document.getElementById('auth-error');
         
-        btn.innerText = 'Вход...'; err.style.display = 'none';
+        btn.innerText = 'Вход...'; 
+        err.style.display = 'none';
         
         try {
             const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
@@ -89,16 +91,24 @@ if (authForm) {
             });
             const data = await res.json();
             
-            if (data.access_token) {
+            if (res.ok && data.access_token) {
                 sessionStorage.setItem('supabase_admin_token', data.access_token);
-                window.location.reload(); // Перезагружаем для загрузки рабочей области
+                window.location.reload(); 
             } else {
-                err.innerText = data.error_description || 'Неверный логин или пароль';
+                if (data.error_description === 'Invalid login credentials') {
+                    err.innerText = 'Неверная почта или пароль';
+                } else if (data.error_description === 'Email not confirmed') {
+                    err.innerText = 'Почта не подтверждена в базе';
+                } else {
+                    err.innerText = data.error_description || 'Неизвестная ошибка авторизации';
+                }
                 err.style.display = 'block';
                 btn.innerText = 'Войти в систему';
             }
         } catch (error) {
-            err.innerText = 'Ошибка соединения'; err.style.display = 'block'; btn.innerText = 'Войти в систему';
+            err.innerText = 'Ошибка соединения с сервером'; 
+            err.style.display = 'block'; 
+            btn.innerText = 'Войти в систему';
         }
     });
 }
