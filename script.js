@@ -4,7 +4,6 @@
 const SUPABASE_URL = 'https://khlmhyzhzpbpirmudbxg.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RVxWpPNclnP2ATXQBUQlPQ_6NcmHMCa';
 
-// Динамические заголовки: если админ залогинен, подставляем его личный токен (JWT), иначе публичный ключ
 function getHeaders() {
     const sessionToken = sessionStorage.getItem('supabase_admin_token');
     return {
@@ -20,25 +19,23 @@ let dbServices = [];
 let dbPortfolio = [];
 let dbSettings = { tg_token: '', tg_chat_ids: [], contacts: ['+7 (800) 000-00-00', '', ''] };
 
-// Функции работы с базой данных
 async function fetchDB(table) {
     try { const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*&order=id.asc`, { headers: getHeaders() }); return await res.json(); } 
     catch (e) { console.error('Ошибка загрузки', e); return []; }
 }
 async function insertDB(table, data) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, { method: 'POST', headers: getHeaders(), body: JSON.stringify(data) });
-    if(!res.ok) { alert("Ошибка доступа: У вас нет прав на запись. Войдите как администратор."); throw new Error('Auth required'); }
+    if(!res.ok) { alert("Ошибка доступа. Войдите как администратор."); throw new Error('Auth required'); }
 }
 async function updateDB(table, id, data) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'PATCH', headers: getHeaders(), body: JSON.stringify(data) });
-    if(!res.ok) { alert("Ошибка доступа: У вас нет прав на редактирование."); throw new Error('Auth required'); }
+    if(!res.ok) { alert("Ошибка доступа. Войдите как администратор."); throw new Error('Auth required'); }
 }
 async function deleteDB(table, id) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: getHeaders() });
-    if(!res.ok) { alert("Ошибка доступа: У вас нет прав на удаление."); throw new Error('Auth required'); }
+    if(!res.ok) { alert("Ошибка доступа. Войдите как администратор."); throw new Error('Auth required'); }
 }
 
-// Инициализация сайта (загрузка данных с сервера)
 async function initApp() {
     const [p, s, port, set] = await Promise.all([ fetchDB('products'), fetchDB('services'), fetchDB('portfolio'), fetchDB('settings') ]);
     dbProducts = p || []; dbServices = s || []; dbPortfolio = port || [];
@@ -54,7 +51,6 @@ async function initApp() {
     if (document.getElementById('services-grid')) renderServices();
     if (document.getElementById('portfolio-grid')) renderPortfolio();
     
-    // Логика защиты страницы администратора
     if (document.getElementById('admin-login-screen')) {
         const token = sessionStorage.getItem('supabase_admin_token');
         if (token) {
@@ -68,7 +64,7 @@ async function initApp() {
 document.addEventListener('DOMContentLoaded', initApp);
 
 // =========================================================
-// 🔒 АВТОРИЗАЦИЯ АДМИНИСТРАТОРА (БЕЗ ПЕРЕЗАГРУЗКИ)
+// 🔒 АВТОРИЗАЦИЯ АДМИНИСТРАТОРА (ФИКС ОШИБОК)
 // =========================================================
 const authForm = document.getElementById('auth-form');
 if (authForm) {
@@ -92,30 +88,19 @@ if (authForm) {
             const data = await res.json();
             
             if (res.ok && data.access_token) {
-                // Успешный вход: сохраняем токен и МГНОВЕННО переключаем экраны (без перезагрузки страницы)
                 sessionStorage.setItem('supabase_admin_token', data.access_token);
-                
                 document.getElementById('admin-login-screen').style.display = 'none';
                 document.getElementById('admin-workspace').style.display = 'block';
                 document.getElementById('btn-logout').style.display = 'inline-block';
-                
-                // Рендерим списки с уже загруженными данными
                 renderAdminLists(); 
                 initAdminSettings();
-                
                 btn.innerText = 'Войти в систему';
             } else {
-                // Обработка ошибок Supabase (с проверкой на статус 400 Bad Request)
-                const errorMsg = data.error_description || data.message || data.msg || '';
-                
-                if (res.status === 400 || errorMsg.toLowerCase().includes('invalid login')) {
+                if (res.status === 400) {
                     err.innerText = 'Неверная почта или пароль';
-                } else if (errorMsg.toLowerCase().includes('email not confirmed')) {
-                    err.innerText = 'Почта не подтверждена в базе';
                 } else {
-                    err.innerText = errorMsg || 'Неизвестная ошибка авторизации';
+                    err.innerText = data.error_description || data.message || 'Ошибка авторизации';
                 }
-                
                 err.style.display = 'block';
                 btn.innerText = 'Войти в систему';
             }
@@ -131,7 +116,7 @@ const btnLogout = document.getElementById('btn-logout');
 if (btnLogout) {
     btnLogout.addEventListener('click', () => {
         sessionStorage.removeItem('supabase_admin_token');
-        window.location.reload(); // При выходе перезагружаем, чтобы надежно скрыть интерфейс
+        window.location.reload(); 
     });
 }
 
@@ -455,7 +440,7 @@ if (tgForm) {
 
     const btn = document.getElementById('lead-submit-btn'); btn.innerText = "Отправка..."; btn.disabled = true;
     const name = document.getElementById('lead-name').value; const phone = document.getElementById('lead-phone').value; const service = document.getElementById('lead-hidden-service').value; const comment = document.getElementById('lead-comment').value;
-    const text = `🔔 *Новая заявка с сайта CASPIAN SUN*\n\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n💼 *Услуга:* ${service}\n💬 *Комментарий:* ${comment ? comment : 'Без комментария'}`;
+    const text = `🔔 *Новая заявка с сайта Caspian Sun*\n\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n💼 *Услуга:* ${service}\n💬 *Комментарий:* ${comment ? comment : 'Без комментария'}`;
 
     let requests = chatIds.map(chat => fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat.id}&text=${encodeURIComponent(text)}&parse_mode=Markdown`));
 
