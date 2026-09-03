@@ -13,7 +13,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body { background-color: var(--bg-main); color: var(--text-main); font-family: var(--font-body); line-height: 1.6; overflow-x: clip; position: relative; }
+body { background-color: var(--bg-main); color: var(--text-main); font-family: var(--font-body); line-height: 1.6; overflow-x: hidden; position: relative; }
 body::before { content: ""; position: fixed; top: -50%; left: -50%; width: 200vw; height: 200vh; background-image: url("data:image/svg+xml,%3Csvg width='60' height='104' viewBox='0 0 60 104' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l30 52-30 52L0 52z' fill='rgba(255,255,255,0.02)'/%3E%3Cpath d='M0 0l30 52L0 104z' fill='rgba(255,255,255,0.025)'/%3E%3Cpath d='M60 0l-30 52 30 52z' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E"); background-size: 180px 312px; transform: rotate(45deg); z-index: -2; pointer-events: none; }
 body::after { content: ""; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(800px circle at top center, rgba(93, 241, 216, 0.1), transparent); z-index: -1; pointer-events: none; }
 
@@ -179,28 +179,24 @@ input[type=number] { -moz-appearance: textfield; }
 .upload-icon { font-size: 32px; margin-bottom: 8px; display: block; }
 .product-image-rendered { width: 100%; height: 180px; object-fit: cover; border-radius: 8px 8px 0 0; margin: -24px -24px 16px -24px; width: calc(100% + 48px); }
 
-/* МОБИЛЬНАЯ АДАПТАЦИЯ И БУРГЕР-МЕНЮ (ПОЛНАЯ ПЕРЕРАБОТКА) */
-.burger-btn { display: none; background: none; border: none; color: var(--text-main); cursor: pointer; z-index: 1001; padding: 8px; }
-
+/* МОБИЛЬНАЯ АДАПТАЦИЯ (ПОЛНАЯ ПЕРЕРАБОТКА) */
 @media (max-width: 768px) {
-  /* Шапка и меню */
-  .header { padding: 16px 20px; justify-content: space-between; }
-  .logo { font-size: 18px; }
+  .header { flex-direction: column; padding: 16px; gap: 16px; align-items: center; }
+  .logo-container { width: 100%; justify-content: center; display: flex; }
   .header-action { display: none; }
-  .burger-btn { display: block; }
   
-  .nav { position: fixed; top: 0; right: -100%; width: 260px; height: 100vh; background: rgba(24, 26, 31, 0.98); backdrop-filter: blur(16px); border-left: 1px solid var(--accent-neon); padding: 80px 24px 24px; transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1000; box-shadow: -10px 0 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; }
-  .nav.active { right: 0; }
-  .nav-list { flex-direction: column; align-items: flex-start; display: flex; width: 100%; gap: 24px; }
+  .nav { position: static; width: 100%; display: block; background: transparent; padding: 0; height: auto; border: none; box-shadow: none; }
+  .nav-list { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; }
+  .nav-link { font-size: 13px; padding: 8px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--bg-card-border); border-radius: 20px; text-align: center; }
   
-  .dropdown-menu { position: static; visibility: visible; opacity: 1; transform: none; box-shadow: none; border: none; background: transparent; padding: 12px 0 0 16px; display: none; min-width: 100%; }
-  .dropdown.mobile-open .dropdown-menu { display: block; }
-  
-  /* Главная страница и отступы */
+  .dropdown-menu { position: static; display: none; visibility: visible; opacity: 1; width: 100%; text-align: center; background: transparent; border: none; box-shadow: none; padding: 0; transform: none; }
+  .dropdown.mobile-open .dropdown-menu { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  .dropdown.mobile-open .dropdown-menu li a { justify-content: center; padding: 8px; background: rgba(93, 241, 216, 0.1); border-radius: 8px; }
+
   .hero-section { padding: 60px 16px 40px; }
+  .hero-title { font-size: 32px; }
   .calc-section, .catalog-section, .categories-section, .services-section, .catalog-page-section, .admin-section { padding: 0 16px; margin: 40px auto; }
   
-  /* Статистика и Калькулятор */
   .stats-bar { flex-direction: column; gap: 20px; padding: 20px; text-align: center; max-width: 100%; border-radius: 8px; }
   .stat-divider { width: 100%; height: 1px; background: var(--bg-card-border); }
   .calc-card { grid-template-columns: 1fr; gap: 24px; padding: 20px; }
@@ -209,24 +205,20 @@ input[type=number] { -moz-appearance: textfield; }
   .calc-results { padding: 16px; }
   .result-box { flex-direction: column; align-items: flex-start; gap: 4px; padding-bottom: 12px; }
 
-  /* Сетки (Гриды) */
   .categories-grid, .services-grid { grid-template-columns: 1fr; gap: 16px; }
   .grid-cards { grid-template-columns: 1fr; gap: 16px; margin-top: 24px; }
-  .cat-card, .service-card, .tech-card { padding: 20px; }
+  .cat-card, .service-card, .tech-card, .portfolio-card { padding: 20px; }
   
-  /* Фильтры в каталоге */
   .advanced-filters { flex-direction: column; align-items: stretch; padding: 16px; gap: 16px; }
   .filter-group { min-width: 100%; }
   .sticky-filters { position: relative; top: 0; box-shadow: none; }
   
-  /* Админка */
   .admin-card { padding: 20px; border-radius: 8px; }
   .form-row { flex-direction: column; gap: 16px; margin-bottom: 16px; }
   .admin-specific-filters { padding: 16px; flex-direction: column; gap: 16px; }
-  .admin-tabs { flex-wrap: wrap; gap: 8px; }
-  .tab-btn { flex: 1; min-width: 130px; padding: 10px; font-size: 12px; }
+  .admin-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tab-btn { width: 100%; padding: 12px 8px; font-size: 12px; min-width: 0; }
   
-  /* Модалки и шторки */
   .modal-content { padding: 24px; width: 95%; max-height: 90vh; overflow-y: auto; }
   .drawer-panel { width: 100vw; max-width: 100vw; right: -100vw; }
   .drawer-header { padding: 16px; }
@@ -234,7 +226,21 @@ input[type=number] { -moz-appearance: textfield; }
   .drawer-footer { padding: 16px; flex-direction: column; gap: 16px; }
   .drawer-footer .btn { width: 100%; }
   
-  /* Подвал */
   .footer { padding: 32px 20px; }
   .footer-content { flex-direction: column; gap: 24px; text-align: center; }
 }
+
+/* ========================================================= */
+/* ❓ СЕКЦИЯ FAQ (ИНФОРМАЦИЯ) */
+/* ========================================================= */
+.faq-container { display: flex; flex-direction: column; gap: 16px; margin-bottom: 60px; }
+.faq-item { background: var(--bg-card); border: 1px solid var(--bg-card-border); border-radius: 8px; overflow: hidden; backdrop-filter: blur(8px); }
+.faq-question { width: 100%; text-align: left; padding: 20px 24px; background: transparent; border: none; color: var(--text-main); font-family: var(--font-tech); font-size: 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+.faq-question:hover { background: rgba(93, 241, 216, 0.05); }
+.faq-question.active { color: var(--accent-neon); border-bottom: 1px solid var(--bg-card-border); }
+.faq-icon { font-size: 24px; font-weight: 400; color: var(--accent-neon); transition: transform 0.3s ease; }
+.faq-question.active .faq-icon { transform: rotate(45deg); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease; background: rgba(0, 0, 0, 0.2); }
+.faq-answer p { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin: 0; padding: 0 24px; opacity: 0; transition: opacity 0.3s ease; }
+.faq-question.active + .faq-answer { max-height: 500px; padding: 20px 0; }
+.faq-question.active + .faq-answer p { opacity: 1; padding: 0 24px; }

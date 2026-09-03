@@ -17,12 +17,16 @@
     <nav class="nav">
       <ul class="nav-list">
         <li><span class="nav-link active" style="color: var(--accent-neon);">Режим Администратора</span></li>
-        <li><a href="index.html" class="nav-link">Перейти на главную →</a></li>
+        <li><a href="info.html" class="nav-link">Информация</a></li>
+        <li><a href="index.html" class="nav-link">На главную →</a></li>
       </ul>
     </nav>
     <div class="header-action">
       <button class="btn" id="btn-logout" style="display: none; border-color: #e74c3c; color: #e74c3c;">Выйти</button>
     </div>
+    <button class="burger-btn" id="burger-btn">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
   </header>
   <main>
     <section class="admin-section" style="padding-top: 40px; max-width: 1200px;">
@@ -30,7 +34,7 @@
         <h1 class="hero-title">УПРАВЛЕНИЕ <span class="gradient-text">БАЗОЙ</span></h1>
       </div>
 
-      <!-- ЭКРАН ВХОДА (ПО УМОЛЧАНИЮ) -->
+      <!-- ЭКРАН ВХОДА -->
       <div id="admin-login-screen" style="max-width: 400px; margin: 40px auto; background: var(--bg-card); padding: 40px; border-radius: 12px; border: 1px solid var(--bg-card-border); backdrop-filter: blur(8px);">
         <h3 style="text-align: center; margin-bottom: 24px; font-family: var(--font-tech);">Авторизация</h3>
         <form id="auth-form" class="admin-form">
@@ -47,7 +51,7 @@
         </form>
       </div>
 
-      <!-- РАБОЧАЯ ПАНЕЛЬ (СКРЫТА ПО УМОЛЧАНИЮ) -->
+      <!-- РАБОЧАЯ ПАНЕЛЬ -->
       <div id="admin-workspace" style="display: none;">
         <div class="admin-tabs">
           <button class="tab-btn active" data-target="admin-product-tab">Оборудование</button>

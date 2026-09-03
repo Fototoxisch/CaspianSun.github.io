@@ -440,7 +440,7 @@ if (tgForm) {
 
     const btn = document.getElementById('lead-submit-btn'); btn.innerText = "Отправка..."; btn.disabled = true;
     const name = document.getElementById('lead-name').value; const phone = document.getElementById('lead-phone').value; const service = document.getElementById('lead-hidden-service').value; const comment = document.getElementById('lead-comment').value;
-    const text = `🔔 *Новая заявка с сайта Caspian Sun*\n\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n💼 *Услуга:* ${service}\n💬 *Комментарий:* ${comment ? comment : 'Без комментария'}`;
+    const text = `🔔 *Новая заявка с сайта CASPIAN SUN*\n\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n💼 *Услуга:* ${service}\n💬 *Комментарий:* ${comment ? comment : 'Без комментария'}`;
 
     let requests = chatIds.map(chat => fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat.id}&text=${encodeURIComponent(text)}&parse_mode=Markdown`));
 
@@ -458,29 +458,24 @@ function calc(){ const r=Number(rs.value), b=Number(bs.value); if(rn)rn.value=r;
 if(rs){ rs.oninput=calc; bs.oninput=calc; rn.oninput=e=>{rs.value=e.target.value;calc()}; bn.oninput=e=>{bs.value=e.target.value;calc()}; calc(); }
 
 // =========================================================
-// 📱 МОБИЛЬНОЕ МЕНЮ (БУРГЕР)
+// 📱 МОБИЛЬНЫЕ ВЫПАДАЮЩИЕ СПИСКИ (DROPDOWNS)
 // =========================================================
-const burgerBtn = document.getElementById('burger-btn');
-const mobileNav = document.querySelector('.nav');
-
-if (burgerBtn && mobileNav) {
-  burgerBtn.addEventListener('click', () => {
-    mobileNav.classList.toggle('active');
-    if (mobileNav.classList.contains('active')) {
-      burgerBtn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
-      document.body.style.overflow = 'hidden';
-    } else {
-      burgerBtn.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
-      document.body.style.overflow = '';
-    }
-  });
-
-  document.querySelectorAll('.dropdown-toggle').forEach(drop => {
+document.querySelectorAll('.dropdown-toggle').forEach(drop => {
     drop.addEventListener('click', (e) => {
-      if (window.innerWidth <= 768) {
-        e.preventDefault();
-        e.target.closest('.dropdown').classList.toggle('mobile-open');
-      }
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            e.target.closest('.dropdown').classList.toggle('mobile-open');
+        }
     });
-  });
-}
+});
+
+// =========================================================
+// ❓ ИНТЕРАКТИВНЫЙ FAQ (АККОРДЕОН)
+// =========================================================
+document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const isActive = btn.classList.contains('active');
+        document.querySelectorAll('.faq-question').forEach(b => b.classList.remove('active'));
+        if (!isActive) btn.classList.add('active');
+    });
+});
