@@ -68,15 +68,15 @@ async function initApp() {
 document.addEventListener('DOMContentLoaded', initApp);
 
 // =========================================================
-// 🔒 АВТОРИЗАЦИЯ АДМИНИСТРАТОРА (С ОБРАБОТКОЙ ОШИБОК)
+// 🔒 АВТОРИЗАЦИЯ АДМИНИСТРАТОРА (БЕЗ ПЕРЕЗАГРУЗКИ)
 // =========================================================
 const authForm = document.getElementById('auth-form');
 if (authForm) {
     authForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Блокируем перезагрузку страницы при отправке формы
+        e.preventDefault();
         
-        const email = document.getElementById('auth-email').value;
-        const password = document.getElementById('auth-password').value;
+        const email = document.getElementById('auth-email').value.trim();
+        const password = document.getElementById('auth-password').value.trim();
         const btn = document.getElementById('auth-submit-btn');
         const err = document.getElementById('auth-error');
         
@@ -92,16 +92,30 @@ if (authForm) {
             const data = await res.json();
             
             if (res.ok && data.access_token) {
+                // Успешный вход: сохраняем токен и МГНОВЕННО переключаем экраны (без перезагрузки страницы)
                 sessionStorage.setItem('supabase_admin_token', data.access_token);
-                window.location.reload(); 
+                
+                document.getElementById('admin-login-screen').style.display = 'none';
+                document.getElementById('admin-workspace').style.display = 'block';
+                document.getElementById('btn-logout').style.display = 'inline-block';
+                
+                // Рендерим списки с уже загруженными данными
+                renderAdminLists(); 
+                initAdminSettings();
+                
+                btn.innerText = 'Войти в систему';
             } else {
-                if (data.error_description === 'Invalid login credentials') {
+                // Обработка ошибок Supabase (с проверкой на статус 400 Bad Request)
+                const errorMsg = data.error_description || data.message || data.msg || '';
+                
+                if (res.status === 400 || errorMsg.toLowerCase().includes('invalid login')) {
                     err.innerText = 'Неверная почта или пароль';
-                } else if (data.error_description === 'Email not confirmed') {
+                } else if (errorMsg.toLowerCase().includes('email not confirmed')) {
                     err.innerText = 'Почта не подтверждена в базе';
                 } else {
-                    err.innerText = data.error_description || 'Неизвестная ошибка авторизации';
+                    err.innerText = errorMsg || 'Неизвестная ошибка авторизации';
                 }
+                
                 err.style.display = 'block';
                 btn.innerText = 'Войти в систему';
             }
@@ -117,7 +131,7 @@ const btnLogout = document.getElementById('btn-logout');
 if (btnLogout) {
     btnLogout.addEventListener('click', () => {
         sessionStorage.removeItem('supabase_admin_token');
-        window.location.reload();
+        window.location.reload(); // При выходе перезагружаем, чтобы надежно скрыть интерфейс
     });
 }
 
