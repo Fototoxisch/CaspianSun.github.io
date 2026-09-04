@@ -40,7 +40,14 @@ async function initApp() {
     }
 
     renderContacts();
-    if (document.getElementById('catalog-grid')) { renderCatalog(); applyAdvancedFilters(); }
+    
+    if (document.getElementById('catalog-grid')) { 
+        renderCatalog(); 
+        const catParam = new URLSearchParams(window.location.search).get('category');
+        if (catParam) { setCustomSelectValue('custom-category', catParam); } 
+        else { applyAdvancedFilters(); }
+    }
+    
     if (document.getElementById('services-grid')) renderServices();
     if (document.getElementById('portfolio-grid')) renderPortfolio();
     
@@ -149,7 +156,9 @@ function handleFilterChange(sel) {
         if (val === 'panels') { ['power','cell','efficiency','frame'].forEach(id => document.getElementById(`filter-group-${id}`).classList.remove('hidden')); }
         else if (val === 'inverters') { ['phase','voltage'].forEach(id => document.getElementById(`filter-group-${id}`).classList.remove('hidden')); }
         else if (val === 'batteries') { ['capacity','voltage'].forEach(id => document.getElementById(`filter-group-${id}`).classList.remove('hidden')); }
-        const newUrl = window.location.pathname + '?category=' + val; window.history.pushState({path:newUrl}, '', newUrl); applyAdvancedFilters();
+        const newUrl = window.location.pathname + (val === 'all' ? '' : '?category=' + val); 
+        window.history.replaceState({path:newUrl}, '', newUrl); 
+        applyAdvancedFilters();
     } 
     else if (sel.id.startsWith('custom-') && document.getElementById('catalog-grid')) applyAdvancedFilters();
     else if (sel.id === 'admin-category') {
