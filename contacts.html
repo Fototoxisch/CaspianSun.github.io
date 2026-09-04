@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Контакты компании Caspian Sun — Заказать расчет СЭС в Дагестане</title>
+  <meta name="description" content="Свяжитесь с инженерами Caspian Sun для бесплатного аудита объекта и подбора солнечной электростанции. Работаем по всей Республике Дагестан и Югу России.">
+  <link rel="icon" href="logo.png" type="image/png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <header class="header"><div class="logo-container"><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a></div><button class="burger-btn" id="burger-btn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><nav class="nav"><ul class="nav-list"><li><a href="index.html" class="nav-link">Главная</a></li><li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a><ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul></li><li><a href="services.html" class="nav-link">Услуги</a></li><li><a href="portfolio.html" class="nav-link">Наши работы</a></li><li class="dropdown"><a href="javascript:void(0)" class="nav-link dropdown-toggle">Информация ▾</a><ul class="dropdown-menu"><li><a href="about.html">О компании</a></li><li><a href="guide-ses.html">Как работает СЭС</a></li><li><a href="panels.html">Солнечные панели</a></li><li><a href="inverters.html">Инверторы</a></li><li><a href="lifepo4.html">Аккумуляторы LiFePO4</a></li><li><a href="mounting.html">Монтаж СЭС</a></li><li><a href="kits.html">Готовые комплекты</a></li><li><a href="business.html">СЭС для бизнеса</a></li></ul></li><li><a href="contacts.html" class="nav-link active">Контакты</a></li></ul></nav><div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div></header>
+
+  <main>
+    <section class="info-section">
+      <div class="section-header" style="text-align: left;"><h1 class="hero-title">Контакты и <span class="gradient-text">инженерная консультация</span></h1></div>
+      
+      <article class="info-article card-base" style="display:flex; flex-wrap:wrap; gap:40px;">
+        <div style="flex:1; min-width:300px;">
+          <h2 class="guarantee-title" style="margin-top:0;">Наши контакты</h2>
+          <p>Планируете установить СЭС? Специалисты Caspian Sun проведут комплексный аудит вашего объекта, рассчитают пусковые токи и подготовят точную спецификацию оборудования.</p>
+          <ul class="info-list" style="list-style:none; padding:0;">
+            <li style="margin-bottom:16px;"><strong>Телефон / WhatsApp / Telegram:</strong><br><span class="highlight" style="font-size:24px; font-family:var(--font-tech); font-weight:700;">+7 (963) 373-72-74</span></li>
+            <li style="margin-bottom:16px;"><strong>Электронная почта:</strong><br><span style="color:var(--text-main);">isamuradovich@gmail.com</span><br><span style="color:var(--text-main);">info@caspiansolar.ru</span></li>
+            <li style="margin-bottom:16px;"><strong>Регион работы:</strong><br><span style="color:var(--text-main);">Республика Дагестан (Махачкала, Каспийск, Дербент, Избербаш, Хасавюрт и горные районы).</span></li>
+            <li style="margin-bottom:16px;"><strong>График работы:</strong><br><span style="color:var(--text-main);">Пн — Сб: с 9:00 до 19:00 (онлайн заявки — круглосуточно).</span></li>
+          </ul>
+        </div>
+        
+        <div style="flex:1; min-width:300px; background:rgba(0,0,0,0.3); padding:32px; border-radius:12px; border:1px dashed var(--bg-card-border);">
+          <h2 style="font-family:var(--font-tech); font-size:20px; margin-bottom:16px;">Получите расчет СЭС</h2>
+          <form id="telegram-form" class="admin-form">
+            <input type="hidden" id="lead-hidden-service" value="Запрос расчета со страницы Контакты">
+            <div class="form-group mb-16"><label>Ваше имя</label><input type="text" id="lead-name" class="form-input" required></div>
+            <div class="form-group mb-16"><label>Номер телефона</label><input type="tel" id="lead-phone" class="form-input" required></div>
+            <div class="form-group mb-24"><label>Тип объекта и город</label><textarea id="lead-comment" class="form-input form-textarea" placeholder="Например: Частный дом, Махачкала. Полная автономия."></textarea></div>
+            <button type="submit" class="btn btn-full" id="lead-submit-btn">Отправить заявку на расчет</button>
+            <div id="lead-success" class="admin-success-msg hidden">✅ Заявка отправлена!</div>
+          </form>
+        </div>
+      </article>
+
+      <div class="section-header" style="margin-top: 40px;"><h2 class="section-title">СВОДНЫЙ <span class="gradient-text">FAQ</span></h2></div>
+      
+      <div class="faq-container">
+        <div class="faq-item card-base">
+          <button class="faq-question">Нужно ли получать разрешения или согласования в энергосбытовой компании?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Нет. Оборудование Caspian Sun оснащено функцией Zero Export (Anti-backflow). Инвертор непрерывно отслеживает потребление здания и производит строго столько энергии, сколько требуется приборам. Ни один ватт не уходит в городские провода, поэтому вам не требуется статус микрогенерации или замена счетчиков.</p></div>
+        </div>
+        <div class="faq-item card-base">
+          <button class="faq-question">Что делать, если напряжение неделями держится на уровне 160–170 В?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Инвертор монтируется в паре с вашим стабилизатором. Стабилизатор принимает «просевшую» городскую сеть и вытягивает ее до 220 В, а инвертор пропускает ее в дом транзитом и подмешивает солнце. Дорогостоящие аккумуляторы остаются заряженными на 100%.</p></div>
+        </div>
+        <div class="faq-item card-base">
+          <button class="faq-question">Сколько времени занимает поставка оборудования и монтаж?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Если оборудование на складе, стандартный монтаж для дома под ключ занимает от 1 до 3 рабочих дней. При заказе промышленных высоковольтных (HV) комплексов напрямую с заводов срок поставки составляет от 3 до 5 недель с полным сохранением заводской гарантии.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <footer class="footer" id="contacts"><div class="footer-content"><div><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a><p class="footer-desc">Автономная энергетика будущего.</p></div><div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div></div></footer><script src="script.js"></script>
+</body>
+</html>

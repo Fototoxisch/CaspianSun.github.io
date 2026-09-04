@@ -1,37 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Наши работы // CASPIAN SUN</title>
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="logo.png" type="image/png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
 </head>
 <body class="dark-theme">
-  <header class="header">
-    <div class="logo-container">
-      <a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a>
-    </div>
-    <button class="burger-btn" id="burger-btn">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-    </button>
-    <nav class="nav">
-      <ul class="nav-list">
-        <li><a href="index.html" class="nav-link">Главная</a></li>
-        <li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a>
-          <ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul>
-        </li>
-        <li><a href="services.html" class="nav-link">Услуги</a></li>
-        <li><a href="portfolio.html" class="nav-link active">Наши работы</a></li>
-        <li><a href="guide-ses.html" class="nav-link">Информация</a></li>
-        <li class="dropdown"><a href="javascript:void(0)" class="nav-link dropdown-toggle" style="cursor: default;">Контакты ▾</a><ul class="dropdown-menu" id="header-contacts-list"><li><a href="#">Загрузка...</a></li></ul></li>
-      </ul>
-    </nav>
-    <div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div>
-  </header>
+  <header class="header"><div class="logo-container"><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a></div><button class="burger-btn" id="burger-btn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><nav class="nav"><ul class="nav-list"><li><a href="index.html" class="nav-link">Главная</a></li><li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a><ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul></li><li><a href="services.html" class="nav-link">Услуги</a></li><li><a href="portfolio.html" class="nav-link active">Наши работы</a></li><li class="dropdown"><a href="javascript:void(0)" class="nav-link dropdown-toggle">Информация ▾</a><ul class="dropdown-menu"><li><a href="about.html">О компании</a></li><li><a href="guide-ses.html">Как работает СЭС</a></li><li><a href="panels.html">Солнечные панели</a></li><li><a href="inverters.html">Инверторы</a></li><li><a href="lifepo4.html">Аккумуляторы LiFePO4</a></li><li><a href="mounting.html">Монтаж СЭС</a></li><li><a href="kits.html">Готовые комплекты</a></li><li><a href="business.html">СЭС для бизнеса</a></li></ul></li><li><a href="contacts.html" class="nav-link">Контакты</a></li></ul></nav><div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div></header>
+  
   <main>
     <section class="portfolio-section">
       <div class="section-header">
@@ -42,24 +19,7 @@
     </section>
   </main>
   
-  <div class="drawer-overlay" id="u-drawer-overlay"></div>
-  <div class="drawer-panel" id="u-drawer">
-    <div class="drawer-header"><h2 id="u-title">Объект</h2><button class="close-btn" id="u-close">&times;</button></div>
-    <div class="drawer-body">
-      <div class="mock-img drawer-img" id="u-img">📸</div>
-      <div class="drawer-specs-title" id="u-subtitle">Детали проекта</div>
-      <p class="drawer-desc" id="u-desc"></p>
-      <ul class="modal-specs" id="u-specs"></ul>
-    </div>
-    <div class="drawer-footer"><div id="u-price" class="modal-price highlight">0 ₽</div><button class="btn btn-full" id="u-close-btn2">Закрыть</button></div>
-  </div>
-  
-  <footer class="footer" id="contacts">
-    <div class="footer-content">
-      <div><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a><p class="footer-desc">Автономная энергетика будущего.</p></div>
-      <div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div>
-    </div>
-  </footer>
-  <script src="script.js"></script>
+  <div class="drawer-overlay" id="u-drawer-overlay"></div><div class="drawer-panel" id="u-drawer"><div class="drawer-header"><h2 id="u-title">Объект</h2><button class="close-btn" id="u-close">&times;</button></div><div class="drawer-body"><div class="mock-img drawer-img" id="u-img">📸</div><div class="drawer-specs-title" id="u-subtitle">Детали</div><p class="drawer-desc" id="u-desc"></p><ul class="modal-specs" id="u-specs"></ul></div><div class="drawer-footer"><div id="u-price" class="modal-price highlight">0 ₽</div><button class="btn btn-full" id="u-close-btn2">Закрыть</button></div></div>
+  <footer class="footer" id="contacts"><div class="footer-content"><div><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a><p class="footer-desc">Автономная энергетика будущего.</p></div><div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div></div></footer><script src="script.js"></script>
 </body>
 </html>
