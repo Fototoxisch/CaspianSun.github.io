@@ -416,8 +416,22 @@ function calc() {
 if(rs) { rs.oninput=calc; bs.oninput=calc; rn.oninput=e=>{rs.value=e.target.value;calc()}; bn.oninput=e=>{bs.value=e.target.value;calc()}; calc(); }
 
 // =========================================================
-// 📱 МОБИЛЬНЫЕ DROPDOWNS И FAQ
+// 📱 МОБИЛЬНЫЕ DROPDOWNS И BURGER МЕНЮ
 // =========================================================
+const burgerBtn = document.getElementById('burger-btn');
+const navMenu = document.querySelector('.nav');
+
+if (burgerBtn && navMenu) {
+    burgerBtn.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        if(navMenu.classList.contains('active')){
+            burgerBtn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+        } else {
+            burgerBtn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+        }
+    });
+}
+
 document.querySelectorAll('.dropdown-toggle').forEach(drop => {
     drop.addEventListener('click', (e) => {
         if (window.innerWidth <= 768) { e.preventDefault(); e.target.closest('.dropdown').classList.toggle('mobile-open'); }

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Солнечные электростанции (СЭС) под ключ: принцип работы, схемы, расчет мощности | Caspian Sun</title>
+  <meta name="description" content="Полный гид по солнечным электростанциям: 100% автономия и гибридная экономия. Принцип работы, расчет мощности, подбор инверторов и LiFePO4 АКБ под ключ.">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <header class="header">
+    <div class="logo-container">
+      <a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a>
+    </div>
+    <button class="burger-btn" id="burger-btn">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <nav class="nav">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-link">Главная</a></li>
+        <li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a>
+          <ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul>
+        </li>
+        <li><a href="services.html" class="nav-link">Услуги</a></li>
+        <li><a href="portfolio.html" class="nav-link">Наши работы</a></li>
+        <li><a href="guide-ses.html" class="nav-link active">Информация</a></li>
+        <li class="dropdown"><a href="javascript:void(0)" class="nav-link dropdown-toggle" style="cursor: default;">Контакты ▾</a><ul class="dropdown-menu" id="header-contacts-list"><li><a href="#">Загрузка...</a></li></ul></li>
+      </ul>
+    </nav>
+    <div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div>
+  </header>
+
+  <main>
+    <section class="info-section">
+      <div class="section-header" style="text-align: left;">
+        <h1 class="hero-title" style="font-size: clamp(28px, 4vw, 48px); margin-bottom: 24px;">Солнечные электростанции: <span class="gradient-text">принцип работы, схемы и подбор</span> под ключ</h1>
+      </div>
+
+      <article class="info-article card-base">
+        <p>Солнечная электростанция (СЭС) — это автономный или синхронизированный с сетью инженерный комплекс, предназначенный для преобразования солнечной радиации в переменный ток бытового и промышленного стандарта (220 В / 380 В, 50 Гц).</p>
+        <p>Современная станция проектируется под конкретную задачу заказчика:</p>
+        <ul class="info-list">
+            <li><strong>100% энергонезависимость и полная автономия (Off-Grid):</strong> полное отсутствие счетов за свет и надежное электроснабжение удаленных объектов, частных домов, ферм и коммерческих точек без подключения к электросетям.</li>
+            <li><strong>Снижение расходов на электроэнергию до 70–90%:</strong> сокращение дневного потребления за счет умного подмешивания бесплатной солнечной энергии к городской сети в реальном времени.</li>
+            <li><strong>Защита от блэкаутов и просадок сети:</strong> мгновенный переход на резервное питание (10 мс) при авариях на ЛЭП и стабилизация напряжения при падении до 150–180 В.</li>
+        </ul>
+
+        <h2 class="guarantee-title">Как устроена и работает солнечная электростанция</h2>
+        <img src="schema1.jpg" alt="Базовая архитектура и топология СЭС" class="info-schema">
+        <p>Солнечная станция — это экосистема взаимосвязанных узлов, работающих под единым цифровым контролем:</p>
+        <ul class="info-list">
+            <li><strong>Фотоэлектрические модули (Солнечные панели):</strong> Устанавливаются на скатах крыш или наземных металлоконструкциях. Улавливают дневной свет и вырабатывают постоянный ток (DC).</li>
+            <li><strong>Щиты коммутации и защиты постоянного тока (DC Combiner Box):</strong> Защищают кабельные трассы и силовую электронику от импульсных грозовых перенапряжений (модули УЗИП) и коротких замыканий (высоковольтные gPV-предохранители).</li>
+            <li><strong>Инверторное оборудование («Мозг системы»):</strong> Преобразует постоянный ток (DC) в переменный (AC 220/380 В), управляет алгоритмами MPPT-трекеров, регулирует потоки мощностей и синхронизирует источники питания.</li>
+            <li><strong>Банк накопителей энергии (LiFePO4 АКБ):</strong> Высокоресурсные литий-железо-фосфатные батареи с цифровыми платами Smart BMS. Запасают избыточную энергию днем и моментально берут на себя питание дома ночью или при аварии на линии.</li>
+            <li><strong>AC-распределительный щит с системой Bypass:</strong> Комплекс защитных автоматов и трехпозиционного рубильника (I-0-II), позволяющий при необходимости пустить внешнюю сеть напрямую к потребителям в обход инвертора без отключения электроэнергии в доме.</li>
+        </ul>
+
+        <h2 class="guarantee-title">Выбор архитектуры СЭС: 100% Автономия vs Гибридная экономия</h2>
+        <img src="schema2.jpg" alt="Сравнение трех типов СЭС: Off-Grid / Hybrid / On-Grid" class="info-schema">
+        <p>В зависимости от наличия центральной электросети и ваших целей подбирается один из трех типов систем:</p>
+        
+        <div class="grid-cards" style="margin-top: 24px;">
+            <div class="card-item card-base" style="padding: 24px;">
+               <h3 class="port-title">1. Автономная (Off-Grid)</h3>
+               <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> 100% автономия</p>
+               <p class="port-desc">Работает непрерывно. Требует большого банка LiFePO4 АКБ и резервного генератора (АВР). Идеально для домов без подключения к ЛЭП, ферм и баз отдыха.</p>
+            </div>
+            <div class="card-item card-base" style="padding: 24px;">
+               <h3 class="port-title">2. Умный гибрид (Smart Hybrid)</h3>
+               <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> Резерв + Экономия</p>
+               <p class="port-desc">Обеспечивает бесшовный переход (10 мс) и подмешивание энергии к городской сети. Подходит для коттеджей, АЗС и коммерции со слабой или дорогой сетью.</p>
+            </div>
+            <div class="card-item card-base" style="padding: 24px;">
+               <h3 class="port-title">3. Сетевая (On-Grid)</h3>
+               <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> Только дневная экономия</p>
+               <p class="port-desc">Работает строго без АКБ. Отключается при блэкауте (Anti-Islanding). Выгодна для производств и складов со стабильной сетью и дневным графиком.</p>
+            </div>
+        </div>
+
+        <h2 class="guarantee-title">Интеллектуальные режимы работы</h2>
+        <ul class="info-list">
+            <li><strong>Режим умного подмешивания (SUB: Solar → Utility → Battery):</strong> Энергия солнца подается в нагрузку в первую очередь. Если потребление дома превышает мощность панелей, инвертор не расходует аккумулятор, а бесшовно добирает недостающие киловатты из городской сети.</li>
+            <li><strong>Режим автономной экономии (SBU: Solar → Battery → Utility):</strong> Днем дом питается от панелей, излишки заряжают АКБ. Вечером дом полностью переходит на работу от аккумуляторов. Сеть подключается только при их безопасном разряде.</li>
+            <li><strong>Защита от проверок (Zero Export):</strong> Инвертор генерирует энергию строго для нужд объекта, исключая утечку токов в городскую сеть. Позволяет использовать станцию без длительных согласований с энергосбытовыми компаниями.</li>
+        </ul>
+
+        <h2 class="guarantee-title">Пошаговый расчет: как подобрать мощность</h2>
+        <ul class="info-list">
+            <li><strong>Шаг 1. Расчет инвертора под пусковые токи:</strong> Определяется мощностью одновременно работающего оборудования (с учетом компрессоров и насосов). Для дома это 5–6 кВт, для коммерции — 15–20 кВт.</li>
+            <li><strong>Шаг 2. Расчет массива панелей:</strong> Для дома монтируется массив 6.2–7.4 кВт (выработка 30–40 кВт·ч в день). Для автономных объектов (Off-Grid) массив увеличивается в 1.5–2 раза.</li>
+            <li><strong>Шаг 3. Емкость АКБ:</strong> Базовый резерв (5-10 кВт·ч) питает дом 12–24 часа. Автономный банк (20–30+ кВт·ч) обеспечивает непрерывную работу оборудования всю ночь с высокой токоотдачей.</li>
+        </ul>
+
+        <h2 class="guarantee-title">Стандарты надежности Caspian Sun</h2>
+        <ul class="info-list">
+            <li><strong>Безрамочные панели Full-Screen (DAH Solar):</strong> Исключают скопление грязи в нижней части, обеспечивая на 6–15% больше выработки за год.</li>
+            <li><strong>Безопасные LiFePO4 накопители (EVE Energy Grade A):</strong> Сохраняют работоспособность до 6000 циклов (12–15 лет) без риска возгорания.</li>
+            <li><strong>Защита класса UPS:</strong> Автоматика отсекает аварийную внешнюю сеть за 10 мс и формирует правильную синусоиду 230В.</li>
+        </ul>
+      </article>
+
+      <div class="section-header" style="margin-top: 40px;">
+        <h2 class="section-title">ЧАСТЫЕ <span class="gradient-text">ВОПРОСЫ (FAQ)</span></h2>
+      </div>
+      
+      <div class="faq-container">
+        <div class="faq-item card-base">
+          <button class="faq-question">Работают ли солнечные панели зимой или в пасмурную погоду?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Да, панели генерируют энергию от света, а не от тепла. Зимой, благодаря отражению света от снега и охлаждению ячеек (что повышает их КПД), панели могут работать даже эффективнее, чем в сильную жару. В пасмурную погоду выработка снижается на 40-60%, но не прекращается.</p></div>
+        </div>
+        <div class="faq-item card-base">
+          <button class="faq-question">Можно ли с вашей помощью полностью отключиться от электросетей?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Да. Мы проектируем полноценные автономные системы (Off-Grid) с увеличенным массивом панелей, емким банком аккумуляторов LiFePO4 и автоматическим вводом резервного генератора, который страхует объект в затяжную пасмурную погоду.</p></div>
+        </div>
+        <div class="faq-item card-base">
+          <button class="faq-question">Нужен ли отдельный стабилизатор напряжения?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Нет, инвертор выполняет функцию защиты: при просадке сети ниже безопасного порога (170 В) он моментально изолирует внутреннюю сеть дома и питает технику чистым напряжением 230 В 50 Гц от солнца и батарей.</p></div>
+        </div>
+        <div class="faq-item card-base">
+          <button class="faq-question">Нужно ли мыть солнечные панели?<span class="faq-icon">+</span></button>
+          <div class="faq-answer"><p>Угол наклона панелей позволяет дождю и снегу естественным образом очищать их поверхность. Однако в сильно запыленных регионах мы рекомендуем промывать их водой из шланга 1-2 раза в год в утреннее или вечернее время.</p></div>
+        </div>
+      </div>
+
+      <div class="card-base" style="text-align: center; margin-top: 40px; padding: 40px;">
+         <h2 style="font-family: var(--font-tech); font-size: 24px; margin-bottom: 16px;">Хотите рассчитать СЭС под ваш объект?</h2>
+         <p style="color: var(--text-muted); margin-bottom: 24px;">Оставьте заявку на инженерный расчет. Мы подготовим схему размещения панелей, подберем номинал инвертора и рассчитаем окупаемость системы для вашего дома или бизнеса.</p>
+         <button class="btn btn-primary btn-lead" data-service="Инженерный расчет СЭС">Получить расчет проекта</button>
+      </div>
+
+    </section>
+  </main>
+  
+  <div class="modal-overlay" id="lead-modal">
+    <div class="modal-content card-base">
+      <button class="close-btn" id="close-lead-modal">&times;</button>
+      <h2 class="modal-title">Оставить заявку</h2>
+      <p class="modal-desc" id="lead-service-name">Наш инженер свяжется с вами.</p>
+      <form id="telegram-form" class="admin-form">
+        <input type="hidden" id="lead-hidden-service">
+        <div class="form-group"><label>Ваше имя</label><input type="text" id="lead-name" class="form-input" required></div>
+        <div class="form-group"><label>Номер телефона</label><input type="tel" id="lead-phone" class="form-input" required></div>
+        <div class="form-group"><label>Вопрос (необязательно)</label><textarea id="lead-comment" class="form-input form-textarea"></textarea></div>
+        <button type="submit" class="btn btn-full" id="lead-submit-btn">Отправить заявку</button>
+        <div id="lead-success" class="admin-success-msg hidden">✅ Заявка отправлена!</div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer" id="contacts">
+    <div class="footer-content">
+      <div><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a><p class="footer-desc">Автономная энергетика будущего.</p></div>
+      <div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
