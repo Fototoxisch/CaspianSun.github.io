@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Информация и Гарантии // CASPIAN SUN</title>
+  <title>Главная // CASPIAN SUN</title>
+  <link rel="icon" href="logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -12,69 +13,74 @@
 <body class="dark-theme">
   <header class="header">
     <div class="logo-container">
-      <a href="index.html" class="logo"><span class="logo-icon">✦</span> CASPIAN<span class="highlight">SUN</span></a>
+      <a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a>
     </div>
     <nav class="nav">
       <ul class="nav-list">
-        <li><a href="index.html" class="nav-link">Главная</a></li>
+        <li><a href="index.html" class="nav-link active">Главная</a></li>
         <li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a>
           <ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul>
         </li>
         <li><a href="services.html" class="nav-link">Услуги</a></li>
         <li><a href="portfolio.html" class="nav-link">Наши работы</a></li>
-        <li><a href="info.html" class="nav-link active">Информация</a></li>
+        <li><a href="info.html" class="nav-link">Информация</a></li>
         <li class="dropdown"><a href="javascript:void(0)" class="nav-link dropdown-toggle" style="cursor: default;">Контакты ▾</a><ul class="dropdown-menu" id="header-contacts-list"><li><a href="#">Загрузка...</a></li></ul></li>
       </ul>
     </nav>
     <div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div>
-    <button class="burger-btn" id="burger-btn">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-    </button>
   </header>
-
+  
   <main>
-    <section class="services-section" style="padding-top: 60px; max-width: 800px;">
-      <div class="section-header" style="text-align: center;">
-        <h1 class="hero-title">ИНФОРМАЦИЯ И <span class="gradient-text">ГАРАНТИИ</span></h1>
-        <p class="hero-subtitle">Всё, что нужно знать о солнечной энергетике перед установкой.</p>
+    <section class="hero-section">
+      <h1 class="hero-title">ЭНЕРГИЯ БУДУЩЕГО<br><span class="gradient-text">В ВАШИХ РУКАХ</span></h1>
+      <p class="hero-subtitle">Проектирование и монтаж солнечных электростанций под ключ. Обеспечьте свой дом независимой энергией.</p>
+      <div class="hero-buttons">
+        <a href="catalog.html" class="btn btn-primary">Перейти в каталог</a>
+        <a href="services.html" class="btn">Наши услуги</a>
       </div>
-
-      <div class="admin-card" style="margin-bottom: 60px;">
-        <h2 style="font-family: var(--font-tech); font-size: 24px; color: var(--accent-neon); margin-bottom: 20px;">Надежность Caspian Sun</h2>
-        <p style="color: var(--text-muted); margin-bottom: 16px;">Мы берем на себя полную ответственность за работоспособность вашей станции. Наша гарантийная политика включает:</p>
-        <ul style="list-style: none; color: var(--text-main); display: flex; flex-direction: column; gap: 12px;">
-          <li style="display: flex; gap: 12px;"><span style="color: var(--accent-neon);">✦</span> <strong>До 25 лет</strong> — Гарантия от производителя на сохранение мощности солнечных панелей (не менее 80% от номинала).</li>
-          <li style="display: flex; gap: 12px;"><span style="color: var(--accent-neon);">✦</span> <strong>10 лет</strong> — Безусловная гарантия на все виды монтажных работ, герметичность кровли и креплений.</li>
-          <li style="display: flex; gap: 12px;"><span style="color: var(--accent-neon);">✦</span> <strong>5 лет</strong> — Гарантия на инверторное оборудование и аккумуляторные батареи.</li>
-        </ul>
-      </div>
-
+    </section>
+    
+    <div class="stats-bar card-base">
+      <div class="stat-item"><span class="stat-num">50+</span><span class="stat-desc">Реализованных проектов</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><span class="stat-num">10 ЛЕТ</span><span class="stat-desc">Гарантия на монтаж</span></div>
+    </div>
+    
+    <section class="calc-section" id="calculator">
       <div class="section-header">
-        <h2 class="section-title">ЧАСТЫЕ <span class="gradient-text">ВОПРОСЫ (FAQ)</span></h2>
+        <h2 class="section-title">КАЛЬКУЛЯТОР <span class="gradient-text">ОКУПАЕМОСТИ</span></h2>
+        <p class="section-desc">Рассчитайте примерную мощность станции</p>
       </div>
-      
-      <div class="faq-container">
-        <div class="faq-item">
-          <button class="faq-question">Работают ли солнечные панели зимой или в пасмурную погоду?<span class="faq-icon">+</span></button>
-          <div class="faq-answer"><p>Да, панели генерируют энергию от света, а не от тепла. Зимой, благодаря отражению света от снега и охлаждению ячеек (что повышает их КПД), панели могут работать даже эффективнее, чем в сильную жару. В пасмурную погоду выработка снижается на 40-60%, но не прекращается.</p></div>
+      <div class="calc-card card-base">
+        <div class="calc-inputs">
+          <div class="input-group">
+            <div class="input-header"><label>Площадь кровли (м²)</label><input type="number" class="num-input" id="roofAreaNum" value="50"></div>
+            <input type="range" class="tech-slider" id="roofArea" min="10" max="1000" value="50">
+          </div>
+          <div class="input-group">
+            <div class="input-header"><label>Счет за ЭЭ (₽/мес)</label><input type="number" class="num-input" id="monthlyBillNum" value="5000"></div>
+            <input type="range" class="tech-slider" id="monthlyBill" min="500" max="100000" step="500" value="5000">
+          </div>
         </div>
-        <div class="faq-item">
-          <button class="faq-question">Что будет, если отключат городскую сеть?<span class="faq-icon">+</span></button>
-          <div class="faq-answer"><p>Если у вас установлена гибридная или автономная станция с аккумуляторами — инвертор мгновенно (за 10 мс) переключит питание дома на батареи. Вы даже не заметите моргания света. Если станция сетевая (без АКБ) — она отключится по требованиям безопасности.</p></div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question">Сколько времени занимает монтаж "под ключ"?<span class="faq-icon">+</span></button>
-          <div class="faq-answer"><p>В среднем монтаж частной станции мощностью от 5 до 15 кВт занимает от 2 до 4 рабочих дней. Проектирование и поставка оборудования занимают около 1 недели.</p></div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question">Нужно ли мыть солнечные панели?<span class="faq-icon">+</span></button>
-          <div class="faq-answer"><p>Угол наклона панелей позволяет дождю и снегу естественным образом очищать их поверхность. Однако в сильно запыленных регионах мы рекомендуем промывать их водой из шланга 1-2 раза в год в утреннее или вечернее время.</p></div>
+        <div class="calc-results">
+          <div class="result-box"><span class="res-label">Рекомендуемая мощность:</span><span class="res-value" id="powerRes">0 кВт</span></div>
+          <div class="result-box"><span class="res-label">Экономия в год:</span><span class="res-value" id="savingsRes">0 ₽</span></div>
+          <div class="result-box no-border"><span class="res-label">Ориентировочная окупаемость:</span><span class="res-value highlight" id="paybackRes">0 лет</span></div>
         </div>
       </div>
     </section>
   </main>
   
-  <footer class="footer" id="contacts"><div class="footer-content"><div><a href="index.html" class="logo">✦ CASPIAN<span class="highlight">SUN</span></a><p class="footer-desc">Автономная энергетика будущего.</p></div><div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div></div></footer>
+  <footer class="footer" id="contacts">
+    <div class="footer-content">
+      <div>
+        <a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a>
+        <p class="footer-desc">Автономная энергетика будущего.</p>
+      </div>
+      <div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div>
+    </div>
+  </footer>
+  
   <script src="script.js"></script>
 </body>
 </html>

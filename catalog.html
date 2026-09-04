@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Каталог продукции // CASPIAN SUN</title>
+  <link rel="icon" href="logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -12,7 +13,7 @@
 <body class="dark-theme">
   <header class="header">
     <div class="logo-container">
-      <a href="index.html" class="logo"><span class="logo-icon">✦</span> CASPIAN<span class="highlight">SUN</span></a>
+      <a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a>
     </div>
     <nav class="nav">
       <ul class="nav-list">
@@ -27,34 +28,45 @@
       </ul>
     </nav>
     <div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div>
-    <button class="burger-btn" id="burger-btn">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-    </button>
   </header>
   <main>
-    <section class="catalog-page-section" style="padding-top: 20px;">
-      <div class="section-header" style="text-align: center; margin-bottom: 20px;"><h1 class="hero-title" style="margin-bottom: 10px;">КАТАЛОГ <span class="gradient-text">ОБОРУДОВАНИЯ</span></h1></div>
-      <div class="advanced-filters sticky-filters">
+    <section class="catalog-page-section">
+      <div class="section-header">
+        <h1 class="hero-title">КАТАЛОГ <span class="gradient-text">ОБОРУДОВАНИЯ</span></h1>
+      </div>
+      <div class="advanced-filters sticky-filters card-base">
         <div class="filter-group"><label>Категория</label><div class="custom-select" id="custom-category" data-value="all"><div class="select-selected">Все товары</div><div class="select-items select-hide"><div data-val="all">Все товары</div><div data-val="panels">Солнечные панели</div><div data-val="inverters">Инверторы</div><div data-val="batteries">Аккумуляторы</div></div></div></div>
         <div class="filter-group"><label>Бренд</label><div class="custom-select" id="custom-brand" data-value="all"><div class="select-selected">Все бренды</div><div class="select-items select-hide"><div data-val="all">Все бренды</div><div data-val="jinko">Jinko Solar</div><div data-val="deye">Deye</div><div data-val="lvtopsun">Lvtopsun</div><div data-val="sunways">Sunways</div><div data-val="other">Другие</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-power" style="display: none;"><label>Мощность (W)</label><div class="custom-select" id="custom-power" data-value="all"><div class="select-selected">Любая</div><div class="select-items select-hide"><div data-val="all">Любая</div><div data-val="400">До 450 Вт</div><div data-val="500">От 450 до 550 Вт</div><div data-val="600">Более 550 Вт</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-cell" style="display: none;"><label>Тип ячеек</label><div class="custom-select" id="custom-cell" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="perc">Mono PERC</div><div data-val="n-type">N-Type TOPCon</div><div data-val="bifacial">Bifacial</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-efficiency" style="display: none;"><label>КПД</label><div class="custom-select" id="custom-efficiency" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="under-21">До 21%</div><div data-val="21-22">21% - 22%</div><div data-val="over-22">Более 22%</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-frame" style="display: none;"><label>Цвет рамки</label><div class="custom-select" id="custom-frame" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="silver">Серебро</div><div data-val="black">Черная рамка</div><div data-val="full-black">Full Black</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-phase" style="display: none;"><label>Фазы</label><div class="custom-select" id="custom-phase" data-value="all"><div class="select-selected">Любые</div><div class="select-items select-hide"><div data-val="all">Любые</div><div data-val="1">1 фаза (220V)</div><div data-val="3">3 фазы (380V)</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-voltage" style="display: none;"><label>Напряжение</label><div class="custom-select" id="custom-voltage" data-value="all"><div class="select-selected">Любое</div><div class="select-items select-hide"><div data-val="all">Любое</div><div data-val="12">12V</div><div data-val="24">24V</div><div data-val="48">48V</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-capacity" style="display: none;"><label>Емкость</label><div class="custom-select" id="custom-capacity" data-value="all"><div class="select-selected">Любая</div><div class="select-items select-hide"><div data-val="all">Любая</div><div data-val="100">До 100 Ah</div><div data-val="200">От 200 Ah</div></div></div></div>
+        <div class="filter-group specific-filter" id="filter-group-power"><label>Мощность (W)</label><div class="custom-select" id="custom-power" data-value="all"><div class="select-selected">Любая</div><div class="select-items select-hide"><div data-val="all">Любая</div><div data-val="400">До 450 Вт</div><div data-val="500">От 450 до 550 Вт</div><div data-val="600">Более 550 Вт</div></div></div></div>
+        <div class="filter-group specific-filter" id="filter-group-cell"><label>Тип ячеек</label><div class="custom-select" id="custom-cell" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="perc">Mono PERC</div><div data-val="n-type">N-Type TOPCon</div><div data-val="bifacial">Bifacial</div></div></div></div>
+        <div class="filter-group specific-filter" id="filter-group-efficiency"><label>КПД</label><div class="custom-select" id="custom-efficiency" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="under-21">До 21%</div><div data-val="21-22">21% - 22%</div><div data-val="over-22">Более 22%</div></div></div></div>
+        <div class="filter-group specific-filter" id="filter-group-frame"><label>Цвет рамки</label><div class="custom-select" id="custom-frame" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="silver">Серебро</div><div data-val="black">Черная рамка</div><div data-val="full-black">Full Black</div></div></div></div>
+        <div class="filter-group specific-filter" id="filter-group-phase"><label>Фазы</label><div class="custom-select" id="custom-phase" data-value="all"><div class="select-selected">Любые</div><div class="select-items select-hide"><div data-val="all">Любые</div><div data-val="1">1 фаза (220V)</div><div data-val="3">3 фазы (380V)</div></div></div></div>
+        <div class="filter-group specific-filter" id="filter-group-voltage"><label>Напряжение</label><div class="custom-select" id="custom-voltage" data-value="all"><div class="select-selected">Любое</div><div class="select-items select-hide"><div data-val="all">Любое</div><div data-val="12">12V</div><div data-val="24">24V</div><div data-val="48">48V</div></div></div></div>
+        <div class="filter-group specific-filter" id="filter-group-capacity"><label>Емкость</label><div class="custom-select" id="custom-capacity" data-value="all"><div class="select-selected">Любая</div><div class="select-items select-hide"><div data-val="all">Любая</div><div data-val="100">До 100 Ah</div><div data-val="200">От 200 Ah</div></div></div></div>
       </div>
       <div class="grid-cards" id="catalog-grid"></div>
     </section>
   </main>
-  <div class="drawer-overlay" id="drawer-overlay"></div>
-  <div class="drawer-panel" id="product-drawer">
-    <div class="drawer-header"><h2 id="drawer-title">Название</h2><button class="close-btn" id="close-drawer">&times;</button></div>
-    <div class="drawer-body"><div class="mock-img drawer-img" id="drawer-img-container" style="overflow: hidden;">📸</div><p class="drawer-desc" id="drawer-desc">Описание</p><div class="drawer-specs-title">Технические характеристики</div><ul class="modal-specs" id="drawer-specs-list"></ul></div>
-    <div class="drawer-footer"><div id="drawer-price" class="modal-price" style="margin-bottom: 0;">0 ₽</div><button class="btn" id="close-drawer-btn2">Закрыть</button></div>
+  
+  <div class="drawer-overlay" id="u-drawer-overlay"></div>
+  <div class="drawer-panel" id="u-drawer">
+    <div class="drawer-header"><h2 id="u-title">Название</h2><button class="close-btn" id="u-close">&times;</button></div>
+    <div class="drawer-body">
+      <div class="mock-img drawer-img" id="u-img">📸</div>
+      <div class="drawer-specs-title" id="u-subtitle">Описание</div>
+      <p class="drawer-desc" id="u-desc"></p>
+      <ul class="modal-specs" id="u-specs"></ul>
+    </div>
+    <div class="drawer-footer"><div id="u-price" class="modal-price">0 ₽</div><button class="btn btn-full" id="u-close-btn2">Закрыть</button></div>
   </div>
-  <footer class="footer" id="contacts"><div class="footer-content"><div><a href="index.html" class="logo">✦ CASPIAN<span class="highlight">SUN</span></a><p class="footer-desc">Автономная энергетика будущего.</p></div><div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div></div></footer>
+  
+  <footer class="footer" id="contacts">
+    <div class="footer-content">
+      <div><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a><p class="footer-desc">Автономная энергетика будущего.</p></div>
+      <div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div>
+    </div>
+  </footer>
   <script src="script.js"></script>
 </body>
 </html>

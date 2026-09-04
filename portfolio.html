@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Наши работы // CASPIAN SUN</title>
+  <link rel="icon" href="logo.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -12,7 +13,7 @@
 <body class="dark-theme">
   <header class="header">
     <div class="logo-container">
-      <a href="index.html" class="logo"><span class="logo-icon">✦</span> CASPIAN<span class="highlight">SUN</span></a>
+      <a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a>
     </div>
     <nav class="nav">
       <ul class="nav-list">
@@ -27,23 +28,35 @@
       </ul>
     </nav>
     <div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div>
-    <button class="burger-btn" id="burger-btn">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-    </button>
   </header>
   <main>
-    <section class="services-section" style="padding-top: 60px;">
-      <div class="section-header" style="text-align: center;"><h1 class="hero-title">НАШ <span class="gradient-text">ОПЫТ РАБОТЫ</span></h1><p class="hero-subtitle">Реализованные проекты: от частных домов до коммерческих электростанций.</p></div>
+    <section class="portfolio-section">
+      <div class="section-header">
+        <h1 class="hero-title">НАШ <span class="gradient-text">ОПЫТ РАБОТЫ</span></h1>
+        <p class="hero-subtitle">Реализованные проекты: от частных домов до коммерческих электростанций.</p>
+      </div>
       <div class="grid-cards" id="portfolio-grid"></div>
     </section>
   </main>
-  <div class="drawer-overlay" id="port-drawer-overlay"></div>
-  <div class="drawer-panel" id="port-drawer">
-    <div class="drawer-header"><h2 id="port-drawer-title">Объект</h2><button class="close-btn" id="close-port-drawer">&times;</button></div>
-    <div class="drawer-body"><div class="mock-img drawer-img" id="port-drawer-img-container" style="overflow:hidden; height:200px;">📸</div><div class="drawer-specs-title">Детали проекта</div><p class="drawer-desc" id="port-drawer-desc"></p><ul class="modal-specs" id="port-drawer-specs-list"></ul></div>
-    <div class="drawer-footer"><div id="port-drawer-price" class="modal-price" style="margin-bottom:0; color:var(--accent-neon); font-size:24px;">0 ₽</div><button class="btn" id="close-port-drawer-btn2">Закрыть</button></div>
+  
+  <div class="drawer-overlay" id="u-drawer-overlay"></div>
+  <div class="drawer-panel" id="u-drawer">
+    <div class="drawer-header"><h2 id="u-title">Объект</h2><button class="close-btn" id="u-close">&times;</button></div>
+    <div class="drawer-body">
+      <div class="mock-img drawer-img" id="u-img">📸</div>
+      <div class="drawer-specs-title" id="u-subtitle">Детали проекта</div>
+      <p class="drawer-desc" id="u-desc"></p>
+      <ul class="modal-specs" id="u-specs"></ul>
+    </div>
+    <div class="drawer-footer"><div id="u-price" class="modal-price highlight">0 ₽</div><button class="btn btn-full" id="u-close-btn2">Закрыть</button></div>
   </div>
-  <footer class="footer" id="contacts"><div class="footer-content"><div><a href="index.html" class="logo">✦ CASPIAN<span class="highlight">SUN</span></a><p class="footer-desc">Автономная энергетика будущего.</p></div><div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div></div></footer>
+  
+  <footer class="footer" id="contacts">
+    <div class="footer-content">
+      <div><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a><p class="footer-desc">Автономная энергетика будущего.</p></div>
+      <div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div>
+    </div>
+  </footer>
   <script src="script.js"></script>
 </body>
 </html>
