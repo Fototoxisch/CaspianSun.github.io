@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
 </head>
 <body class="dark-theme">
-  <header class="header"><div class="logo-container"><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a></div><button class="burger-btn" id="burger-btn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><nav class="nav"><ul class="nav-list"><li><a href="index.html" class="nav-link active">Главная</a></li><li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a><ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul></li><li><a href="services.html" class="nav-link">Услуги</a></li><li><a href="portfolio.html" class="nav-link">Наши работы</a></li><li class="dropdown"><a href="javascript:void(0)" class="nav-link dropdown-toggle">Информация ▾</a><ul class="dropdown-menu"><li><a href="about.html">О компании</a></li><li><a href="guide-ses.html">Как работает СЭС</a></li><li><a href="panels.html">Солнечные панели</a></li><li><a href="inverters.html">Инверторы</a></li><li><a href="lifepo4.html">Аккумуляторы LiFePO4</a></li><li><a href="mounting.html">Монтаж СЭС</a></li><li><a href="kits.html">Готовые комплекты</a></li><li><a href="business.html">СЭС для бизнеса</a></li></ul></li><li><a href="contacts.html" class="nav-link">Контакты</a></li></ul></nav><div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div></header>
+  <header class="header"><div class="logo-container"><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a></div><button class="burger-btn" id="burger-btn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><nav class="nav"><ul class="nav-list"><li><a href="index.html" class="nav-link active">Главная</a></li><li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a><ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul></li><li><a href="services.html" class="nav-link">Услуги</a></li><li><a href="portfolio.html" class="nav-link">Наши работы</a></li><li class="dropdown"><a href="guide-ses.html" class="nav-link dropdown-toggle">Информация ▾</a><ul class="dropdown-menu"><li><a href="about.html">О компании</a></li><li><a href="guide-ses.html">Как работает СЭС</a></li><li><a href="panels.html">Солнечные панели</a></li><li><a href="inverters.html">Инверторы</a></li><li><a href="lifepo4.html">Аккумуляторы LiFePO4</a></li><li><a href="mounting.html">Монтаж СЭС</a></li><li><a href="kits.html">Готовые комплекты</a></li><li><a href="business.html">СЭС для бизнеса</a></li></ul></li><li><a href="contacts.html" class="nav-link">Контакты</a></li></ul></nav><div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div></header>
 
   <main>
     <section class="hero-section">
@@ -26,30 +26,81 @@
     </div>
     
     <section class="calc-section" id="calculator">
-      <div class="section-header">
-        <h2 class="section-title">КАЛЬКУЛЯТОР <span class="gradient-text">ОКУПАЕМОСТИ</span></h2>
-        <p class="section-desc">Рассчитайте примерную мощность станции</p>
-      </div>
-      <div class="calc-card card-base">
-        <div class="calc-inputs">
-          <div class="input-group">
-            <div class="input-header"><label>Площадь кровли (м²)</label><input type="number" class="num-input" id="roofAreaNum" value="50"></div>
-            <input type="range" class="tech-slider" id="roofArea" min="10" max="1000" value="50">
-          </div>
-          <div class="input-group">
-            <div class="input-header"><label>Счет за ЭЭ (₽/мес)</label><input type="number" class="num-input" id="monthlyBillNum" value="5000"></div>
-            <input type="range" class="tech-slider" id="monthlyBill" min="500" max="100000" step="500" value="5000">
+      <div class="caspian-calc-wrapper">
+        <h2 style="text-align: center; font-family: var(--font-tech); font-size: 26px; margin-top: 0; margin-bottom: 25px;">ИНТЕРАКТИВНЫЙ <span class="gradient-text">РАСЧЕТ СЭС</span></h2>
+        
+        <div class="form-group" style="margin-bottom: 25px;">
+          <div class="toggle-container">
+            <button class="toggle-btn active" onclick="setOption('tariff', 10, 'business', this)">Бизнес (10 ₽/кВт)</button>
+            <button class="toggle-btn" onclick="setOption('tariff', 4, 'home', this)">Дом (4 ₽/кВт)</button>
           </div>
         </div>
-        <div class="calc-results">
-          <div class="result-box"><span class="res-label">Рекомендуемая мощность:</span><span class="res-value" id="powerRes">0 кВт</span></div>
-          <div class="result-box"><span class="res-label">Экономия в год:</span><span class="res-value" id="savingsRes">0 ₽</span></div>
-          <div class="result-box no-border"><span class="res-label">Ориентировочная окупаемость:</span><span class="res-value highlight" id="paybackRes">0 лет</span></div>
+
+        <div class="form-group" style="margin-bottom: 25px;">
+          <div class="toggle-container">
+            <button class="toggle-btn active" onclick="setOption('station', 65000, 'grid', this)">Сетевая (Без АКБ)</button>
+            <button class="toggle-btn" onclick="setOption('station', 95000, 'hybrid', this)">Гибридная (С АКБ)</button>
+          </div>
         </div>
+
+        <div class="form-group" style="margin-bottom: 25px;">
+          <label for="monthlyBill" style="display: block; font-weight: 500; margin-bottom: 12px; color: var(--text-muted); font-size: 14px;">Ваш средний счет за свет в месяц:</label>
+          <input type="range" class="tech-slider" id="monthlyBill" min="3000" max="150000" step="1000" value="30000" oninput="calculateSolar()">
+          <div class="range-value"><span id="billValue">30 000</span> ₽</div>
+        </div>
+
+        <div class="chart-container">
+          <div class="chart-row">
+            <div class="chart-label">Счет ДО СЭС:</div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill fill-before"></div></div>
+            <div class="chart-val" id="chartBefore">30 000 ₽</div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-label">Счет ПОСЛЕ:</div>
+            <div class="chart-bar-bg"><div class="chart-bar-fill fill-after" id="barAfter"></div></div>
+            <div class="chart-val" style="color: var(--accent-neon)" id="chartAfter">4 500 ₽</div>
+          </div>
+        </div>
+
+        <div class="hardware-visual">
+          <div class="hardware-item">
+            <div class="hardware-icon">⚡</div>
+            <div class="hardware-text">Мощность СЭС</div>
+            <span class="hardware-count" id="visPower">0 кВт</span>
+          </div>
+          <div class="hardware-item">
+            <div class="hardware-icon">☀️</div>
+            <div class="hardware-text">Панели (620W)</div>
+            <span class="hardware-count" id="visPanels">0 шт.</span>
+          </div>
+          <div class="hardware-item" id="batteryBlock" style="display: none;">
+            <div class="hardware-icon">🔋</div>
+            <div class="hardware-text">АКБ (5.12 кВт·ч)</div>
+            <span class="hardware-count" id="visBatteries">0 шт.</span>
+          </div>
+        </div>
+
+        <div class="results-grid">
+          <div class="result-card">
+            <span>Инвестиции (под ключ):</span> 
+            <span id="resCost">0 ₽</span>
+          </div>
+          <div class="result-card">
+            <span>Экономия за 1 год:</span> 
+            <span id="resSavings">0 ₽</span>
+          </div>
+          <div class="result-card highlight-card">
+            <span id="labelDynamic">Окупаемость инвестиций:</span> 
+            <span id="resDynamic">0 лет</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-full cta-btn" onclick="document.getElementById('lead-modal').classList.add('active'); document.getElementById('lead-hidden-service').value='Запрос точной сметы из калькулятора'; document.getElementById('lead-service-name').innerText='Услуга: Точная смета из калькулятора'; document.body.style.overflow='hidden';">Получить точную смету и 3D-проект</button>
       </div>
     </section>
   </main>
   
+  <div class="modal-overlay" id="lead-modal"><div class="modal-content card-base"><button class="close-btn" id="close-lead-modal">&times;</button><h2 class="modal-title">Оставить заявку</h2><p class="modal-desc" id="lead-service-name">Наш инженер свяжется с вами.</p><form id="telegram-form" class="admin-form"><input type="hidden" id="lead-hidden-service"><div class="form-group"><label>Ваше имя</label><input type="text" id="lead-name" class="form-input" required></div><div class="form-group"><label>Номер телефона</label><input type="tel" id="lead-phone" class="form-input" required></div><div class="form-group"><label>Вопрос (необязательно)</label><textarea id="lead-comment" class="form-input form-textarea"></textarea></div><button type="submit" class="btn btn-full" id="lead-submit-btn">Отправить заявку</button><div id="lead-success" class="admin-success-msg hidden">✅ Заявка отправлена!</div></form></div></div>
   <footer class="footer" id="contacts"><div class="footer-content"><div><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a><p class="footer-desc">Автономная энергетика будущего.</p></div><div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div></div></footer><script src="script.js"></script>
 </body>
 </html>

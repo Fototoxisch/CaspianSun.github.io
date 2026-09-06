@@ -84,33 +84,68 @@ function setCustomSelectValue(selectId, value) {
 // ⚙️ ADMIN
 // =========================================================
 document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', (e) => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.admin-tab-content').forEach(f => f.classList.add('hidden')); e.target.classList.add('active'); document.getElementById(e.target.dataset.target).classList.remove('hidden'); }); });
-function showAdminSuccess() { const m = document.getElementById('admin-success'); if(m) { m.classList.remove('hidden'); setTimeout(()=>m.classList.add('hidden'),3000); } }
+
+function showAdminSuccess() { 
+    const m = document.getElementById('admin-success'); 
+    if (m) { 
+        m.classList.remove('hidden'); 
+        setTimeout(() => { m.classList.add('show'); }, 10);
+        setTimeout(() => { m.classList.remove('show'); }, 3000); 
+    } 
+}
+
 function resetImg(pId, hId, tId) { const p = document.getElementById(pId), h = document.getElementById(hId), t = document.getElementById(tId); if(p){p.src=''; p.classList.add('hidden');} if(h)h.value=''; if(t)t.classList.remove('hidden'); }
 function loadImg(b64, pId, hId, tId) { if(b64 && b64.trim()!=='') { const p = document.getElementById(pId); p.src=b64; p.classList.remove('hidden'); document.getElementById(hId).value=b64; document.getElementById(tId).classList.add('hidden'); } else resetImg(pId, hId, tId); }
 
 let editIds = { products: null, services: null, portfolio: null };
+
 function renderAdminLists() {
   const prodList = document.getElementById('admin-products-list');
-  if (prodList) { prodList.innerHTML = dbProducts.map((p, idx) => { let specs = p.specs_card ? p.specs_card.map(s => `<div><span>${s.label}</span> <strong>${s.value}</strong></div>`).join('') : ''; return `<div class="tech-card card-base card-item" data-id="${idx}">${p.image?`<img src="${p.image}" class="product-image-rendered" loading="lazy">`:''}<h3>${p.title}</h3><p class="card-sub">${p.subtitle}</p><div class="card-specs">${specs}</div><div class="card-footer"><span class="price">${p.price}</span><div class="card-actions"><button type="button" class="btn btn-sm btn-drawer flex-2">👀 Вид</button><button type="button" class="btn btn-sm btn-edit flex-2" onclick="editItem('products',${idx})">Ред.</button><button type="button" class="btn btn-sm btn-delete flex-2" onclick="deleteItem('products',${idx})">Удал.</button></div></div></div>`; }).join(''); }
+  if (prodList) { prodList.innerHTML = dbProducts.map((p, idx) => { let specs = p.specs_card ? p.specs_card.map(s => `<div><span>${s.label.replace(/Доступно:|В наличии:/g, 'В наличии/под заказ:')}</span> <strong>${s.value}</strong></div>`).join('') : ''; return `<div class="tech-card card-base card-item" data-id="${idx}">${p.image?`<img src="${p.image}" class="product-image-rendered" loading="lazy">`:''}<h3>${p.title}</h3><p class="card-sub">${p.subtitle}</p><div class="card-specs">${specs}</div><div class="card-footer"><span class="price">${p.price}</span><div class="card-actions"><button type="button" class="btn btn-sm btn-drawer flex-2">👀 Вид</button><button type="button" class="btn btn-sm btn-edit flex-2" onclick="editItem('products',${idx})">Ред.</button><button type="button" class="btn btn-sm btn-delete flex-2" onclick="deleteItem('products',${idx})">Удал.</button></div></div></div>`; }).join(''); }
   const servList = document.getElementById('admin-services-list');
   if (servList) { servList.innerHTML = dbServices.map((s, idx) => `<div class="service-card card-base card-item card-item-center"><h3 class="service-title">${s.title}</h3><div class="service-price">${s.price}</div><p class="service-desc">${s.desc_text}</p><div class="card-actions"><button type="button" class="btn btn-sm btn-edit flex-2" onclick="editItem('services',${idx})">Ред.</button><button type="button" class="btn btn-sm btn-delete flex-2" onclick="deleteItem('services',${idx})">Удал.</button></div></div>`).join(''); }
   const portList = document.getElementById('admin-portfolio-list');
   if (portList) { portList.innerHTML = dbPortfolio.map((p, idx) => { let img = p.images?`<img src="${p.images}" class="port-img" loading="lazy">`:`<div class="mock-img port-img">📸</div>`; return `<div class="portfolio-card card-base card-item" data-id="${idx}">${img}<div class="port-content"><h3 class="port-title">${p.title}</h3><p class="port-desc">${p.desc_text}</p><div class="card-actions"><button type="button" class="btn btn-sm btn-drawer-port flex-2">👀 Вид</button><button type="button" class="btn btn-sm btn-edit flex-2" onclick="editItem('portfolio',${idx})">Ред.</button><button type="button" class="btn btn-sm btn-delete flex-2" onclick="deleteItem('portfolio',${idx})">Удал.</button></div></div></div>`; }).join(''); }
 }
+
 window.deleteItem = async function(table, idx) { const dataArray = table === 'products' ? dbProducts : (table === 'services' ? dbServices : dbPortfolio); if(confirm("Удалить запись?")) { try { await mutateDB(table, 'DELETE', null, dataArray[idx].id); await initApp(); } catch(err) { alert(err.message); } } }
+
 window.editItem = function(table, i) {
     const item = (table === 'products' ? dbProducts : (table === 'services' ? dbServices : dbPortfolio))[i]; editIds[table] = item.id;
-    if (table === 'products') { document.getElementById('admin-title').value = item.title; document.getElementById('admin-price').value = item.price; document.getElementById('admin-subtitle').value = item.subtitle || ''; document.getElementById('admin-desc').value = item.desc_text || ''; document.getElementById('admin-quantity').value = parseInt(item.specs_card?.[0]?.value) || 0; loadImg(item.image,'product-preview','admin-image','product-drop-text'); ['category','stock','brand','power','efficiency','frame','phase','voltage','capacity'].forEach(k=>setCustomSelectValue('admin-'+k, item[k]||'all')); setCustomSelectValue('admin-cell-type', item.cell||'all'); } else if (table === 'services') { document.getElementById('service-title').value = item.title; document.getElementById('service-price').value = item.price; document.getElementById('service-desc').value = item.desc_text; } else if (table === 'portfolio') { document.getElementById('port-title').value = item.title; document.getElementById('port-savings').value = item.savings || ''; document.getElementById('port-price').value = item.price || ''; document.getElementById('port-equipment').value = item.equipment || ''; document.getElementById('port-desc').value = item.desc_text || ''; loadImg(item.images,'port-preview','port-image','port-drop-text'); }
+    if (table === 'products') { document.getElementById('admin-title').value = item.title; document.getElementById('admin-price').value = item.price; document.getElementById('admin-subtitle').value = item.subtitle || ''; document.getElementById('admin-desc').value = item.desc_text || ''; document.getElementById('admin-quantity').value = parseInt(item.specs_card?.[0]?.value) || 0; loadImg(item.image,'product-preview','admin-image','product-drop-text'); ['category','stock','brand','power','efficiency','frame','phase','voltage','capacity'].forEach(k=>setCustomSelectValue('admin-'+k, item[k]||'all')); setCustomSelectValue('admin-cell-type', item.cell||'all'); } 
+    else if (table === 'services') { document.getElementById('service-title').value = item.title; document.getElementById('service-price').value = item.price; document.getElementById('service-desc').value = item.desc_text; } 
+    else if (table === 'portfolio') { document.getElementById('port-title').value = item.title; document.getElementById('port-savings').value = item.savings || ''; document.getElementById('port-price').value = item.price || ''; document.getElementById('port-equipment').value = item.equipment || ''; document.getElementById('port-desc').value = item.desc_text || ''; loadImg(item.images,'port-preview','port-image','port-drop-text'); }
     document.getElementById(`btn-submit-${table}`).innerText = 'Сохранить изменения'; document.getElementById(`btn-cancel-${table}`).classList.remove('hidden'); window.scrollTo(0,0);
 }
-const cancelEdit = (table) => { editIds[table] = null; document.getElementById(`admin-${table === 'products' ? 'product' : table}-form`).reset(); if(table === 'products') resetImg('product-preview','admin-image','product-drop-text'); if(table === 'portfolio') resetImg('port-preview','port-image','port-drop-text'); document.getElementById(`btn-submit-${table}`).innerText = table === 'portfolio' ? '+ Опубликовать' : '+ Сохранить'; document.getElementById(`btn-cancel-${table}`).classList.add('hidden'); }
+
+const cancelEdit = (table) => { 
+    editIds[table] = null; 
+    const formMap = { 'products': 'admin-product-form', 'services': 'admin-service-form', 'portfolio': 'admin-portfolio-form' };
+    document.getElementById(formMap[table]).reset(); 
+    if(table === 'products') resetImg('product-preview','admin-image','product-drop-text'); 
+    if(table === 'portfolio') resetImg('port-preview','port-image','port-drop-text'); 
+    document.getElementById(`btn-submit-${table}`).innerText = table === 'portfolio' ? '+ Опубликовать' : '+ Сохранить'; 
+    document.getElementById(`btn-cancel-${table}`).classList.add('hidden'); 
+}
 ['products', 'services', 'portfolio'].forEach(t => { const btn = document.getElementById(`btn-cancel-${t}`); if(btn) btn.onclick = () => cancelEdit(t); });
-async function handleAdminSubmit(e, table, getPayload) { e.preventDefault(); const btn = document.getElementById(`btn-submit-${table}`); const origText = btn.innerText; btn.innerText = "Отправка..."; try { const payload = getPayload(); if(editIds[table] !== null) { await mutateDB(table, 'PATCH', payload, editIds[table]); editIds[table] = null; } else { await mutateDB(table, 'POST', payload); } showAdminSuccess(); cancelEdit(table); await initApp(); } catch (err) { alert("Ошибка при сохранении: " + err.message); } btn.innerText = origText; }
+
+async function handleAdminSubmit(e, table, getPayload) { 
+    e.preventDefault(); const btn = document.getElementById(`btn-submit-${table}`); const origText = btn.innerText; btn.innerText = "Отправка..."; 
+    try { 
+        const payload = getPayload(); 
+        if(editIds[table] !== null) { await mutateDB(table, 'PATCH', payload, editIds[table]); editIds[table] = null; } 
+        else { await mutateDB(table, 'POST', payload); } 
+        showAdminSuccess(); cancelEdit(table); await initApp(); 
+    } catch (err) { alert("Ошибка при сохранении: " + err.message); } 
+    btn.innerText = origText; 
+}
+
 if (document.getElementById('admin-product-form')) {
-    document.getElementById('admin-product-form').onsubmit = (e) => handleAdminSubmit(e, 'products', () => { const getV = id => document.getElementById(id)?.getAttribute('data-value') || 'all'; const cat = getV('admin-category'); const qty = parseInt(document.getElementById('admin-quantity').value) || 0; return { title: document.getElementById('admin-title').value, subtitle: document.getElementById('admin-subtitle').value||'', desc_text: document.getElementById('admin-desc').value||'', price: document.getElementById('admin-price').value, image: document.getElementById('admin-image').value, category: cat, stock: getV('admin-stock'), brand: getV('admin-brand'), power: cat==='panels'?getV('admin-power'):'all', cell: cat==='panels'?getV('admin-cell-type'):'all', efficiency: cat==='panels'?getV('admin-efficiency'):'all', frame: cat==='panels'?getV('admin-frame'):'all', phase: cat==='inverters'?getV('admin-phase'):'all', voltage: (cat==='inverters'||cat==='batteries')?getV('admin-voltage'):'all', capacity: cat==='batteries'?getV('admin-capacity'):'all', specs_card: [{label:"Доступно:",value: qty + " шт."}], specs_full: [{label:"В наличии:",value: qty + " шт."}] }; });
+    document.getElementById('admin-product-form').onsubmit = (e) => handleAdminSubmit(e, 'products', () => { const getV = id => document.getElementById(id)?.getAttribute('data-value') || 'all'; const cat = getV('admin-category'); const qty = parseInt(document.getElementById('admin-quantity').value) || 0; return { title: document.getElementById('admin-title').value, subtitle: document.getElementById('admin-subtitle').value||'', desc_text: document.getElementById('admin-desc').value||'', price: document.getElementById('admin-price').value, image: document.getElementById('admin-image').value, category: cat, stock: getV('admin-stock'), brand: getV('admin-brand'), power: cat==='panels'?getV('admin-power'):'all', cell: cat==='panels'?getV('admin-cell-type'):'all', efficiency: cat==='panels'?getV('admin-efficiency'):'all', frame: cat==='panels'?getV('admin-frame'):'all', phase: cat==='inverters'?getV('admin-phase'):'all', voltage: (cat==='inverters'||cat==='batteries')?getV('admin-voltage'):'all', capacity: cat==='batteries'?getV('admin-capacity'):'all', specs_card: [{label:"В наличии/под заказ:",value: qty + " шт."}], specs_full: [{label:"В наличии/под заказ:",value: qty + " шт."}] }; });
     document.getElementById('admin-service-form').onsubmit = (e) => handleAdminSubmit(e, 'services', () => ({title: document.getElementById('service-title').value, price: document.getElementById('service-price').value, desc_text: document.getElementById('service-desc').value}));
     document.getElementById('admin-portfolio-form').onsubmit = (e) => handleAdminSubmit(e, 'portfolio', () => ({title: document.getElementById('port-title').value, savings: document.getElementById('port-savings').value, price: document.getElementById('port-price').value, equipment: document.getElementById('port-equipment').value, images: document.getElementById('port-image').value, desc_text: document.getElementById('port-desc').value}));
 }
+
 function initAdminSettings() {
     if (document.getElementById('admin-contacts-form')) { const c = dbSettings.contacts || []; document.getElementById('contact-1').value = c[0]||''; document.getElementById('contact-2').value = c[1]||''; document.getElementById('contact-3').value = c[2]||''; document.getElementById('admin-contacts-form').onsubmit = async (e) => { e.preventDefault(); try { const newC = [document.getElementById('contact-1').value.trim(), document.getElementById('contact-2').value.trim(), document.getElementById('contact-3').value.trim()]; await mutateDB('settings', 'PATCH', { contacts: JSON.stringify(newC) }, 1); showAdminSuccess(); await initApp(); } catch (err) { alert(err.message); } }; }
     if (document.getElementById('admin-telegram-form')) {
@@ -131,7 +166,7 @@ function renderContacts() {
 // =========================================================
 function renderCatalog() {
   const g = document.getElementById('catalog-grid'); if(!g) return; g.innerHTML='';
-  g.innerHTML = dbProducts.map((p,i) => { let s = p.specs_card ? p.specs_card.map(sc => `<div><span>${sc.label}</span> <strong>${sc.value}</strong></div>`).join('') : ''; return `<div class="tech-card card-base card-item" data-id="${i}" data-category="${p.category}" data-stock="${p.stock}" data-brand="${p.brand||'all'}" data-power="${p.power}" data-cell="${p.cell}" data-efficiency="${p.efficiency||'all'}" data-frame="${p.frame||'all'}" data-phase="${p.phase}" data-voltage="${p.voltage||'all'}" data-capacity="${p.capacity}">${p.image?`<img src="${p.image}" class="product-image-rendered" loading="lazy">`:''}<h3>${p.title}</h3><p class="card-sub">${p.subtitle}</p><div class="card-specs">${s}</div><div class="card-footer"><span class="price">${p.price}</span><button class="btn btn-sm btn-drawer">Посмотреть</button></div></div>`; }).join('');
+  g.innerHTML = dbProducts.map((p,i) => { let s = p.specs_card ? p.specs_card.map(sc => `<div><span>${sc.label.replace(/Доступно:|В наличии:/g, 'В наличии/под заказ:')}</span> <strong>${sc.value}</strong></div>`).join('') : ''; return `<div class="tech-card card-base card-item" data-id="${i}" data-category="${p.category}" data-stock="${p.stock}" data-brand="${p.brand||'all'}" data-power="${p.power}" data-cell="${p.cell}" data-efficiency="${p.efficiency||'all'}" data-frame="${p.frame||'all'}" data-phase="${p.phase}" data-voltage="${p.voltage||'all'}" data-capacity="${p.capacity}">${p.image?`<img src="${p.image}" class="product-image-rendered" loading="lazy">`:''}<h3>${p.title}</h3><p class="card-sub">${p.subtitle}</p><div class="card-specs">${s}</div><div class="card-footer"><span class="price">${p.price}</span><button class="btn btn-sm btn-drawer">Посмотреть</button></div></div>`; }).join('');
 }
 function applyAdvancedFilters() {
     const cards = document.querySelectorAll('.tech-card'); if(!cards.length) return;
@@ -144,7 +179,7 @@ function renderPortfolio() { const pg = document.getElementById('portfolio-grid'
 function openDrawer(title, desc, price, imgHtml, specsHtml) { document.getElementById('u-title').innerText = title; document.getElementById('u-desc').innerText = desc; document.getElementById('u-price').innerText = price; document.getElementById('u-img').innerHTML = imgHtml; document.getElementById('u-specs').innerHTML = specsHtml; document.getElementById('u-drawer-overlay')?.classList.add('active'); document.getElementById('u-drawer')?.classList.add('active'); document.body.style.overflow='hidden'; }
 document.addEventListener('click', (e) => {
   const btnLead = e.target.closest('.btn-lead'); if (btnLead) { document.getElementById('lead-hidden-service').value = btnLead.getAttribute('data-service'); document.getElementById('lead-service-name').innerText = `Услуга: ${btnLead.getAttribute('data-service')}`; document.getElementById('lead-modal')?.classList.add('active'); document.body.style.overflow = 'hidden'; }
-  if (e.target.closest('.btn-drawer')) { const p = dbProducts[e.target.closest('.tech-card').dataset.id]; if(p) { const img = p.image ? `<img src="${p.image}" loading="lazy">` : '📸'; const specs = p.specs_full ? p.specs_full.map(s=>`<li><strong>${s.label}</strong> ${s.value}</li>`).join('') : ''; openDrawer(p.title, p.desc_text, p.price, img, specs); } }
+  if (e.target.closest('.btn-drawer')) { const p = dbProducts[e.target.closest('.tech-card').dataset.id]; if(p) { const img = p.image ? `<img src="${p.image}" loading="lazy">` : '📸'; const specs = p.specs_full ? p.specs_full.map(s=>`<li><strong>${s.label.replace(/Доступно:|В наличии:/g, 'В наличии/под заказ:')}</strong> ${s.value}</li>`).join('') : ''; openDrawer(p.title, p.desc_text, p.price, img, specs); } }
   if (e.target.closest('.btn-drawer-port')) { const p = dbPortfolio[e.target.closest('.portfolio-card').dataset.id]; if(p) { const img = p.images ? `<img src="${p.images}" loading="lazy">` : '📸'; let sHtml = ''; if(p.equipment) sHtml+=`<li><strong>Оборудование:</strong> ${p.equipment}</li>`; if(p.savings) sHtml+=`<li><strong>Экономия:</strong> ${p.savings}</li>`; openDrawer(p.title, p.desc_text, p.price || '-', img, sHtml); } }
 });
 const closeDrawers = () => { document.querySelectorAll('.drawer-overlay, .drawer-panel').forEach(e=>e.classList.remove('active')); document.body.style.overflow=''; };
@@ -159,9 +194,74 @@ if (tgForm) {
     Promise.all(requests).then(responses => { if(responses.every(res => res.ok)) { document.getElementById('lead-success').classList.remove('hidden'); tgForm.reset(); setTimeout(() => { document.getElementById('lead-modal').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lead-success').classList.add('hidden'); btn.innerText = "Отправить заявку"; btn.disabled = false; }, 2500); } else { alert("Ошибка отправки."); btn.innerText = "Отправить заявку"; btn.disabled = false; } }).catch(() => { alert("Сетевая ошибка."); btn.innerText = "Отправить заявку"; btn.disabled = false; });
   });
 }
-const rs = document.getElementById('roofArea'), rn = document.getElementById('roofAreaNum'), bs = document.getElementById('monthlyBill'), bn = document.getElementById('monthlyBillNum'), pRes = document.getElementById('powerRes'), sRes = document.getElementById('savingsRes'), pbRes = document.getElementById('paybackRes');
-function calc() { if(!rs || !bs) return; const r = Number(rs.value), b = Number(bs.value); if(rn) rn.value = r; if(bn) bn.value = b; const m = (r * 0.16).toFixed(1); const s = Math.round(b * 12 * 0.8); if(pRes) pRes.innerText = `${m} кВт`; if(sRes) sRes.innerText = `~${s.toLocaleString('ru-RU')} ₽`; if(pbRes) pbRes.innerText = `~${((m * 85000) / s).toFixed(1)} года`; }
-if(rs) { rs.oninput=calc; bs.oninput=calc; rn.oninput=e=>{rs.value=e.target.value;calc()}; bn.oninput=e=>{bs.value=e.target.value;calc()}; calc(); }
+
+// =========================================================
+// 🧮 ИНТЕРАКТИВНЫЙ КАЛЬКУЛЯТОР
+// =========================================================
+let currentTariff = 10; 
+let currentTariffType = 'business';
+let currentPricePerKw = 65000;
+let currentStationType = 'grid';
+
+window.setOption = function(category, value, typeStr, btnElement) {
+    const container = btnElement.parentNode;
+    container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+    
+    if (category === 'tariff') { currentTariff = value; currentTariffType = typeStr; } 
+    else if (category === 'station') { currentPricePerKw = value; currentStationType = typeStr; const batBlock = document.getElementById('batteryBlock'); if(batBlock) batBlock.style.display = typeStr === 'hybrid' ? 'block' : 'none'; }
+    calculateSolar();
+}
+
+window.calculateSolar = function() {
+    const billInput = document.getElementById('monthlyBill'); if(!billInput) return;
+    const bill = parseFloat(billInput.value);
+    const billValueEl = document.getElementById('billValue'); if(billValueEl) billValueEl.innerText = bill.toLocaleString('ru-RU');
+    
+    const sunHoursPerDay = 4.5; const daysInMonth = 30;
+    const monthlyConsumptionKwh = bill / currentTariff;
+    const dailyConsumptionKwh = monthlyConsumptionKwh / daysInMonth;
+    
+    let recommendedPowerKw = Math.ceil(dailyConsumptionKwh / sunHoursPerDay);
+    if(recommendedPowerKw < 3) recommendedPowerKw = 3; 
+
+    const panelsCount = Math.ceil((recommendedPowerKw * 1000) / 620);
+    const batteriesCount = Math.ceil(recommendedPowerKw / 3.5); 
+
+    let totalCost = recommendedPowerKw * currentPricePerKw;
+    const efficiencyRate = currentStationType === 'grid' ? 0.85 : 0.75;
+    const yearlySavings = (bill * 12) * efficiencyRate;
+    const billAfter = bill - (bill * efficiencyRate);
+    let paybackYears = (totalCost / yearlySavings).toFixed(1);
+
+    const chartBefore = document.getElementById('chartBefore'); const chartAfter = document.getElementById('chartAfter');
+    const barAfter = document.getElementById('barAfter'); const visPower = document.getElementById('visPower');
+    const visPanels = document.getElementById('visPanels'); const visBatteries = document.getElementById('visBatteries');
+    const resCost = document.getElementById('resCost'); const resSavings = document.getElementById('resSavings');
+    const labelDynamic = document.getElementById('labelDynamic'); const resDynamic = document.getElementById('resDynamic');
+
+    if(chartBefore) chartBefore.innerText = bill.toLocaleString('ru-RU') + ' ₽';
+    if(chartAfter) chartAfter.innerText = Math.round(billAfter).toLocaleString('ru-RU') + ' ₽';
+    if(barAfter) { const remainingPercent = 100 - (efficiencyRate * 100); barAfter.style.width = remainingPercent + '%'; }
+    if(visPower) visPower.innerText = recommendedPowerKw + ' кВт';
+    if(visPanels) visPanels.innerText = panelsCount + ' шт.';
+    if(visBatteries) visBatteries.innerText = batteriesCount + ' шт.';
+    if(resCost) resCost.innerText = 'от ' + totalCost.toLocaleString('ru-RU') + ' ₽';
+    if(resSavings) resSavings.innerText = Math.round(yearlySavings).toLocaleString('ru-RU') + ' ₽';
+    
+    if(labelDynamic && resDynamic) {
+        if(currentTariffType === 'business') { labelDynamic.innerText = 'Прогноз окупаемости:'; resDynamic.innerText = paybackYears + ' лет'; } 
+        else {
+            if(currentStationType === 'grid') { labelDynamic.innerText = 'Ресурс панелей:'; resDynamic.innerText = '25+ лет'; } 
+            else { labelDynamic.innerText = 'Главное преимущество:'; resDynamic.innerText = 'Защита от блэкаутов 24/7'; }
+        }
+    }
+}
+calculateSolar();
+
+// =========================================================
+// 📱 DROPDOWNS И BURGER МЕНЮ
+// =========================================================
 const burgerBtn = document.getElementById('burger-btn'); const navMenu = document.querySelector('.nav');
 if (burgerBtn && navMenu) { burgerBtn.addEventListener('click', () => { navMenu.classList.toggle('active'); if(navMenu.classList.contains('active')){ burgerBtn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'; } else { burgerBtn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>'; } }); }
 document.querySelectorAll('.dropdown-toggle').forEach(drop => { drop.addEventListener('click', (e) => { if (window.innerWidth <= 768) { e.preventDefault(); e.target.closest('.dropdown').classList.toggle('mobile-open'); } }); });
