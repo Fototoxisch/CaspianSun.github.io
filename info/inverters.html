@@ -1,0 +1,40 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Солнечные инверторы для дома и бизнеса | Caspian Sun</title>
+  <meta name="description" content="Каталог и гид по подбору инверторов: гибридные с подмешиванием, Smart Off-Grid, защита от просадок сети, MPPT-трекеры.">
+  <link rel="icon" href="/logo.png" type="image/png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css">
+</head>
+<body class="dark-theme">
+  {% include header.html %}
+  <main>
+    <section class="info-section">
+      <div class="section-header" style="text-align: left;"><h1 class="hero-title" style="font-size: clamp(28px, 4vw, 48px); margin-bottom: 24px;">Солнечные инверторы: <span class="gradient-text">технологии и выбор</span></h1></div>
+      <article class="info-article card-base">
+        <p>Солнечный инвертор — это центральный управляющий процессор и силовой узел любой электростанции.</p>
+        <h2 class="guarantee-title">Классификация инверторов</h2>
+        <div style="overflow-x: auto; margin-top: 24px; margin-bottom: 40px;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; color: var(--text-main); font-size: 14px;">
+            <thead><tr style="background: rgba(93, 241, 216, 0.1); border-bottom: 1px solid var(--accent-neon);"><th style="padding: 16px;">Параметр</th><th style="padding: 16px; color: var(--accent-neon);">Smart Off-Grid</th><th style="padding: 16px;">Сетевой On-Grid</th><th style="padding: 16px;">True Hybrid</th></tr></thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--bg-card-border);"><td style="padding: 16px; color: var(--text-muted);">Смешивание солнца и сети</td><td style="padding: 16px;">✅ Да (плавное)</td><td style="padding: 16px;">✅ Да</td><td style="padding: 16px;">✅ Да</td></tr>
+              <tr style="border-bottom: 1px solid var(--bg-card-border);"><td style="padding: 16px; color: var(--text-muted);">Работа при аварии на ЛЭП</td><td style="padding: 16px;">✅ Да (10 мс)</td><td style="padding: 16px;">❌ Гаснет</td><td style="padding: 16px;">✅ Да (4-10 мс)</td></tr>
+              <tr><td style="padding: 16px; color: var(--text-muted);">Блокировка сброса в сеть</td><td style="padding: 16px;">✅ Встроенный Zero Export</td><td style="padding: 16px;">⚠️ Нужен лимитер</td><td style="padding: 16px;">⚠️ Нужны датчики CT</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Инженерный стандарт Caspian Sun:</strong> для 95% частных домов лучшим выбором являются инверторы класса Smart Off-Grid.</p>
+      </article>
+      <div class="card-base" style="text-align: center; margin-top: 40px; padding: 40px;">
+         <h2 style="font-family: var(--font-tech); font-size: 24px; margin-bottom: 16px;">Подберем инвертор под нагрузку вашего объекта</h2>
+         <button class="btn btn-primary btn-lead" data-service="Подбор инвертора">Подобрать инвертор под ключ</button>
+      </div>
+    </section>
+  </main>
+  {% include footer.html %}
+</body>
+</html>
