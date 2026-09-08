@@ -6,8 +6,11 @@
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Солнечные электростанции (СЭС) под ключ: принцип работы | Caspian Sun</title>
   <meta name="description" content="Полный гид по солнечным электростанциям: 100% автономия и гибридная экономия. Принцип работы, подбор инверторов и LiFePO4 АКБ под ключ.">
-  <link rel="icon" href="/logo.png" type="image/png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css">
+  <link rel="icon" href="{{ '/logo.png' | relative_url }}" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}">
 </head>
 <body class="dark-theme">
   {% include header.html %}
@@ -23,17 +26,17 @@
         </ul>
         <h2 class="guarantee-title">Выбор архитектуры СЭС</h2>
         <div class="grid-cards" style="margin-top: 24px;">
-            <a href="/catalog.html?category=inverters" class="card-item card-base" style="padding: 24px; text-decoration: none;">
+            <a href="{{ '/catalog.html?category=inverters' | relative_url }}" class="card-item card-base" style="padding: 24px; text-decoration: none;">
                <h3 class="port-title">1. Автономная (Off-Grid)</h3>
                <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> 100% автономия</p>
                <p class="port-desc">Работает непрерывно. Требует большого банка АКБ и генератора.</p>
             </a>
-            <a href="/catalog.html?category=inverters" class="card-item card-base" style="padding: 24px; text-decoration: none;">
+            <a href="{{ '/catalog.html?category=inverters' | relative_url }}" class="card-item card-base" style="padding: 24px; text-decoration: none;">
                <h3 class="port-title">2. Умный гибрид</h3>
                <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> Резерв + Экономия</p>
                <p class="port-desc">Обеспечивает бесшовный переход (10 мс) и подмешивание энергии к сети.</p>
             </a>
-            <a href="/catalog.html?category=inverters" class="card-item card-base" style="padding: 24px; text-decoration: none;">
+            <a href="{{ '/catalog.html?category=inverters' | relative_url }}" class="card-item card-base" style="padding: 24px; text-decoration: none;">
                <h3 class="port-title">3. Сетевая (On-Grid)</h3>
                <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> Только экономия</p>
                <p class="port-desc">Работает строго без АКБ. Выгодна для производств со стабильной сетью.</p>
