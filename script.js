@@ -1,6 +1,3 @@
-// =========================================================
-// 🌐 SUPABASE API
-// =========================================================
 const SUPABASE_URL = 'https://khlmhyzhzpbpirmudbxg.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RVxWpPNclnP2ATXQBUQlPQ_6NcmHMCa';
 
@@ -26,9 +23,6 @@ async function initApp() {
 }
 document.addEventListener('DOMContentLoaded', initApp);
 
-// =========================================================
-// 🔒 AUTH
-// =========================================================
 const authForm = document.getElementById('auth-form');
 if (authForm) {
     authForm.addEventListener('submit', async (e) => {
@@ -44,9 +38,6 @@ if (authForm) {
 }
 if (document.getElementById('btn-logout')) document.getElementById('btn-logout').addEventListener('click', () => { sessionStorage.removeItem('supabase_admin_token'); window.location.reload(); });
 
-// =========================================================
-// 📸 DRAG DROP
-// =========================================================
 function setupImageUploader(zoneId, inputId, previewId, hiddenInputId, textId) {
     const dropZone = document.getElementById(zoneId); const fileInput = document.getElementById(inputId); if (!dropZone || !fileInput) return;
     dropZone.addEventListener('click', () => fileInput.click()); dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); }); dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover')); dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer.files.length) processImage(e.dataTransfer.files[0], previewId, hiddenInputId, textId); }); fileInput.addEventListener('change', (e) => { if (e.target.files.length) processImage(e.target.files[0], previewId, hiddenInputId, textId); });
@@ -57,9 +48,6 @@ function processImage(file, previewId, hiddenInputId, textId) {
 }
 if (document.getElementById('admin-product-form')) { setupImageUploader('product-drop-zone', 'product-file-input', 'product-preview', 'admin-image', 'product-drop-text'); setupImageUploader('port-drop-zone', 'port-file-input', 'port-preview', 'port-image', 'port-drop-text'); }
 
-// =========================================================
-// ⚙️ SELECTS
-// =========================================================
 document.querySelectorAll(".custom-select").forEach(sel => {
   const selected = sel.querySelector(".select-selected"); const items = sel.querySelector(".select-items");
   selected.addEventListener("click", function(e) { e.stopPropagation(); document.querySelectorAll(".select-items").forEach(el => { if(el !== items) el.classList.add("select-hide"); }); document.querySelectorAll(".select-selected").forEach(el => { if(el !== selected) el.classList.remove("select-arrow-active"); }); items.classList.toggle("select-hide"); this.classList.toggle("select-arrow-active"); });
@@ -80,18 +68,11 @@ function setCustomSelectValue(selectId, value) {
   const sel = document.getElementById(selectId); if (!sel) return; sel.setAttribute('data-value', value); sel.querySelectorAll('.select-items div').forEach(opt => { opt.classList.remove('same-as-selected'); if (opt.getAttribute('data-val') === value) { opt.classList.add('same-as-selected'); sel.querySelector('.select-selected').innerHTML = opt.innerHTML; } }); handleFilterChange(sel);
 }
 
-// =========================================================
-// ⚙️ ADMIN
-// =========================================================
 document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', (e) => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.admin-tab-content').forEach(f => f.classList.add('hidden')); e.target.classList.add('active'); document.getElementById(e.target.dataset.target).classList.remove('hidden'); }); });
 
 function showAdminSuccess() { 
     const m = document.getElementById('admin-success'); 
-    if (m) { 
-        m.classList.remove('hidden'); 
-        setTimeout(() => { m.classList.add('show'); }, 10);
-        setTimeout(() => { m.classList.remove('show'); }, 3000); 
-    } 
+    if (m) { m.classList.remove('hidden'); setTimeout(() => { m.classList.add('show'); }, 10); setTimeout(() => { m.classList.remove('show'); }, 3000); } 
 }
 
 function resetImg(pId, hId, tId) { const p = document.getElementById(pId), h = document.getElementById(hId), t = document.getElementById(tId); if(p){p.src=''; p.classList.add('hidden');} if(h)h.value=''; if(t)t.classList.remove('hidden'); }
@@ -161,9 +142,6 @@ function renderContacts() {
     const footerPhone = document.getElementById('footer-phone'); if (footerPhone) { if (contacts[0]?.trim()) { footerPhone.innerText = contacts[0]; footerPhone.href = `tel:${contacts[0].replace(/[^\d+]/g, '')}`; footerPhone.style.display = 'block'; } else { footerPhone.style.display = 'none'; } }
 }
 
-// =========================================================
-// 🛒 UI AND CATALOG
-// =========================================================
 function renderCatalog() {
   const g = document.getElementById('catalog-grid'); if(!g) return; g.innerHTML='';
   g.innerHTML = dbProducts.map((p,i) => { let s = p.specs_card ? p.specs_card.map(sc => `<div><span>${sc.label.replace(/Доступно:|В наличии:/g, 'В наличии/под заказ:')}</span> <strong>${sc.value}</strong></div>`).join('') : ''; return `<div class="tech-card card-base card-item" data-id="${i}" data-category="${p.category}" data-stock="${p.stock}" data-brand="${p.brand||'all'}" data-power="${p.power}" data-cell="${p.cell}" data-efficiency="${p.efficiency||'all'}" data-frame="${p.frame||'all'}" data-phase="${p.phase}" data-voltage="${p.voltage||'all'}" data-capacity="${p.capacity}">${p.image?`<img src="${p.image}" class="product-image-rendered" loading="lazy">`:''}<h3>${p.title}</h3><p class="card-sub">${p.subtitle}</p><div class="card-specs">${s}</div><div class="card-footer"><span class="price">${p.price}</span><button class="btn btn-sm btn-drawer">Посмотреть</button></div></div>`; }).join('');
@@ -185,83 +163,48 @@ document.addEventListener('click', (e) => {
 const closeDrawers = () => { document.querySelectorAll('.drawer-overlay, .drawer-panel').forEach(e=>e.classList.remove('active')); document.body.style.overflow=''; };
 ['u-close','u-close-btn2','u-drawer-overlay'].forEach(id=>{ document.getElementById(id)?.addEventListener('click', closeDrawers); });
 document.getElementById('close-lead-modal')?.addEventListener('click', () => { document.getElementById('lead-modal').classList.remove('active'); document.body.style.overflow = ''; }); document.getElementById('lead-modal')?.addEventListener('click', (e) => { if(e.target === e.currentTarget) { e.target.classList.remove('active'); document.body.style.overflow = ''; } });
+
+// АНТИСПАМ ТЕЛЕГРАМ
 const tgForm = document.getElementById('telegram-form');
 if (tgForm) {
   tgForm.addEventListener('submit', function(e) {
     e.preventDefault(); const token = dbSettings.tg_token; const chatIds = dbSettings.tg_chat_ids || []; if (!token || chatIds.length === 0) { alert("Настройте токен и Chat ID в панели администратора!"); return; }
-    const btn = document.getElementById('lead-submit-btn'); btn.innerText = "Отправка..."; btn.disabled = true; const name = document.getElementById('lead-name').value; const phone = document.getElementById('lead-phone').value; const service = document.getElementById('lead-hidden-service').value; const comment = document.getElementById('lead-comment').value; const text = `🔔 *Новая заявка с сайта CASPIAN SUN*\n\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n💼 *Услуга:* ${service}\n💬 *Комментарий:* ${comment ? comment : 'Без комментария'}`;
+    const btn = document.getElementById('lead-submit-btn'); 
+    const name = document.getElementById('lead-name').value.trim(); const phone = document.getElementById('lead-phone').value.trim(); const comment = document.getElementById('lead-comment') ? document.getElementById('lead-comment').value.trim() : ''; const service = document.getElementById('lead-hidden-service').value;
+    
+    if(name === '.' || name === '/start' || phone === '.' || phone === '/start' || comment === '.' || comment === '/start') { 
+        document.getElementById('lead-success').innerText = 'Система заблокировала пустой запрос'; 
+        document.getElementById('lead-success').classList.remove('hidden'); 
+        setTimeout(() => {document.getElementById('lead-success').classList.add('hidden'); document.getElementById('lead-modal').classList.remove('active'); document.body.style.overflow = ''; }, 2000); 
+        return; 
+    }
+    
+    btn.innerText = "Отправка..."; btn.disabled = true; const text = `🔔 *Новая заявка с сайта CASPIAN SUN*\n\n👤 *Имя:* ${name}\n📞 *Телефон:* ${phone}\n💼 *Услуга:* ${service}\n💬 *Комментарий:* ${comment ? comment : 'Без комментария'}`;
     let requests = chatIds.map(chat => fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat.id}&text=${encodeURIComponent(text)}&parse_mode=Markdown`));
-    Promise.all(requests).then(responses => { if(responses.every(res => res.ok)) { document.getElementById('lead-success').classList.remove('hidden'); tgForm.reset(); setTimeout(() => { document.getElementById('lead-modal').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lead-success').classList.add('hidden'); btn.innerText = "Отправить заявку"; btn.disabled = false; }, 2500); } else { alert("Ошибка отправки."); btn.innerText = "Отправить заявку"; btn.disabled = false; } }).catch(() => { alert("Сетевая ошибка."); btn.innerText = "Отправить заявку"; btn.disabled = false; });
+    Promise.all(requests).then(responses => { if(responses.every(res => res.ok)) { document.getElementById('lead-success').innerText = '✅ Заявка отправлена!'; document.getElementById('lead-success').classList.remove('hidden'); tgForm.reset(); setTimeout(() => { document.getElementById('lead-modal').classList.remove('active'); document.body.style.overflow = ''; document.getElementById('lead-success').classList.add('hidden'); btn.innerText = "Отправить заявку"; btn.disabled = false; }, 2500); } else { alert("Ошибка отправки."); btn.innerText = "Отправить заявку"; btn.disabled = false; } }).catch(() => { alert("Сетевая ошибка."); btn.innerText = "Отправить заявку"; btn.disabled = false; });
   });
 }
 
-// =========================================================
-// 🧮 ИНТЕРАКТИВНЫЙ КАЛЬКУЛЯТОР
-// =========================================================
-let currentTariff = 10; 
-let currentTariffType = 'business';
-let currentPricePerKw = 65000;
-let currentStationType = 'grid';
-
+let currentTariff = 10; let currentTariffType = 'business'; let currentPricePerKw = 65000; let currentStationType = 'grid';
 window.setOption = function(category, value, typeStr, btnElement) {
-    const container = btnElement.parentNode;
-    container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-    btnElement.classList.add('active');
-    
-    if (category === 'tariff') { currentTariff = value; currentTariffType = typeStr; } 
-    else if (category === 'station') { currentPricePerKw = value; currentStationType = typeStr; const batBlock = document.getElementById('batteryBlock'); if(batBlock) batBlock.style.display = typeStr === 'hybrid' ? 'block' : 'none'; }
+    const container = btnElement.parentNode; container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active')); btnElement.classList.add('active');
+    if (category === 'tariff') { currentTariff = value; currentTariffType = typeStr; } else if (category === 'station') { currentPricePerKw = value; currentStationType = typeStr; const batBlock = document.getElementById('batteryBlock'); if(batBlock) batBlock.style.display = typeStr === 'hybrid' ? 'block' : 'none'; }
     calculateSolar();
 }
-
 window.calculateSolar = function() {
     const billInput = document.getElementById('monthlyBill'); if(!billInput) return;
-    const bill = parseFloat(billInput.value);
-    const billValueEl = document.getElementById('billValue'); if(billValueEl) billValueEl.innerText = bill.toLocaleString('ru-RU');
-    
-    const sunHoursPerDay = 4.5; const daysInMonth = 30;
-    const monthlyConsumptionKwh = bill / currentTariff;
-    const dailyConsumptionKwh = monthlyConsumptionKwh / daysInMonth;
-    
-    let recommendedPowerKw = Math.ceil(dailyConsumptionKwh / sunHoursPerDay);
-    if(recommendedPowerKw < 3) recommendedPowerKw = 3; 
-
-    const panelsCount = Math.ceil((recommendedPowerKw * 1000) / 620);
-    const batteriesCount = Math.ceil(recommendedPowerKw / 3.5); 
-
-    let totalCost = recommendedPowerKw * currentPricePerKw;
-    const efficiencyRate = currentStationType === 'grid' ? 0.85 : 0.75;
-    const yearlySavings = (bill * 12) * efficiencyRate;
-    const billAfter = bill - (bill * efficiencyRate);
-    let paybackYears = (totalCost / yearlySavings).toFixed(1);
-
-    const chartBefore = document.getElementById('chartBefore'); const chartAfter = document.getElementById('chartAfter');
-    const barAfter = document.getElementById('barAfter'); const visPower = document.getElementById('visPower');
-    const visPanels = document.getElementById('visPanels'); const visBatteries = document.getElementById('visBatteries');
-    const resCost = document.getElementById('resCost'); const resSavings = document.getElementById('resSavings');
-    const labelDynamic = document.getElementById('labelDynamic'); const resDynamic = document.getElementById('resDynamic');
-
-    if(chartBefore) chartBefore.innerText = bill.toLocaleString('ru-RU') + ' ₽';
-    if(chartAfter) chartAfter.innerText = Math.round(billAfter).toLocaleString('ru-RU') + ' ₽';
-    if(barAfter) { const remainingPercent = 100 - (efficiencyRate * 100); barAfter.style.width = remainingPercent + '%'; }
-    if(visPower) visPower.innerText = recommendedPowerKw + ' кВт';
-    if(visPanels) visPanels.innerText = panelsCount + ' шт.';
-    if(visBatteries) visBatteries.innerText = batteriesCount + ' шт.';
-    if(resCost) resCost.innerText = 'от ' + totalCost.toLocaleString('ru-RU') + ' ₽';
-    if(resSavings) resSavings.innerText = Math.round(yearlySavings).toLocaleString('ru-RU') + ' ₽';
-    
-    if(labelDynamic && resDynamic) {
-        if(currentTariffType === 'business') { labelDynamic.innerText = 'Прогноз окупаемости:'; resDynamic.innerText = paybackYears + ' лет'; } 
-        else {
-            if(currentStationType === 'grid') { labelDynamic.innerText = 'Ресурс панелей:'; resDynamic.innerText = '25+ лет'; } 
-            else { labelDynamic.innerText = 'Главное преимущество:'; resDynamic.innerText = 'Защита от блэкаутов 24/7'; }
-        }
-    }
+    const bill = parseFloat(billInput.value); const billValueEl = document.getElementById('billValue'); if(billValueEl) billValueEl.innerText = bill.toLocaleString('ru-RU');
+    let recommendedPowerKw = Math.ceil((bill / currentTariff / 30) / 4.5); if(recommendedPowerKw < 3) recommendedPowerKw = 3; 
+    const panelsCount = Math.ceil((recommendedPowerKw * 1000) / 620); const batteriesCount = Math.ceil(recommendedPowerKw / 3.5); 
+    let totalCost = recommendedPowerKw * currentPricePerKw; const efficiencyRate = currentStationType === 'grid' ? 0.85 : 0.75;
+    const yearlySavings = (bill * 12) * efficiencyRate; const billAfter = bill - (bill * efficiencyRate);
+    const chartBefore = document.getElementById('chartBefore'); const chartAfter = document.getElementById('chartAfter'); const barAfter = document.getElementById('barAfter'); const visPower = document.getElementById('visPower'); const visPanels = document.getElementById('visPanels'); const visBatteries = document.getElementById('visBatteries'); const resCost = document.getElementById('resCost'); const resSavings = document.getElementById('resSavings'); const labelDynamic = document.getElementById('labelDynamic'); const resDynamic = document.getElementById('resDynamic');
+    if(chartBefore) chartBefore.innerText = bill.toLocaleString('ru-RU') + ' ₽'; if(chartAfter) chartAfter.innerText = Math.round(billAfter).toLocaleString('ru-RU') + ' ₽'; if(barAfter) { barAfter.style.width = (100 - (efficiencyRate * 100)) + '%'; }
+    if(visPower) visPower.innerText = recommendedPowerKw + ' кВт'; if(visPanels) visPanels.innerText = panelsCount + ' шт.'; if(visBatteries) visBatteries.innerText = batteriesCount + ' шт.';
+    if(resCost) resCost.innerText = 'от ' + totalCost.toLocaleString('ru-RU') + ' ₽'; if(resSavings) resSavings.innerText = Math.round(yearlySavings).toLocaleString('ru-RU') + ' ₽';
+    if(labelDynamic && resDynamic) { if(currentTariffType === 'business') { labelDynamic.innerText = 'Прогноз окупаемости:'; resDynamic.innerText = (totalCost / yearlySavings).toFixed(1) + ' лет'; } else { if(currentStationType === 'grid') { labelDynamic.innerText = 'Ресурс панелей:'; resDynamic.innerText = '25+ лет'; } else { labelDynamic.innerText = 'Главное преимущество:'; resDynamic.innerText = 'Защита от блэкаутов 24/7'; } } }
 }
 calculateSolar();
-
-// =========================================================
-// 📱 DROPDOWNS И BURGER МЕНЮ
-// =========================================================
 const burgerBtn = document.getElementById('burger-btn'); const navMenu = document.querySelector('.nav');
 if (burgerBtn && navMenu) { burgerBtn.addEventListener('click', () => { navMenu.classList.toggle('active'); if(navMenu.classList.contains('active')){ burgerBtn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'; } else { burgerBtn.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>'; } }); }
 document.querySelectorAll('.dropdown-toggle').forEach(drop => { drop.addEventListener('click', (e) => { if (window.innerWidth <= 768) { e.preventDefault(); e.target.closest('.dropdown').classList.toggle('mobile-open'); } }); });

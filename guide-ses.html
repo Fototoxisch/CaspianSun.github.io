@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -8,62 +10,53 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
 </head>
 <body class="dark-theme">
-  <header class="header"><div class="logo-container"><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a></div><button class="burger-btn" id="burger-btn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><nav class="nav"><ul class="nav-list"><li><a href="index.html" class="nav-link">Главная</a></li><li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a><ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul></li><li><a href="services.html" class="nav-link">Услуги</a></li><li><a href="portfolio.html" class="nav-link">Наши работы</a></li><li class="dropdown"><a href="guide-ses.html" class="nav-link dropdown-toggle active">Информация ▾</a><ul class="dropdown-menu"><li><a href="about.html">О компании</a></li><li><a href="guide-ses.html">Как работает СЭС</a></li><li><a href="panels.html">Солнечные панели</a></li><li><a href="inverters.html">Инверторы</a></li><li><a href="lifepo4.html">Аккумуляторы LiFePO4</a></li><li><a href="mounting.html">Монтаж СЭС</a></li><li><a href="kits.html">Готовые комплекты</a></li><li><a href="business.html">СЭС для бизнеса</a></li></ul></li><li><a href="contacts.html" class="nav-link">Контакты</a></li></ul></nav><div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div></header>
-
+  {% include header.html %}
   <main>
     <section class="info-section">
       <div class="section-header" style="text-align: left;"><h1 class="hero-title" style="font-size: clamp(28px, 4vw, 48px); margin-bottom: 24px;">Солнечные электростанции: <span class="gradient-text">принцип работы, схемы и подбор</span> под ключ</h1></div>
-
       <article class="info-article card-base">
         <p>Солнечная электростанция (СЭС) — это автономный или синхронизированный с сетью инженерный комплекс, предназначенный для преобразования солнечной радиации в переменный ток бытового и промышленного стандарта (220 В / 380 В, 50 Гц).</p>
         <p>Современная станция проектируется под конкретную задачу заказчика:</p>
         <ul class="info-list">
-            <li><strong>100% энергонезависимость и полная автономия (Off-Grid):</strong> полное отсутствие счетов за свет и надежное электроснабжение удаленных объектов, частных домов, ферм и коммерческих точек без подключения к электросетям.</li>
-            <li><strong>Снижение расходов на электроэнергию до 70–90%:</strong> сокращение дневного потребления за счет умного подмешивания бесплатной солнечной энергии к городской сети в реальном времени.</li>
-            <li><strong>Защита от блэкаутов и просадок сети:</strong> мгновенный переход на резервное питание (10 мс) при авариях на ЛЭП и стабилизация напряжения при падении до 150–180 В.</li>
+            <li><strong>100% энергонезависимость и полная автономия (Off-Grid):</strong> полное отсутствие счетов за свет и надежное электроснабжение удаленных объектов.</li>
+            <li><strong>Снижение расходов на электроэнергию до 70–90%:</strong> сокращение дневного потребления за счет умного подмешивания бесплатной солнечной энергии.</li>
+            <li><strong>Защита от блэкаутов и просадок сети:</strong> мгновенный переход на резервное питание (10 мс) при авариях на ЛЭП.</li>
         </ul>
-
         <h2 class="guarantee-title">Как устроена и работает солнечная электростанция</h2>
         <img src="schema1.jpg" alt="Базовая архитектура и топология СЭС" class="info-schema">
-        <p>Солнечная станция — это экосистема взаимосвязанных узлов, работающих под единым цифровым контролем:</p>
         <ul class="info-list">
             <li><strong>Фотоэлектрические модули (Солнечные батареи):</strong> Улавливают дневной свет и вырабатывают постоянный ток (DC).</li>
-            <li><strong>Щиты коммутации и защиты (DC Combiner Box):</strong> Защищают кабельные трассы и силовую электронику от импульсных грозовых перенапряжений (модули УЗИП).</li>
-            <li><strong>Инверторное оборудование («Мозг системы»):</strong> Преобразует ток в переменный 220В, управляет MPPT-трекерами и синхронизирует источники питания.</li>
-            <li><strong>Банк накопителей энергии (LiFePO4 АКБ):</strong> Высокоресурсные аккумуляторы с платами Smart BMS. Запасают избыточную энергию днем и питают дом ночью.</li>
+            <li><strong>Щиты коммутации и защиты (DC Combiner Box):</strong> Защищают кабельные трассы и силовую электронику.</li>
+            <li><strong>Инверторное оборудование («Мозг системы»):</strong> Преобразует ток в переменный 220В.</li>
+            <li><strong>Банк накопителей энергии (LiFePO4 АКБ):</strong> Высокоресурсные аккумуляторы с платами Smart BMS.</li>
         </ul>
-
         <h2 class="guarantee-title">Выбор архитектуры СЭС</h2>
         <img src="schema2.jpg" alt="Сравнение типов СЭС" class="info-schema">
-        
         <div class="grid-cards" style="margin-top: 24px;">
             <a href="catalog.html?category=inverters" class="card-item card-base" style="padding: 24px; text-decoration: none;">
                <h3 class="port-title">1. Автономная (Off-Grid)</h3>
                <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> 100% автономия</p>
-               <p class="port-desc">Работает непрерывно. Требует большого банка LiFePO4 АКБ и резервного генератора (АВР). Идеально для домов без подключения к ЛЭП.</p>
+               <p class="port-desc">Работает непрерывно. Требует большого банка LiFePO4 АКБ и резервного генератора.</p>
             </a>
             <a href="catalog.html?category=inverters" class="card-item card-base" style="padding: 24px; text-decoration: none;">
                <h3 class="port-title">2. Умный гибрид (Smart Hybrid)</h3>
                <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> Резерв + Экономия</p>
-               <p class="port-desc">Обеспечивает бесшовный переход (10 мс) и подмешивание энергии к городской сети. Подходит для коттеджей, АЗС и коммерции.</p>
+               <p class="port-desc">Обеспечивает бесшовный переход (10 мс) и подмешивание энергии к городской сети.</p>
             </a>
             <a href="catalog.html?category=inverters" class="card-item card-base" style="padding: 24px; text-decoration: none;">
                <h3 class="port-title">3. Сетевая (On-Grid)</h3>
                <p class="port-desc" style="color: var(--text-main);"><strong>Независимость:</strong> Только экономия</p>
-               <p class="port-desc">Работает строго без АКБ. Отключается при блэкауте. Выгодна для производств и складов со стабильной сетью.</p>
+               <p class="port-desc">Работает строго без АКБ. Выгодна для производств и складов со стабильной сетью.</p>
             </a>
         </div>
       </article>
-
       <div class="card-base" style="text-align: center; margin-top: 40px; padding: 40px;">
          <h2 style="font-family: var(--font-tech); font-size: 24px; margin-bottom: 16px;">Хотите рассчитать СЭС под ваш объект?</h2>
-         <p style="color: var(--text-muted); margin-bottom: 24px;">Оставьте заявку на инженерный расчет. Мы подготовим схему размещения панелей, подберем номинал инвертора и рассчитаем окупаемость системы для вашего дома или бизнеса.</p>
+         <p style="color: var(--text-muted); margin-bottom: 24px;">Оставьте заявку на инженерный расчет.</p>
          <button class="btn btn-primary btn-lead" data-service="Инженерный расчет СЭС">Получить расчет проекта</button>
       </div>
     </section>
   </main>
-  
-  <div class="modal-overlay" id="lead-modal"><div class="modal-content card-base"><button class="close-btn" id="close-lead-modal">&times;</button><h2 class="modal-title">Оставить заявку</h2><p class="modal-desc" id="lead-service-name">Наш инженер свяжется с вами.</p><form id="telegram-form" class="admin-form"><input type="hidden" id="lead-hidden-service"><div class="form-group"><label>Ваше имя</label><input type="text" id="lead-name" class="form-input" required></div><div class="form-group"><label>Номер телефона</label><input type="tel" id="lead-phone" class="form-input" required></div><div class="form-group"><label>Вопрос (необязательно)</label><textarea id="lead-comment" class="form-input form-textarea"></textarea></div><button type="submit" class="btn btn-full" id="lead-submit-btn">Отправить заявку</button><div id="lead-success" class="admin-success-msg hidden">✅ Заявка отправлена!</div></form></div></div>
-  <footer class="footer" id="contacts"><div class="footer-content"><div><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a><p class="footer-desc">Автономная энергетика будущего.</p></div><div class="footer-contact"><span>Связь с инженером:</span><a href="#" class="footer-phone" id="footer-phone">Загрузка...</a></div></div></footer><script src="script.js"></script>
+  {% include footer.html %}
 </body>
 </html>
