@@ -10,22 +10,63 @@
   <header class="header"><div class="logo-container"><a href="index.html" class="logo"><img src="logo.png" alt="CASPIAN SUN" class="main-logo"></a></div><button class="burger-btn" id="burger-btn"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button><nav class="nav"><ul class="nav-list"><li><a href="index.html" class="nav-link active">Главная</a></li><li class="dropdown"><a href="catalog.html" class="nav-link dropdown-toggle">Каталог ▾</a><ul class="dropdown-menu"><li><a href="catalog.html?category=all">Общий каталог</a></li><li><a href="catalog.html?category=panels">Солнечные панели</a></li><li><a href="catalog.html?category=batteries">Аккумуляторы</a></li><li><a href="catalog.html?category=inverters">Инверторы</a></li></ul></li><li><a href="services.html" class="nav-link">Услуги</a></li><li><a href="portfolio.html" class="nav-link">Наши работы</a></li><li class="dropdown"><a href="guide-ses.html" class="nav-link dropdown-toggle">Информация ▾</a><ul class="dropdown-menu"><li><a href="about.html">О компании</a></li><li><a href="guide-ses.html">Как работает СЭС</a></li><li><a href="panels.html">Солнечные панели</a></li><li><a href="inverters.html">Инверторы</a></li><li><a href="lifepo4.html">Аккумуляторы LiFePO4</a></li><li><a href="mounting.html">Монтаж СЭС</a></li><li><a href="kits.html">Готовые комплекты</a></li><li><a href="business.html">СЭС для бизнеса</a></li></ul></li><li><a href="contacts.html" class="nav-link">Контакты</a></li></ul></nav><div class="header-action"><a href="index.html#calculator" class="btn">Калькулятор мощности</a></div></header>
 
   <main>
+    <!-- ГЛАВНЫЙ ЭКРАН -->
     <section class="hero-section">
-      <h1 class="hero-title">ЭНЕРГИЯ БУДУЩЕГО<br><span class="gradient-text">В ВАШИХ РУКАХ</span></h1>
-      <p class="hero-subtitle">Проектирование и монтаж солнечных электростанций под ключ. Обеспечьте свой дом независимой энергией.</p>
+      <h1 class="hero-title">Солнечные электростанции (СЭС)<br><span class="gradient-text">для дома и бизнеса</span></h1>
+      <p class="hero-subtitle">Снижение расходов на электроэнергию до 90%. 100% автономия и бесперебойное питание при авариях в электросети.</p>
       <div class="hero-buttons">
-        <a href="catalog.html" class="btn btn-primary">Перейти в каталог</a>
-        <a href="services.html" class="btn">Наши услуги</a>
+        <a href="#calculator" class="btn btn-primary">Рассчитать стоимость и окупаемость</a>
       </div>
     </section>
     
-    <div class="stats-bar card-base">
-      <div class="stat-item"><span class="stat-num">50+</span><span class="stat-desc">Реализованных проектов</span></div>
-      <div class="stat-divider"></div>
-      <div class="stat-item"><span class="stat-num">10 ЛЕТ</span><span class="stat-desc">Гарантия на монтаж</span></div>
-    </div>
+    <!-- ТЕЗИСЫ (ПРЕИМУЩЕСТВА) -->
+    <section class="info-section" style="padding-top: 0;">
+      <div class="section-header" style="text-align: center;">
+        <h2 class="section-title">ПОЧЕМУ СОЛНЕЧНАЯ СТАНЦИЯ — ЭТО <span class="gradient-text">ЛУЧШАЯ ИНВЕСТИЦИЯ</span></h2>
+      </div>
+      <div class="grid-cards" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 0;">
+        
+        <!-- Карточка 1 -->
+        <div class="card-base" style="text-align: center;">
+          <div style="width: 64px; height: 64px; margin: 0 auto 20px; background: rgba(93, 241, 216, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--accent-neon)"><path d="M3 3v18h18v-2H5V3H3zm16 10l-4-4-4 4-4-4v3l4 4 4-4 4 4v-3z"/></svg>
+          </div>
+          <h3 style="font-family: var(--font-tech); font-size: 20px; margin-bottom: 12px;">Окупаемость от 3.5 лет</h3>
+          <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">Для коммерческих объектов (магазины, базы отдыха) станция окупается в среднем за 3.5-4.5 года благодаря фиксации тарифа.</p>
+        </div>
+
+        <!-- Карточка 2 -->
+        <div class="card-base" style="text-align: center;">
+          <div style="width: 64px; height: 64px; margin: 0 auto 20px; background: rgba(93, 241, 216, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--accent-neon)"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.8 5.2a.75.75 0 010 1.06l-1.59 1.59a.75.75 0 11-1.06-1.06l1.59-1.59a.75.75 0 011.06 0zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.21 17.21a.75.75 0 011.06 0l1.59 1.59a.75.75 0 11-1.06 1.06l-1.59-1.59a.75.75 0 010-1.06zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM5.2 18.8a.75.75 0 011.06-1.06l1.59 1.59a.75.75 0 11-1.06 1.06L5.2 18.8a.75.75 0 010-1.06zM2.25 12a.75.75 0 01.75-.75H5.25a.75.75 0 010 1.5H3a.75.75 0 01-.75-.75zM6.79 6.79a.75.75 0 010-1.06l1.59-1.59a.75.75 0 111.06 1.06L7.85 6.79a.75.75 0 01-1.06 0z"/></svg>
+          </div>
+          <h3 style="font-family: var(--font-tech); font-size: 20px; margin-bottom: 12px;">Срок службы: 30 лет</h3>
+          <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">Заводская гарантия на двусторонние панели N-Type TOPCon класса Tier 1 на сохранение мощности — 30 лет.</p>
+        </div>
+
+        <!-- Карточка 3 -->
+        <div class="card-base" style="text-align: center;">
+          <div style="width: 64px; height: 64px; margin: 0 auto 20px; background: rgba(93, 241, 216, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--accent-neon)"><path d="M16 20H8V6h8v14zm-4-3h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2V7h-2v2zm6-5h-3V2h-6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/></svg>
+          </div>
+          <h3 style="font-family: var(--font-tech); font-size: 20px; margin-bottom: 12px;">Ресурс АКБ: 6000 циклов</h3>
+          <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">Мы используем только безопасные аккумуляторы LiFePO4 (Grade A). Это 12-15 лет стабильной ежедневной работы.</p>
+        </div>
+
+        <!-- Карточка 4 -->
+        <div class="card-base" style="text-align: center;">
+          <div style="width: 64px; height: 64px; margin: 0 auto 20px; background: rgba(93, 241, 216, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--accent-neon)"><path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66.19-.34.05-.08.16-.28L13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/></svg>
+          </div>
+          <h3 style="font-family: var(--font-tech); font-size: 20px; margin-bottom: 12px;">Резерв за 10 мс</h3>
+          <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5;">При отключении электросети, умный инвертор переведет дом или магазин на батареи за 10 миллисекунд. Техника даже не моргнет.</p>
+        </div>
+
+      </div>
+    </section>
     
-    <section class="calc-section" id="calculator">
+    <!-- ИНТЕРАКТИВНЫЙ КАЛЬКУЛЯТОР -->
+    <section class="calc-section" id="calculator" style="margin-top: 0;">
       <div class="caspian-calc-wrapper">
         <h2 style="text-align: center; font-family: var(--font-tech); font-size: 26px; margin-top: 0; margin-bottom: 25px;">ИНТЕРАКТИВНЫЙ <span class="gradient-text">РАСЧЕТ СЭС</span></h2>
         
@@ -96,6 +137,23 @@
         </div>
 
         <button class="btn btn-primary btn-full cta-btn" onclick="document.getElementById('lead-modal').classList.add('active'); document.getElementById('lead-hidden-service').value='Запрос точной сметы из калькулятора'; document.getElementById('lead-service-name').innerText='Услуга: Точная смета из калькулятора'; document.body.style.overflow='hidden';">Получить точную смету и 3D-проект</button>
+      </div>
+    </section>
+
+    <!-- ИНЖЕНЕРНЫЕ СТАНДАРТЫ -->
+    <section class="info-section">
+      <div class="section-header" style="text-align: center;">
+        <h2 class="section-title">ИНЖЕНЕРНЫЕ СТАНДАРТЫ <span class="gradient-text">CASPIAN SUN</span></h2>
+      </div>
+      <div class="grid-cards" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 0;">
+        <div class="card-base" style="border-left: 4px solid var(--accent-neon);">
+          <h3 style="font-family: var(--font-tech); font-size: 20px; margin-bottom: 12px;">Безрамочные панели Full-Screen</h3>
+          <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Мы устанавливаем модули DAH Solar (Tier 1) мощностью 620 Вт. Лицевое стекло наклеено встык без алюминиевого бортика — на панели не скапливается грязь и пыль, что дает прирост генерации до 15% в год и защищает ячейки от перегрева (Hot Spots) в жару.</p>
+        </div>
+        <div class="card-base" style="border-left: 4px solid var(--accent-neon);">
+          <h3 style="font-family: var(--font-tech); font-size: 20px; margin-bottom: 12px;">Никакой бюрократии (Zero Export)</h3>
+          <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Наше оборудование оснащено функцией интеллектуального подмешивания энергии с защитой от перетока в городскую сеть (Zero Export). Энергия солнца питает ваш объект напрямую, без необходимости согласований с энергосбытовыми компаниями.</p>
+        </div>
       </div>
     </section>
   </main>
