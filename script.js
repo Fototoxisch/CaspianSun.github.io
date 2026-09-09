@@ -83,7 +83,7 @@ async function syncProductsWithCatalog() {
                 const img = card.querySelector('img')?.getAttribute('src') || '';
                 newProducts.push({ 
                     slug: slug, 
-                    published: true, 
+                    published: false, 
                     title: title, 
                     price: price, 
                     image: img,
