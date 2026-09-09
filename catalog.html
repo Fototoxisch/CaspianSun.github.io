@@ -27,19 +27,40 @@
         <div class="filter-group specific-filter" id="filter-group-voltage"><label>Напряжение</label><div class="custom-select" id="custom-voltage" data-value="all"><div class="select-selected">Любое</div><div class="select-items select-hide"><div data-val="all">Любое</div><div data-val="12">12V</div><div data-val="24">24V</div><div data-val="48">48V</div></div></div></div>
         <div class="filter-group specific-filter" id="filter-group-capacity"><label>Емкость</label><div class="custom-select" id="custom-capacity" data-value="all"><div class="select-selected">Любая</div><div class="select-items select-hide"><div data-val="all">Любая</div><div data-val="100">До 100 Ah</div><div data-val="200">От 200 Ah</div></div></div></div>
       </div>
-      <div class="grid-cards" id="catalog-grid"></div>
+      
+      <div class="grid-cards" id="catalog-grid">
+      
+        <div class="tech-card card-base card-item" data-slug="growatt-6000es-plus" data-category="inverters" data-brand="other" data-phase="1" data-voltage="48">
+          <div class="mock-img" style="height: 180px; margin: -40px -40px 16px; border-radius: 8px 8px 0 0;">📸</div>
+          <h3>Гибридный инвертор Growatt SPF 6000ES Plus</h3>
+          <div class="card-specs"><div><span>В наличии/под заказ:</span> <strong>В наличии</strong></div></div>
+          <div class="card-footer"><span class="price">65 000 ₽</span><a href="/CaspianSun.github.io/products/growatt-6000es-plus.html" class="btn btn-sm">Смотреть</a></div>
+        </div>
+
+        <div class="tech-card card-base card-item" data-slug="dah-solar-620w" data-category="panels" data-brand="other" data-power="600" data-cell="n-type" data-efficiency="over-22" data-frame="full-black">
+          <div class="mock-img" style="height: 180px; margin: -40px -40px 16px; border-radius: 8px 8px 0 0;">📸</div>
+          <h3>Солнечная панель DAH Solar 620W</h3>
+          <div class="card-specs"><div><span>В наличии/под заказ:</span> <strong>В наличии</strong></div></div>
+          <div class="card-footer"><span class="price">12 500 ₽</span><a href="/CaspianSun.github.io/products/dah-solar-620w.html" class="btn btn-sm">Смотреть</a></div>
+        </div>
+
+        <div class="tech-card card-base card-item" data-slug="dah-solar-battery-5kwh" data-category="batteries" data-brand="other" data-voltage="48" data-capacity="100">
+          <div class="mock-img" style="height: 180px; margin: -40px -40px 16px; border-radius: 8px 8px 0 0;">📸</div>
+          <h3>Накопитель энергии DAH Solar 5 кВт·ч</h3>
+          <div class="card-specs"><div><span>В наличии/под заказ:</span> <strong>В наличии</strong></div></div>
+          <div class="card-footer"><span class="price">110 000 ₽</span><a href="/CaspianSun.github.io/products/dah-solar-battery-5kwh.html" class="btn btn-sm">Смотреть</a></div>
+        </div>
+
+        <div class="tech-card card-base card-item" data-slug="dc-combiner-box-500v" data-category="inverters" data-brand="other">
+          <div class="mock-img" style="height: 180px; margin: -40px -40px 16px; border-radius: 8px 8px 0 0;">📸</div>
+          <h3>Щит защиты DC Combiner Box</h3>
+          <div class="card-specs"><div><span>В наличии/под заказ:</span> <strong>В наличии</strong></div></div>
+          <div class="card-footer"><span class="price">8 500 ₽</span><a href="/CaspianSun.github.io/products/dc-combiner-box-500v.html" class="btn btn-sm">Смотреть</a></div>
+        </div>
+
+      </div>
     </section>
   </main>
-  <div class="drawer-overlay" id="u-drawer-overlay"></div>
-  <div class="drawer-panel" id="u-drawer">
-      <div class="drawer-header"><h2 id="u-title">Название</h2><button class="close-btn" id="u-close">&times;</button></div>
-      <div class="drawer-body"><div class="mock-img drawer-img" id="u-img">📸</div><ul class="modal-specs" id="u-specs"></ul></div>
-      <div class="drawer-footer" style="flex-direction: column; align-items: stretch; gap: 16px;">
-          <div id="u-price" class="modal-price" style="text-align: center;">0 ₽</div>
-          <a href="#" class="btn btn-full" id="u-link-btn" style="border-color: #3498db; color: #3498db; text-decoration: none;">Перейти на страницу товара</a>
-          <button class="btn btn-full" id="u-close-btn2">Закрыть</button>
-      </div>
-  </div>
   {% include footer.html %}
 </body>
 </html>
