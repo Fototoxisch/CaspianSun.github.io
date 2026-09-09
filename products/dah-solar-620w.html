@@ -4,25 +4,27 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Солнечная панель DAH Solar 620W Full-Screen (Tier 1) | Caspian Sun</title>
+  <title>Caspian Sun</title>
   <meta name="description" content="Безрамочные солнечные панели DAH Solar 620W N-Type TOPCon. Защита от грязи (Full-Screen), двусторонние (Bifacial), гарантия 30 лет.">
-  <link rel="icon" href="/CaspianSun.github.io/logo.png" type="image/png">
+  <link rel="icon" href="{{ '/images/Logo/logo-icon.png' | relative_url }}" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/CaspianSun.github.io/styles.css">
-  <style>.product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px; } .product-img-box { display: flex; align-items: center; justify-content: center; height: 450px; padding: 20px; overflow: hidden; } @media (max-width: 768px) { .product-layout { grid-template-columns: 1fr; gap: 24px; margin-bottom: 40px; } .product-img-box { height: 300px; } }</style>
+  <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}">
+  <style>.product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 60px; } .product-img-box { display: flex; align-items: center; justify-content: center; height: 450px; padding: 0; overflow: hidden; border-radius: 12px; } .product-img-box img { width: 100%; height: 100%; object-fit: cover; } @media (max-width: 768px) { .product-layout { grid-template-columns: 1fr; gap: 24px; margin-bottom: 40px; } .product-img-box { height: 300px; } }</style>
 </head>
 <body class="dark-theme">
   {% include header.html %}
   <main style="max-width: 1100px; margin: 40px auto; padding: 0 24px; width: 100%;">
-    <a href="/CaspianSun.github.io/catalog.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; margin-bottom: 24px; display: inline-block;">← Вернуться в каталог</a>
+    <a href="{{ '/catalog.html' | relative_url }}" style="color: var(--text-muted); text-decoration: none; font-size: 14px; margin-bottom: 24px; display: inline-block;">← Вернуться в каталог</a>
     <div class="product-layout">
-      <div class="card-base product-img-box"><div class="mock-img" style="font-size:48px;">📸</div></div>
+      <div class="card-base product-img-box">
+        <img src="{{ '/images/products/dah-solar-620w.jpg' | relative_url }}" alt="Солнечная панель DAH Solar 620W (Full-Screen)">
+      </div>
       <div style="display: flex; flex-direction: column; justify-content: center;">
-        <span id="dyn-stock" data-slug="dah-solar-620w" style="background: rgba(93, 241, 216, 0.1); color: var(--accent-neon); padding: 6px 12px; border-radius: 6px; width: fit-content; font-size: 14px; font-weight: 600; font-family: var(--font-tech); margin-bottom: 16px;">Загрузка наличия...</span>
+        <span id="dyn-stock" data-slug="dah-solar-620w" style="background: rgba(93, 241, 216, 0.1); color: var(--accent-neon); padding: 6px 12px; border-radius: 6px; width: fit-content; font-size: 14px; font-weight: 600; font-family: var(--font-tech); margin-bottom: 16px;">В наличии</span>
         <h1 style="font-family: var(--font-tech); font-size: clamp(24px, 4vw, 36px); margin-bottom: 16px; line-height: 1.2;">Солнечная панель DAH Solar 620W (Full-Screen)</h1>
-        <div id="dyn-price" data-slug="dah-solar-620w" style="font-family: var(--font-tech); font-size: 32px; font-weight: 700; color: var(--accent-neon); margin-bottom: 32px;">Загрузка цены...</div>
+        <div id="dyn-price" data-slug="dah-solar-620w" style="font-family: var(--font-tech); font-size: 32px; font-weight: 700; color: var(--accent-neon); margin-bottom: 32px;">18 000 ₽</div>
         <div style="margin-bottom: 32px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; border: 1px dashed var(--bg-card-border);">
           <h3 style="font-family: var(--font-tech); font-size: 16px; margin-bottom: 16px; color: var(--text-main);">Краткие характеристики:</h3>
           <ul style="list-style: none; color: var(--text-muted); font-size: 14px;">
@@ -39,7 +41,7 @@
     <div class="card-base">
       <h2 style="font-family: var(--font-tech); font-size: 24px; margin-bottom: 20px; color: var(--accent-neon);">Описание оборудования</h2>
       <div style="color: var(--text-muted); line-height: 1.6; font-size: 16px;" class="info-article">
-        <p>Инновационные фотомодули класса <strong>Tier 1 от DAH Solar</strong>. Это решение премиум-уровня, объединяющее запатентованный безрамочный дизайн и передовые кремниевые ячейки для максимальной эффективности.</p><ul class="info-list"><li><strong>Безрамочный экран (Full-Screen):</strong> Вода свободно смывает грязь, предотвращая Hot Spots и давая до 15% дополнительной выработки.</li><li><strong>Технология N-Type:</strong> Отлично работает под палящим летним солнцем без потери мощности.</li><li><strong>Двустороннее исполнение (Bifacial):</strong> Задняя сторона улавливает отраженный свет, давая от 5% до 25% бесплатной энергии.</li><li><strong>Double Glass:</strong> Два слоя закаленного стекла защищают кремний от микротрещин.</li></ul>
+        <p>Инновационные фотомодули класса <strong>Tier 1 от DAH Solar</strong>. Это решение премиум-уровня, объединяющее запатентованный безрамочный дизайн и передовые кремниевые ячейки для максимальной эффективности.</p><ul><li><strong>Безрамочный экран (Full-Screen):</strong> Вода свободно смывает грязь, предотвращая Hot Spots и давая до 15% дополнительной выработки.</li><li><strong>Технология N-Type:</strong> Отлично работает под палящим летним солнцем без потери мощности.</li><li><strong>Двустороннее исполнение (Bifacial):</strong> Задняя сторона улавливает отраженный свет, давая от 5% до 25% бесплатной энергии.</li><li><strong>Double Glass:</strong> Два слоя закаленного стекла защищают кремний от микротрещин.</li></ul>
       </div>
     </div>
   </main>

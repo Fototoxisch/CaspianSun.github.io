@@ -5,19 +5,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Услуги по проектированию и монтажу СЭС под ключ | Caspian Sun</title>
+  <title>Caspian Sun</title>
   <meta name="description" content="Полный комплекс услуг от Caspian Sun: расчет и проектирование СЭС, монтаж гибридных и автономных станций, энергоаудит и шеф-монтаж в Дагестане.">
-  <meta name="keywords" content="монтаж сэс, установка солнечных панелей, проектирование солнечных электростанций, энергоаудит, шеф-монтаж сэс, солнечная электростанция под ключ, caspian sun">
-  <link rel="icon" href="/CaspianSun.github.io/images/Logo/logo-icon.png" type="image/png">
+  <link rel="icon" href="{{ '/images/Logo/logo-icon.png' | relative_url }}" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/CaspianSun.github.io/styles.css">
+  <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}">
 </head>
 <body class="dark-theme">
   {% include header.html %}
   <main>
-    <section class="info-page-section">
+    <section class="info-section">
       <div class="section-header">
         <h1 class="hero-title">Услуги Caspian Sun: <span class="gradient-text">Профессиональный инжиниринг</span> в солнечной энергетике</h1>
         <p class="section-subtitle" style="max-width: 800px; margin: 0 auto 40px; text-align: center; color: var(--text-muted); line-height: 1.6;">
@@ -30,9 +29,9 @@
           <h2 style="margin-bottom: 24px; color: var(--accent-neon);">1. Проектирование и монтаж СЭС «под ключ»</h2>
           <p style="margin-bottom: 16px; color: var(--text-muted);">Мы берем на себя весь цикл работ: от подбора оборудования до финального запуска станции.</p>
           <ul style="color: var(--text-main); margin-left: 20px; line-height: 1.6;">
-            <li style="margin-bottom: 12px;"><strong>Что входит:</strong> Установка панелей N-Type TOPCon (Tier 1), гибридных инверторов и сборка безопасных АКБ LiFePO4.</li>
+            <li style="margin-bottom: 12px;"><strong>Что входит:</strong> Установка панелей N-Type TOPCon, гибридных инверторов и сборка АКБ LiFePO4.</li>
             <li style="margin-bottom: 12px;"><strong>Безопасность:</strong> Интеграция профессиональных щитов (УЗИП, gPV, Bypass).</li>
-            <li><strong>Результат:</strong> Экономия днем и перехват питания дома за 10 мс при авариях на ЛЭП.</li>
+            <li><strong>Результат:</strong> Экономия днем и перехват питания дома за 10 мс при авариях.</li>
           </ul>
         </div>
         <div class="card-base" style="padding: 32px;">
@@ -40,17 +39,17 @@
           <p style="margin-bottom: 16px; color: var(--text-muted);">Мощные трехфазные (380 В) решения для магазинов, складов и баз отдыха.</p>
           <ul style="color: var(--text-main); margin-left: 20px; line-height: 1.6;">
             <li style="margin-bottom: 12px;"><strong>Защита:</strong> Точный расчет под тяжелые пусковые токи промышленного оборудования.</li>
-            <li style="margin-bottom: 12px;"><strong>Аппаратный Zero Export:</strong> 100% блокировка отдачи излишков в сеть — без бумажной волокиты и справок.</li>
-            <li><strong>Умный монтаж:</strong> Балластные крепления на плоские крыши без повреждения кровельной мембраны.</li>
+            <li style="margin-bottom: 12px;"><strong>Аппаратный Zero Export:</strong> 100% блокировка отдачи излишков в сеть.</li>
+            <li><strong>Умный монтаж:</strong> Балластные крепления на плоские крыши без повреждения кровли.</li>
           </ul>
         </div>
         <div class="card-base" style="padding: 32px;">
           <h2 style="margin-bottom: 24px; color: var(--accent-neon);">3. Профессиональный энергоаудит</h2>
           <p style="margin-bottom: 16px; color: var(--text-muted);">Прежде чем предложить оборудование, инженеры проводят детальный анализ объекта.</p>
           <ul style="color: var(--text-main); margin-left: 20px; line-height: 1.6;">
-            <li style="margin-bottom: 12px;"><strong>Замеры:</strong> Выезд для замера реальных пусковых токов и анализа графика потребления.</li>
-            <li style="margin-bottom: 12px;"><strong>Анализ кровли:</strong> Карта затенений, оценка несущей способности и идеальный угол наклона.</li>
-            <li><strong>Финансовая модель:</strong> Прозрачная смета и точный расчет сроков окупаемости (ROI).</li>
+            <li style="margin-bottom: 12px;"><strong>Замеры:</strong> Выезд для замера реальных пусковых токов и графика потребления.</li>
+            <li style="margin-bottom: 12px;"><strong>Анализ кровли:</strong> Карта затенений, несущая способность и идеальный угол.</li>
+            <li><strong>Финансовая модель:</strong> Прозрачная смета и точный расчет сроков окупаемости.</li>
           </ul>
         </div>
         <div class="card-base" style="padding: 32px;">
@@ -58,8 +57,8 @@
           <p style="margin-bottom: 16px; color: var(--text-muted);">Технический надзор для вашей бригады электриков.</p>
           <ul style="color: var(--text-main); margin-left: 20px; line-height: 1.6;">
             <li style="margin-bottom: 12px;"><strong>Интеграция:</strong> Контроль обжима наконечников и прокладки УФ-стойкого кабеля.</li>
-            <li style="margin-bottom: 12px;"><strong>Настройка связи:</strong> Синхронизация плат Smart BMS с инвертором (CAN/RS485).</li>
-            <li><strong>Умный дом:</strong> Настройка приложения для мониторинга выработки на смартфоне.</li>
+            <li style="margin-bottom: 12px;"><strong>Настройка связи:</strong> Синхронизация плат Smart BMS с инвертором.</li>
+            <li><strong>Умный дом:</strong> Настройка приложения для мониторинга на смартфоне.</li>
           </ul>
         </div>
       </div>
@@ -67,11 +66,10 @@
       <div class="card-base" style="margin-top: 40px; padding: 40px; text-align: center; border: 1px solid var(--accent-neon);">
         <h2 style="margin-bottom: 24px;">Почему выбирают инженерный стандарт Caspian Sun?</h2>
         <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; color: var(--text-muted);">
-          <div style="flex: 1; min-width: 250px;"><strong>Отказ от «гаражного» монтажа:</strong> Соблюдение норм ГОСТ и пожаробезопасности.</div>
-          <div style="flex: 1; min-width: 250px;"><strong>Передовые технологии:</strong> Только LiFePO4 и безрамочные панели Full-Screen.</div>
+          <div style="flex: 1; min-width: 250px;"><strong>Отказ от «гаражного» монтажа:</strong> Соблюдение норм пожаробезопасности.</div>
+          <div style="flex: 1; min-width: 250px;"><strong>Передовые технологии:</strong> Только LiFePO4 и безрамочные панели.</div>
           <div style="flex: 1; min-width: 250px;"><strong>Честная гарантия:</strong> До 30 лет на узлы системы напрямую от заводов.</div>
         </div>
-        <p style="margin-bottom: 24px; font-size: 1.1rem;">Готовы обрести энергонезависимость? Оставьте заявку, и ведущий инженер свяжется с вами.</p>
         <button class="btn" onclick="document.getElementById('lead-modal').classList.add('active'); document.getElementById('lead-hidden-service').value='Бесплатный расчет мощности'; document.getElementById('lead-service-name').innerText='Услуга: Бесплатный расчет мощности'; document.body.style.overflow='hidden';">Заказать расчет / Вызвать инженера</button>
       </div>
     </section>
