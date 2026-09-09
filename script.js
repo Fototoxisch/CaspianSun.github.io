@@ -63,7 +63,8 @@ function protectProductPage() {
 // Автосинхронизация каталога и БД (Только в админке)
 async function syncProductsWithCatalog() {
     try {
-        const response = await fetch('/CaspianSun.github.io/catalog.html');
+        let response = await fetch('catalog.html');
+        if(!response.ok) response = await fetch('/CaspianSun.github.io/catalog.html');
         const html = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
@@ -80,7 +81,16 @@ async function syncProductsWithCatalog() {
                 const title = card.querySelector('h3')?.innerText || slug;
                 const price = card.querySelector('.price')?.innerText || '';
                 const img = card.querySelector('img')?.getAttribute('src') || '';
-                newProducts.push({ slug: slug, published: true, title: title, price: price, image: img });
+                newProducts.push({ 
+                    slug: slug, 
+                    published: true, 
+                    title: title, 
+                    price: price, 
+                    image: img,
+                    category: 'panels',
+                    brand: 'other',
+                    stock: 'in_stock'
+                });
             }
         });
         
@@ -156,8 +166,16 @@ if (document.getElementById('btn-logout')) document.getElementById('btn-logout')
 document.querySelectorAll(".custom-select").forEach(sel => { const selected = sel.querySelector(".select-selected"); const items = sel.querySelector(".select-items"); selected.addEventListener("click", function(e) { e.stopPropagation(); document.querySelectorAll(".select-items").forEach(el => { if(el !== items) el.classList.add("select-hide"); }); document.querySelectorAll(".select-selected").forEach(el => { if(el !== selected) el.classList.remove("select-arrow-active"); }); items.classList.toggle("select-hide"); this.classList.toggle("select-arrow-active"); }); items.querySelectorAll("div").forEach(opt => { opt.addEventListener("click", function(e) { selected.innerHTML = this.innerHTML; sel.setAttribute('data-value', this.getAttribute('data-val')); items.querySelectorAll(".same-as-selected").forEach(el => el.classList.remove("same-as-selected")); this.classList.add("same-as-selected"); selected.click(); handleFilterChange(sel); }); }); }); document.addEventListener("click", () => { document.querySelectorAll(".select-items").forEach(el => el.classList.add("select-hide")); document.querySelectorAll(".select-selected").forEach(el => el.classList.remove("select-arrow-active")); });
 function handleFilterChange(sel) { if (sel.id === 'custom-category' && document.getElementById('catalog-grid')) { const val = sel.getAttribute('data-value'); document.querySelectorAll('.specific-filter').forEach(group => { group.classList.add('hidden'); group.querySelector('.custom-select').setAttribute('data-value', 'all'); }); if (val === 'panels') { ['power','cell','efficiency','frame'].forEach(id => document.getElementById(`filter-group-${id}`).classList.remove('hidden')); } else if (val === 'inverters') { ['phase','voltage'].forEach(id => document.getElementById(`filter-group-${id}`).classList.remove('hidden')); } else if (val === 'batteries') { ['capacity','voltage'].forEach(id => document.getElementById(`filter-group-${id}`).classList.remove('hidden')); } const newUrl = window.location.pathname + (val === 'all' ? '' : '?category=' + val); window.history.replaceState({path:newUrl}, '', newUrl); applyAdvancedFilters(); } else if (sel.id.startsWith('custom-') && document.getElementById('catalog-grid')) applyAdvancedFilters(); }
 function setCustomSelectValue(selectId, value) { const sel = document.getElementById(selectId); if (!sel) return; sel.setAttribute('data-value', value); sel.querySelectorAll('.select-items div').forEach(opt => { opt.classList.remove('same-as-selected'); if (opt.getAttribute('data-val') === value) { opt.classList.add('same-as-selected'); sel.querySelector('.select-selected').innerHTML = opt.innerHTML; } }); handleFilterChange(sel); }
+window.setPub = function(val) { document.getElementById('admin-pub-true').classList.toggle('active', val); document.getElementById('admin-pub-false').classList.toggle('active', !val); document.getElementById('admin-published').value = val; }
 
-document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', (e) => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.admin-tab-content').forEach(f => f.classList.add('hidden')); e.target.classList.add('active'); document.getElementById(e.target.dataset.target).classList.remove('hidden'); }); });
+document.querySelectorAll('.tab-btn').forEach(btn => { 
+    btn.addEventListener('click', (e) => { 
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+        document.querySelectorAll('.admin-tab-content').forEach(f => f.classList.add('hidden')); 
+        e.target.classList.add('active'); 
+        document.getElementById(e.target.dataset.target).classList.remove('hidden'); 
+    }); 
+});
 function showAdminSuccess() { const m = document.getElementById('admin-success'); if (m) { m.classList.remove('hidden'); setTimeout(() => { m.classList.add('show'); }, 10); setTimeout(() => { m.classList.remove('show'); }, 3000); } }
 
 // Переключатель видимости товара
@@ -205,14 +223,33 @@ if (document.getElementById('admin-service-form')) { document.getElementById('ad
 
 function initAdminSettings() { 
     if (document.getElementById('admin-contacts-form')) { 
-        const c = dbSettings.contacts || []; document.getElementById('contact-1').value = c[0]||''; document.getElementById('contact-2').value = c[1]||''; document.getElementById('contact-3').value = c[2]||''; 
-        document.getElementById('admin-contacts-form').onsubmit = async (e) => { e.preventDefault(); try { const newC = [document.getElementById('contact-1').value.trim(), document.getElementById('contact-2').value.trim(), document.getElementById('contact-3').value.trim()]; await mutateDB('settings', 'PATCH', { contacts: JSON.stringify(newC) }, 1); showAdminSuccess(); await initApp(); } catch (err) { alert(err.message); } }; 
+        const c = dbSettings.contacts || []; 
+        document.getElementById('contact-1').value = c[0]||''; 
+        
+        document.getElementById('admin-contacts-form').onsubmit = async (e) => { 
+            e.preventDefault(); 
+            try { 
+                const newC = [document.getElementById('contact-1').value.trim(), "", ""]; 
+                await mutateDB('settings', 'PATCH', { contacts: JSON.stringify(newC) }, 1); 
+                showAdminSuccess(); 
+                await initApp(); 
+            } catch (err) { alert(err.message); } 
+        }; 
     } 
     if (document.getElementById('admin-telegram-form')) { 
         document.getElementById('tg-token-input').value = dbSettings.tg_token || ''; const cList = document.getElementById('tg-chatids-list'); 
         cList.innerHTML = (dbSettings.tg_chat_ids?.length) ? dbSettings.tg_chat_ids.map((chat,i)=>`<div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.05);padding:8px;border-radius:4px"><div><strong style="color:var(--accent-neon);font-size:14px">${chat.label}</strong><br><span style="font-size:12px;color:var(--text-muted)">${chat.id}</span></div><button type="button" class="btn btn-sm btn-delete" onclick="deleteTgChat(${i})">Удалить</button></div>`).join('') : '<span style="color:gray;font-size:13px">Пусто</span>'; 
-        document.getElementById('tg-add-btn').onclick = async () => { const l=document.getElementById('tg-new-label').value.trim()||'Без имени', i=document.getElementById('tg-new-chatid').value.trim(); if(!i)return; const chatIds = [...(dbSettings.tg_chat_ids||[])]; if(!chatIds.find(c=>c.id===i)){ try { chatIds.push({id:i,label:l}); await mutateDB('settings', 'PATCH', { tg_chat_ids: JSON.stringify(chatIds) }, 1); document.getElementById('tg-new-label').value=''; document.getElementById('tg-new-chatid').value=''; await initApp(); } catch (err) { alert(err.message); } } }; 
-        document.getElementById('admin-telegram-form').onsubmit = async (e) => { e.preventDefault(); try { await mutateDB('settings', 'PATCH', { tg_token: document.getElementById('tg-token-input').value.trim() }, 1); showAdminSuccess(); await initApp(); } catch (err) { alert(err.message); } }; 
+        document.getElementById('tg-add-btn').onclick = async () => { 
+            const l=document.getElementById('tg-new-label').value.trim()||'Без имени', i=document.getElementById('tg-new-chatid').value.trim(); 
+            if(!i)return; const chatIds = [...(dbSettings.tg_chat_ids||[])]; 
+            if(!chatIds.find(c=>c.id===i)){ 
+                try { chatIds.push({id:i,label:l}); await mutateDB('settings', 'PATCH', { tg_chat_ids: JSON.stringify(chatIds) }, 1); document.getElementById('tg-new-label').value=''; document.getElementById('tg-new-chatid').value=''; await initApp(); } catch (err) { alert(err.message); } 
+            } 
+        }; 
+        document.getElementById('admin-telegram-form').onsubmit = async (e) => { 
+            e.preventDefault(); 
+            try { await mutateDB('settings', 'PATCH', { tg_token: document.getElementById('tg-token-input').value.trim() }, 1); showAdminSuccess(); await initApp(); } catch (err) { alert(err.message); } 
+        }; 
     } 
 }
 
