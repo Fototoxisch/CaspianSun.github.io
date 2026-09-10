@@ -2,7 +2,7 @@ const SUPABASE_URL = 'https://khlmhyzhzpbpirmudbxg.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RVxWpPNclnP2ATXQBUQlPQ_6NcmHMCa';
 
 function getHeaders() { const t = sessionStorage.getItem('supabase_admin_token'); return { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${t || SUPABASE_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' }; }
-let dbProducts = [], dbServices = [], dbSettings = { tg_token: '', tg_chat_ids: [], contacts: ['+7 (800) 000-00-00', '', ''] };
+let dbProducts = [], dbSettings = { tg_token: '', tg_chat_ids: [], contacts: ['+7 (800) 000-00-00', '', ''] };
 
 // Отправка Alert в ТГ при падении БД
 async function sendDatabaseAlert(botToken, chatId, errorMessage) {
@@ -54,7 +54,7 @@ function protectProductPage() {
                 let meta = document.createElement('meta');
                 meta.name = "robots"; meta.content = "noindex, nofollow";
                 document.head.appendChild(meta);
-                document.body.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#181A1F;text-align:center;padding:20px;font-family:sans-serif;"><h1 style="color:#e74c3c;margin-bottom:16px;">Позиция временно снята с витрины</h1><p style="color:#A0AAB2;margin-bottom:24px;">Этот товар недоступен для заказа или скрыт.</p><a href="/CaspianSun.github.io/catalog.html" style="padding:12px 24px;background:#5DF1D8;color:#181A1F;text-decoration:none;border-radius:6px;font-weight:bold;">Вернуться в каталог</a></div>`;
+                document.body.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#181A1F;text-align:center;padding:20px;font-family:sans-serif;"><h1 style="color:#e74c3c;margin-bottom:16px;">Позиция временно снята с витрины</h1><p style="color:#A0AAB2;margin-bottom:24px;">Этот товар недоступен для заказа или скрыт.</p><a href="{{ '/catalog.html' | relative_url }}" style="padding:12px 24px;background:#5DF1D8;color:#181A1F;text-decoration:none;border-radius:6px;font-weight:bold;">Вернуться в каталог</a></div>`;
             }
         }
     }
@@ -104,8 +104,8 @@ async function syncProductsWithCatalog() {
 }
 
 async function initApp() {
-    const [p, s, set] = await Promise.all([fetchDB('products'), fetchDB('services'), fetchDB('settings')]);
-    dbProducts = p || []; dbServices = s || []; 
+    const [p, set] = await Promise.all([fetchDB('products'), fetchDB('settings')]);
+    dbProducts = p || []; 
     if (set?.length) { dbSettings = set[0]; if(typeof dbSettings.tg_chat_ids === 'string') dbSettings.tg_chat_ids = JSON.parse(dbSettings.tg_chat_ids); if(typeof dbSettings.contacts === 'string') dbSettings.contacts = JSON.parse(dbSettings.contacts); }
     
     renderContacts();
@@ -116,8 +116,20 @@ async function initApp() {
         const catParam = new URLSearchParams(window.location.search).get('category'); 
         if (catParam) { setCustomSelectValue('custom-category', catParam); } else { applyAdvancedFilters(); } 
     }
-    if (document.getElementById('services-grid')) renderServices();
     
+    const dynPrice = document.getElementById('dyn-price');
+    const dynStock = document.getElementById('dyn-stock');
+    if (dynPrice && dynStock) {
+        const slug = dynPrice.getAttribute('data-slug');
+        const product = dbProducts.find(p => p.slug === slug);
+        if (product) {
+            dynPrice.innerText = product.price;
+            dynStock.innerText = product.published ? 'В наличии' : 'Скрыто / Под заказ';
+            dynStock.style.color = product.published ? 'var(--accent-neon)' : 'var(--text-muted)';
+            dynStock.style.background = product.published ? 'rgba(93, 241, 216, 0.1)' : 'rgba(255, 255, 255, 0.05)';
+        }
+    }
+
     if (document.getElementById('admin-login-screen') && sessionStorage.getItem('supabase_admin_token')) { 
         document.getElementById('admin-login-screen').classList.add('hidden'); 
         document.getElementById('admin-workspace').classList.remove('hidden'); 
@@ -188,7 +200,6 @@ window.togglePub = async function(id, currentState) {
     } catch(e) { alert(e.message); }
 }
 
-let editIds = { services: null };
 function renderAdminLists() { 
     const prodList = document.getElementById('admin-products-list'); 
     if (prodList) { 
@@ -204,22 +215,12 @@ function renderAdminLists() {
                 </div>
                 <div style="display:flex; flex-direction:column; gap:8px;">
                     <button class="toggle-btn ${badgeClass}" style="padding:8px 12px; border:1px solid var(--accent-neon); border-radius:4px;" onclick="togglePub(${p.id}, ${isPub})">${badgeText}</button>
-                    <a href="/CaspianSun.github.io/products/${p.slug}.html" target="_blank" class="btn btn-sm" style="border-color:#3498db;color:#3498db;padding:8px 12px;">Открыть ↗</a>
+                    <a href="{{ '/products/' | relative_url }}${p.slug}.html" target="_blank" class="btn btn-sm" style="border-color:#3498db;color:#3498db;padding:8px 12px;">Открыть ↗</a>
                 </div>
             </div>`; 
         }).join(''); 
     } 
-    const servList = document.getElementById('admin-services-list'); 
-    if (servList) { servList.innerHTML = dbServices.map((s, idx) => `<div class="service-card card-base card-item card-item-center"><h3 class="service-title">${s.title}</h3><div class="service-price">${s.price}</div><p class="service-desc">${s.desc_text}</p><div class="card-actions"><button type="button" class="btn btn-sm btn-edit flex-2" onclick="editItem('services',${idx})">Ред.</button><button type="button" class="btn btn-sm btn-delete flex-2" onclick="deleteItem('services',${idx})">Удал.</button></div></div>`).join(''); } 
 }
-
-window.deleteItem = async function(table, idx) { if(confirm("Удалить запись?")) { try { await mutateDB(table, 'DELETE', null, dbServices[idx].id); await initApp(); } catch(err) { alert(err.message); } } }
-window.editItem = function(table, i) { const item = dbServices[i]; editIds[table] = item.id; document.getElementById('service-title').value = item.title; document.getElementById('service-price').value = item.price; document.getElementById('service-desc').value = item.desc_text; document.getElementById(`btn-submit-${table}`).innerText = 'Сохранить изменения'; document.getElementById(`btn-cancel-${table}`).classList.remove('hidden'); window.scrollTo(0,0); }
-const cancelEdit = (table) => { editIds[table] = null; document.getElementById('admin-service-form').reset(); document.getElementById(`btn-submit-${table}`).innerText = '+ Сохранить'; document.getElementById(`btn-cancel-${table}`).classList.add('hidden'); }
-const cancelBtn = document.getElementById(`btn-cancel-services`); if(cancelBtn) cancelBtn.onclick = () => cancelEdit('services');
-
-async function handleAdminSubmit(e, table, getPayload) { e.preventDefault(); const btn = document.getElementById(`btn-submit-${table}`); const origText = btn.innerText; btn.innerText = "Отправка..."; try { const payload = getPayload(); if(editIds[table] !== null) { await mutateDB(table, 'PATCH', payload, editIds[table]); editIds[table] = null; } else { await mutateDB(table, 'POST', payload); } showAdminSuccess(); cancelEdit(table); await initApp(); } catch (err) { alert("Ошибка при сохранении: " + err.message); } btn.innerText = origText; }
-if (document.getElementById('admin-service-form')) { document.getElementById('admin-service-form').onsubmit = (e) => handleAdminSubmit(e, 'services', () => ({title: document.getElementById('service-title').value, price: document.getElementById('service-price').value, desc_text: document.getElementById('service-desc').value})); }
 
 function initAdminSettings() { 
     if (document.getElementById('admin-contacts-form')) { 
@@ -276,8 +277,6 @@ function applyAdvancedFilters() {
         card.style.display = ok ? 'flex' : 'none'; if(ok) card.style.animation='fadeInSlide 0.4s ease-out'; 
     }); 
 }
-
-function renderServices() { const sGrid = document.getElementById('services-grid'); if (!sGrid) return; sGrid.innerHTML = dbServices.map(s => `<div class="service-card card-base card-item card-item-center"><h3 class="service-title">${s.title}</h3><div class="service-price">${s.price}</div><p class="service-desc">${s.desc_text}</p><button class="btn btn-sm btn-full mt-auto btn-lead" data-service="${s.title}">Оставить заявку</button></div>`).join(''); }
 
 document.addEventListener('click', (e) => { 
     const btnLead = e.target.closest('.btn-lead'); 

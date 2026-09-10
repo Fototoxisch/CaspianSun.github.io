@@ -1,0 +1,42 @@
+<header class="header">
+  <div class="logo-container">
+    <a href="{{ '/index.html' | relative_url }}" class="logo">
+      <img src="{{ '/images/Logo/logo-horizontal.png' | relative_url }}" alt="Caspian Sun" class="main-logo" style="height: 64px;">
+    </a>
+  </div>
+  <button class="burger-btn" id="burger-btn">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent-neon)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+  </button>
+  <nav class="nav">
+    <ul class="nav-list">
+      <li><a href="{{ '/index.html' | relative_url }}" class="nav-link">Главная</a></li>
+      <li><a href="{{ '/about.html' | relative_url }}" class="nav-link">О компании</a></li>
+      <li class="dropdown">
+        <a href="{{ '/catalog.html' | relative_url }}" class="nav-link dropdown-toggle">Каталог ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="{{ '/catalog.html?category=all' | relative_url }}">Общий каталог</a></li>
+          <li><a href="{{ '/catalog.html?category=panels' | relative_url }}">Солнечные панели</a></li>
+          <li><a href="{{ '/catalog.html?category=batteries' | relative_url }}">Аккумуляторы</a></li>
+          <li><a href="{{ '/catalog.html?category=inverters' | relative_url }}">Инверторы</a></li>
+        </ul>
+      </li>
+      <li><a href="{{ '/services.html' | relative_url }}" class="nav-link">Услуги</a></li>
+      <li class="dropdown">
+        <a href="{{ '/info/guide-ses.html' | relative_url }}" class="nav-link dropdown-toggle">Информация ▾</a>
+        <ul class="dropdown-menu">
+          <li><a href="{{ '/info/guide-ses.html' | relative_url }}">Как работает СЭС</a></li>
+          <li><a href="{{ '/info/panels.html' | relative_url }}">Солнечные панели</a></li>
+          <li><a href="{{ '/info/inverters.html' | relative_url }}">Инверторы</a></li>
+          <li><a href="{{ '/info/lifepo4.html' | relative_url }}">Аккумуляторы LiFePO4</a></li>
+          <li><a href="{{ '/info/mounting.html' | relative_url }}">Монтаж СЭС</a></li>
+          <li><a href="{{ '/info/kits.html' | relative_url }}">Готовые комплекты</a></li>
+          <li><a href="{{ '/info/business.html' | relative_url }}">СЭС для бизнеса</a></li>
+        </ul>
+      </li>
+      <li><a href="{{ '/contacts.html' | relative_url }}" class="nav-link">Контакты</a></li>
+    </ul>
+  </nav>
+  <div class="header-action">
+    <a href="{{ '/index.html#calculator' | relative_url }}" class="btn">Калькулятор мощности</a>
+  </div>
+</header>
