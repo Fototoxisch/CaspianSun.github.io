@@ -4,63 +4,89 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Каталог оборудования — Caspian Sun</title>
-  <link rel="icon" href="/CaspianSun.github.io/images/Logo/logo-icon.png" type="image/png">
+  <title>Панель управления — Caspian Sun</title>
+  <link rel="icon" href="{{ '/images/Logo/logo-icon.png' | relative_url }}" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/CaspianSun.github.io/styles.css">
+  <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}">
 </head>
 <body class="dark-theme">
-  {% include header.html %}
+  <header class="header">
+    <div class="logo-container">
+      <a href="{{ '/index.html' | relative_url }}" class="logo">
+        <img src="{{ '/images/Logo/logo-horizontal.png' | relative_url }}" alt="Caspian Sun" class="main-logo">
+      </a>
+    </div>
+    <nav class="nav">
+      <ul class="nav-list">
+        <li><span class="nav-link active highlight">Режим Администратора</span></li>
+        <li><a href="{{ '/index.html' | relative_url }}" class="nav-link">На главную →</a></li>
+      </ul>
+    </nav>
+    <div class="header-action">
+      <button class="btn btn-delete hidden" id="btn-logout">Выйти</button>
+    </div>
+  </header>
+  
   <main>
-    <section class="catalog-page-section">
-      <div class="section-header"><h1 class="hero-title">КАТАЛОГ <span class="gradient-text">ОБОРУДОВАНИЯ</span></h1></div>
-      <div class="advanced-filters sticky-filters card-base">
-        <div class="filter-group"><label>Категория</label><div class="custom-select" id="custom-category" data-value="all"><div class="select-selected">Все товары</div><div class="select-items select-hide"><div data-val="all">Все товары</div><div data-val="panels">Солнечные панели</div><div data-val="inverters">Инверторы</div><div data-val="batteries">Аккумуляторы</div></div></div></div>
-        <div class="filter-group"><label>Бренд</label><div class="custom-select" id="custom-brand" data-value="all"><div class="select-selected">Все бренды</div><div class="select-items select-hide"><div data-val="all">Все бренды</div><div data-val="jinko">Jinko Solar</div><div data-val="deye">Deye</div><div data-val="lvtopsun">Lvtopsun</div><div data-val="sunways">Sunways</div><div data-val="other">Другие</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-power"><label>Мощность (W)</label><div class="custom-select" id="custom-power" data-value="all"><div class="select-selected">Любая</div><div class="select-items select-hide"><div data-val="all">Любая</div><div data-val="400">До 450 Вт</div><div data-val="500">От 450 до 550 Вт</div><div data-val="600">Более 550 Вт</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-cell"><label>Тип ячеек</label><div class="custom-select" id="custom-cell" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="perc">Mono PERC</div><div data-val="n-type">N-Type TOPCon</div><div data-val="bifacial">Bifacial</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-efficiency"><label>КПД</label><div class="custom-select" id="custom-efficiency" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="under-21">До 21%</div><div data-val="21-22">21% - 22%</div><div data-val="over-22">Более 22%</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-frame"><label>Цвет рамки</label><div class="custom-select" id="custom-frame" data-value="all"><div class="select-selected">Любой</div><div class="select-items select-hide"><div data-val="all">Любой</div><div data-val="silver">Серебро</div><div data-val="black">Черная рамка</div><div data-val="full-black">Full Black</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-phase"><label>Фазы</label><div class="custom-select" id="custom-phase" data-value="all"><div class="select-selected">Любые</div><div class="select-items select-hide"><div data-val="all">Любые</div><div data-val="1">1 фаза (220V)</div><div data-val="3">3 фазы (380V)</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-voltage"><label>Напряжение</label><div class="custom-select" id="custom-voltage" data-value="all"><div class="select-selected">Любое</div><div class="select-items select-hide"><div data-val="all">Любое</div><div data-val="12">12V</div><div data-val="24">24V</div><div data-val="48">48V</div></div></div></div>
-        <div class="filter-group specific-filter" id="filter-group-capacity"><label>Емкость</label><div class="custom-select" id="custom-capacity" data-value="all"><div class="select-selected">Любая</div><div class="select-items select-hide"><div data-val="all">Любая</div><div data-val="100">До 100 Ah</div><div data-val="200">От 200 Ah</div></div></div></div>
-      </div>
-      
-      <div class="grid-cards" id="catalog-grid">
-      
-        <div class="tech-card card-base card-item" data-slug="growatt-6000es-plus" data-category="inverters" data-brand="other" data-phase="1" data-voltage="48">
-          <img src="/CaspianSun.github.io/images/products/growatt-6000es-plus.jpg" alt="Growatt 6000ES Plus" style="width: 100%; height: 180px; object-fit: cover; margin: -40px -40px 16px; border-radius: 8px 8px 0 0; display: block;">
-          <h3>Гибридный инвертор Growatt SPF 6000ES Plus</h3>
-          <div class="card-specs"><div><span>В наличии/под заказ:</span> <strong>В наличии</strong></div></div>
-          <div class="card-footer"><span class="price">65 000 ₽</span><a href="/CaspianSun.github.io/products/growatt-6000es-plus.html" class="btn btn-sm">Смотреть</a></div>
-        </div>
+    <section class="admin-section">
+      <div class="section-header"><h1 class="hero-title">УПРАВЛЕНИЕ <span class="gradient-text">БАЗОЙ</span></h1></div>
 
-        <div class="tech-card card-base card-item" data-slug="dah-solar-620w" data-category="panels" data-brand="other" data-power="600" data-cell="n-type" data-efficiency="over-22" data-frame="full-black">
-          <img src="/CaspianSun.github.io/images/products/dah-solar-620w.jpg" alt="DAH Solar 620W" style="width: 100%; height: 180px; object-fit: cover; margin: -40px -40px 16px; border-radius: 8px 8px 0 0; display: block;">
-          <h3>Солнечная панель DAH Solar 620W</h3>
-          <div class="card-specs"><div><span>В наличии/под заказ:</span> <strong>В наличии</strong></div></div>
-          <div class="card-footer"><span class="price">12 500 ₽</span><a href="/CaspianSun.github.io/products/dah-solar-620w.html" class="btn btn-sm">Смотреть</a></div>
-        </div>
+      <div id="admin-login-screen" class="card-base login-card"><h3 class="login-title">Авторизация</h3><form id="auth-form" class="admin-form"><div class="form-group"><label>Email</label><input type="email" id="auth-email" class="form-input" required></div><div class="form-group"><label>Пароль</label><input type="password" id="auth-password" class="form-input" required></div><button type="submit" class="btn btn-full" id="auth-submit-btn">Войти в систему</button><div id="auth-error" class="admin-error-msg hidden">Ошибка входа</div></form></div>
 
-        <div class="tech-card card-base card-item" data-slug="dah-solar-battery-5kwh" data-category="batteries" data-brand="other" data-voltage="48" data-capacity="100">
-          <img src="/CaspianSun.github.io/images/products/dah-solar-battery-5kwh.jpg" alt="Накопитель DAH Solar 5 кВт·ч" style="width: 100%; height: 180px; object-fit: cover; margin: -40px -40px 16px; border-radius: 8px 8px 0 0; display: block;">
-          <h3>Накопитель энергии DAH Solar 5 кВт·ч</h3>
-          <div class="card-specs"><div><span>В наличии/под заказ:</span> <strong>В наличии</strong></div></div>
-          <div class="card-footer"><span class="price">110 000 ₽</span><a href="/CaspianSun.github.io/products/dah-solar-battery-5kwh.html" class="btn btn-sm">Смотреть</a></div>
+      <div id="admin-workspace" class="hidden">
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-target="admin-product-tab">Оборудование (Реестр)</button>
+            <button class="tab-btn" data-target="admin-service-tab">Услуги</button>
+            <button class="tab-btn" data-target="admin-settings-tab">Настройки</button>
         </div>
+        
+        <div class="admin-content-wrapper">
+          <div id="admin-product-tab" class="admin-tab-content">
+            <div class="card-base mb-24" style="background: rgba(93, 241, 216, 0.05); border-color: var(--accent-neon);">
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 0;"><strong>Автосинхронизация активна:</strong> Все товары считываются напрямую из файла <code>catalog.html</code>. Создайте карточку в каталоге, и она автоматически появится здесь для управления видимостью.</p>
+            </div>
+            <div class="admin-list-header clean-top"><h3>Видимость позиций в каталоге</h3></div>
+            <div id="admin-products-list" style="display: flex; flex-direction: column; gap: 16px;"></div>
+          </div>
 
-        <div class="tech-card card-base card-item" data-slug="dc-combiner-box-500v" data-category="inverters" data-brand="other">
-          <img src="/CaspianSun.github.io/images/products/dc-combiner-box-500v.jpg" alt="Щит защиты DC Combiner Box" style="width: 100%; height: 180px; object-fit: cover; margin: -40px -40px 16px; border-radius: 8px 8px 0 0; display: block;">
-          <h3>Щит защиты DC Combiner Box</h3>
-          <div class="card-specs"><div><span>В наличии/под заказ:</span> <strong>В наличии</strong></div></div>
-          <div class="card-footer"><span class="price">8 500 ₽</span><a href="/CaspianSun.github.io/products/dc-combiner-box-500v.html" class="btn btn-sm">Смотреть</a></div>
+          <div id="admin-service-tab" class="admin-tab-content hidden">
+            <div class="card-base">
+              <form id="admin-service-form" class="admin-form">
+                <div class="form-row"><div class="form-group"><label>Название *</label><input type="text" id="service-title" class="form-input" required></div><div class="form-group"><label>Цена *</label><input type="text" id="service-price" class="form-input" required></div></div>
+                <div class="form-group"><label>Описание *</label><textarea id="service-desc" class="form-input form-textarea" required></textarea></div>
+                <div class="form-actions"><button type="submit" id="btn-submit-services" class="btn btn-full">+ Сохранить</button><button type="button" id="btn-cancel-services" class="btn btn-cancel hidden">Отмена</button></div>
+              </form>
+            </div>
+            <div class="admin-list-header"><h3>Существующие услуги</h3></div><div id="admin-services-list" class="grid-cards"></div>
+          </div>
+
+          <div id="admin-settings-tab" class="admin-tab-content hidden">
+            <div class="card-base">
+              <form id="admin-contacts-form" class="admin-form">
+                <div class="admin-list-header clean-top"><h3>Контактный телефон</h3></div>
+                <div class="form-row"><div class="form-group"><label>Основной номер *</label><input type="text" id="contact-1" class="form-input" placeholder="+7 (800) 000-00-00" required></div></div>
+                <button type="submit" class="btn btn-full mt-16">Сохранить номер</button>
+              </form>
+            </div>
+            <div class="card-base mt-24">
+              <form id="admin-telegram-form" class="admin-form">
+                <div class="admin-list-header clean-top"><h3>Настройки Telegram</h3></div>
+                <div class="form-group mb-20"><label>Bot Token</label><input type="text" id="tg-token-input" class="form-input"></div>
+                <div class="form-row tg-row"><div class="form-group"><label>Имя</label><input type="text" id="tg-new-label" class="form-input"></div><div class="form-group"><label>Chat ID</label><input type="text" id="tg-new-chatid" class="form-input"></div><div class="form-group"><button type="button" id="tg-add-btn" class="btn btn-full tg-btn">Добавить</button></div></div>
+                <div class="form-group mt-20"><label>Получатели:</label><div id="tg-chatids-list" class="tg-list"></div></div>
+                <button type="submit" class="btn btn-full mt-24">Сохранить Telegram</button>
+              </form>
+            </div>
+          </div>
+          
         </div>
-
       </div>
     </section>
   </main>
-  {% include footer.html %}
+  
+  <div id="admin-success" class="toast">Данные успешно сохранены!</div>
+  <script src="{{ '/script.js' | relative_url }}"></script>
 </body>
 </html>
