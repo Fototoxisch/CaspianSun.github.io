@@ -154,18 +154,16 @@ input[type=number] { -moz-appearance: textfield; }
 .btn-email-contact:hover { background: #F59E0B; color: #fff; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); transform: translateY(-2px); }
 
 /* Calculator Specific */
-.caspian-calc-wrapper { font-family: var(--font-tech); background-color: var(--bg-main); color: var(--text-main); max-width: 700px; margin: 40px auto; padding: 40px 30px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box; position: relative; }
+.caspian-calc-wrapper { width: 100%; font-family: var(--font-tech); background-color: var(--bg-main); color: var(--text-main); max-width: 700px; margin: 40px auto; padding: 40px 30px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box; position: relative; }
 .caspian-calc-wrapper h2 { text-align: center; margin-top: 0; margin-bottom: 25px; font-size: 26px; font-weight: 700; }
-.toggle-container { display: flex; background: var(--bg-card); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
-.toggle-btn { flex: 1; padding: 12px; text-align: center; background: transparent; border: none; color: var(--text-muted); font-family: var(--font-tech); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-.toggle-btn.active { background: var(--accent-neon); color: var(--bg-main); box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
-.input-mode-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-.input-mode-btn { flex: 1; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s; }
+.toggle-container, .input-mode-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+.toggle-btn, .input-mode-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s; font-family: var(--font-tech); font-weight: 600; }
+.toggle-btn.active { background: var(--accent-neon); color: var(--bg-main); border-color: var(--accent-neon); }
 .input-mode-btn.active { border-color: var(--accent-neon); color: var(--accent-neon); background: rgba(93, 241, 216, 0.05); }
 .tech-slider { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-card); border-radius: 5px; outline: none; margin-top: 10px; cursor: ew-resize; accent-color: var(--accent-neon); }
 .range-value { text-align: center; font-size: 28px; font-weight: 700; color: var(--accent-neon); margin-top: 10px; }
 .coverage-display { text-align: center; font-size: 22px; font-weight: 700; color: var(--accent-neon); margin-top: 10px; }
-.logic-alert { text-align: center; font-size: 13px; color: var(--accent-neon); background: rgba(93, 241, 216, 0.05); padding: 8px; border-radius: 6px; margin-top: 10px; border: 1px dashed rgba(93, 241, 216, 0.3); }
+.logic-alert { text-align: center; font-size: 13px; color: var(--accent-neon); background: rgba(93, 241, 216, 0.05); padding: 8px; border-radius: 6px; margin-top: 10px; border: 1px dashed rgba(93, 241, 216, 0.3); width: 100%; box-sizing: border-box; transition: all 0.3s ease; }
 .hardware-visual { display: flex; justify-content: space-around; background: var(--bg-card); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.05); flex-wrap: wrap; gap: 10px; }
 .hardware-item { text-align: center; flex: 1 1 20%; min-width: 90px; }
 .hardware-icon { font-size: 24px; margin-bottom: 5px; }

@@ -41,13 +41,13 @@
         </div>
         
         <label id="sliderLabel" style="display: block; font-weight: 500; margin-bottom: 10px; color: var(--text-muted); font-size: 14px;">Средний расход электроэнергии в месяц:</label>
-        <input type="range" id="mainSlider" min="500" max="30000" step="100" value="3000" oninput="calculateSolar()">
+        <input type="range" id="mainSlider" class="tech-slider" min="500" max="30000" step="100" value="3000" oninput="calculateSolar()">
         <div class="range-value"><span id="sliderValue">3 000</span> <span id="sliderUnit">кВт·ч</span></div>
       </div>
       
       <div class="form-group">
         <label style="display: block; font-weight: 500; margin-bottom: 10px; color: var(--text-muted); font-size: 14px;">Какую долю расходов хотим перекрыть солнцем?</label>
-        <input type="range" id="coverageSlider" min="10" max="100" step="10" value="50" oninput="calculateSolar()">
+        <input type="range" id="coverageSlider" class="tech-slider" min="10" max="100" step="10" value="50" oninput="calculateSolar()">
         <div class="coverage-display"><span id="coverageValue">50</span>%</div>
         <div id="logicAlert" class="logic-alert">Режим: Умный гибрид (SUB). Экономия днем.</div>
       </div>
@@ -211,14 +211,20 @@
               batteriesCount = Math.max(baseBatteryCount, autonomyBatteryCount);
               logicText = 'Гибридная СЭС: Расширенная автономия (SBU) с ночным питанием от АКБ';
               logicAlert.style.color = '#F1C40F';
+              logicAlert.style.borderColor = 'rgba(241, 196, 15, 0.3)';
+              logicAlert.style.backgroundColor = 'rgba(241, 196, 15, 0.05)';
           } else {
               batteriesCount = baseBatteryCount;
               logicText = 'Гибридная СЭС: Умное подмешивание (SUB). Экономия днем + резерв от блэкаутов';
               logicAlert.style.color = 'var(--accent-neon)';
+              logicAlert.style.borderColor = 'rgba(93, 241, 216, 0.3)';
+              logicAlert.style.backgroundColor = 'rgba(93, 241, 216, 0.05)';
           }
       } else {
           logicText = 'Сетевая СЭС (On-Grid). Исключительно прямая экономия днем без резервирования';
           logicAlert.style.color = 'var(--text-muted)';
+          logicAlert.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+          logicAlert.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
       }
       logicAlert.innerText = logicText;
 
