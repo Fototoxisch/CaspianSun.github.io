@@ -20,32 +20,32 @@
     <div class="caspian-calc-wrapper" id="ui-wrapper">
       <h2>Предварительная смета | Caspian Sun</h2>
       
-      <div class="form-group">
+      <div class="form-group" style="margin-bottom: 15px;">
         <div class="toggle-container" id="tariffToggle">
           <button class="toggle-btn active" onclick="setTariff(10, 'business', this)">Бизнес (10 ₽/кВт)</button>
           <button class="toggle-btn" onclick="setTariff(4, 'home', this)">Дом (4 ₽/кВт)</button>
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" style="margin-bottom: 15px;">
         <div class="toggle-container" id="stationToggle">
           <button class="toggle-btn active" onclick="setStation('grid', this)">Сетевая (Только экономия)</button>
           <button class="toggle-btn" onclick="setStation('hybrid', this)">Гибридная (Резерв с АКБ)</button>
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" style="margin-bottom: 25px;">
         <div class="input-mode-tabs">
           <button class="input-mode-btn" onclick="setInputMode('bill', this)">Знаю счет в рублях</button>
           <button class="input-mode-btn active" onclick="setInputMode('kwh', this)">Знаю расход в кВт·ч</button>
         </div>
         
-        <label id="sliderLabel" style="display: block; font-weight: 500; margin-bottom: 10px; color: var(--text-muted); font-size: 14px;">Средний расход электроэнергии в месяц:</label>
+        <label id="sliderLabel" style="display: block; font-weight: 500; margin-bottom: 10px; margin-top: 20px; color: var(--text-muted); font-size: 14px;">Средний расход электроэнергии в месяц:</label>
         <input type="range" id="mainSlider" class="tech-slider" min="500" max="30000" step="100" value="3000" oninput="calculateSolar()">
         <div class="range-value"><span id="sliderValue">3 000</span> <span id="sliderUnit">кВт·ч</span></div>
       </div>
       
-      <div class="form-group">
+      <div class="form-group" style="margin-bottom: 25px;">
         <label style="display: block; font-weight: 500; margin-bottom: 10px; color: var(--text-muted); font-size: 14px;">Какую долю расходов хотим перекрыть солнцем?</label>
         <input type="range" id="coverageSlider" class="tech-slider" min="10" max="100" step="10" value="50" oninput="calculateSolar()">
         <div class="coverage-display"><span id="coverageValue">50</span>%</div>
@@ -161,7 +161,17 @@
       calculateSolar();
     }
 
+    function updateSliderFill(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const val = ((el.value - el.min) / (el.max - el.min)) * 100;
+        el.style.background = `linear-gradient(to right, var(--accent-neon) ${val}%, var(--bg-card) ${val}%)`;
+    }
+
     function calculateSolar() {
+      updateSliderFill('mainSlider');
+      updateSliderFill('coverageSlider');
+
       const sliderValue = parseFloat(document.getElementById('mainSlider').value);
       document.getElementById('sliderValue').innerText = sliderValue.toLocaleString('ru-RU');
       const coveragePercentage = parseFloat(document.getElementById('coverageSlider').value);
@@ -296,7 +306,7 @@
     }
     
     function shareTG() {
-      window.open('https://t.me/share/url?url=https://caspiansun.ru&text=' + encodeURIComponent(getShareText()), '_blank');
+      window.open('https://t.me/Isapowelitel9', '_blank');
     }
 
     function downloadImage() {
