@@ -1,0 +1,308 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Предварительная смета СЭС | Caspian Sun</title>
+  <link rel="icon" href="{{ '/images/Logo/logo-icon.png?v=3' | relative_url }}" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ '/styles.css' | relative_url }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body class="dark-theme">
+  {% include header.html %}
+  
+  <main style="padding: 60px 20px;">
+    <div class="caspian-calc-wrapper" id="ui-wrapper">
+      <h2>Предварительная смета | Caspian Sun</h2>
+      
+      <div class="form-group">
+        <div class="toggle-container" id="tariffToggle">
+          <button class="toggle-btn active" onclick="setTariff(10, 'business', this)">Бизнес (10 ₽/кВт)</button>
+          <button class="toggle-btn" onclick="setTariff(4, 'home', this)">Дом (4 ₽/кВт)</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="toggle-container" id="stationToggle">
+          <button class="toggle-btn active" onclick="setStation('grid', this)">Сетевая (Только экономия)</button>
+          <button class="toggle-btn" onclick="setStation('hybrid', this)">Гибридная (Резерв с АКБ)</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="input-mode-tabs">
+          <button class="input-mode-btn" onclick="setInputMode('bill', this)">Знаю счет в рублях</button>
+          <button class="input-mode-btn active" onclick="setInputMode('kwh', this)">Знаю расход в кВт·ч</button>
+        </div>
+        
+        <label id="sliderLabel" style="display: block; font-weight: 500; margin-bottom: 10px; color: var(--text-muted); font-size: 14px;">Средний расход электроэнергии в месяц:</label>
+        <input type="range" id="mainSlider" min="500" max="30000" step="100" value="3000" oninput="calculateSolar()">
+        <div class="range-value"><span id="sliderValue">3 000</span> <span id="sliderUnit">кВт·ч</span></div>
+      </div>
+      
+      <div class="form-group">
+        <label style="display: block; font-weight: 500; margin-bottom: 10px; color: var(--text-muted); font-size: 14px;">Какую долю расходов хотим перекрыть солнцем?</label>
+        <input type="range" id="coverageSlider" min="10" max="100" step="10" value="50" oninput="calculateSolar()">
+        <div class="coverage-display"><span id="coverageValue">50</span>%</div>
+        <div id="logicAlert" class="logic-alert">Режим: Умный гибрид (SUB). Экономия днем.</div>
+      </div>
+
+      <div class="hardware-visual">
+        <div class="hardware-item">
+          <div class="hardware-icon">⚡</div>
+          <div class="hardware-text">Инверторы AC</div>
+          <span class="hardware-count" id="visPower">0 кВт</span>
+        </div>
+        <div class="hardware-item">
+          <div class="hardware-icon">☀️</div>
+          <div class="hardware-text">Панели 620W</div>
+          <span class="hardware-count" id="visPanels">0 шт.</span>
+        </div>
+        <div class="hardware-item" id="batteryBlock" style="display: none;">
+          <div class="hardware-icon">🔋</div>
+          <div class="hardware-text">АКБ 5.12 кВт·ч</div>
+          <span class="hardware-count" id="visBatteries">0 шт.</span>
+        </div>
+        <div class="hardware-item">
+          <div class="hardware-icon">📐</div>
+          <div class="hardware-text">Кровля</div>
+          <span class="hardware-count" id="visArea">0 м²</span>
+        </div>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <span>Инвестиции (под ключ):</span> 
+          <span id="resCost">0 ₽</span>
+        </div>
+        <div class="result-card">
+          <span>Экономия за 1 год:</span> 
+          <span id="resSavings">0 ₽</span>
+        </div>
+        <div class="result-card highlight-card">
+          <span>Прогноз окупаемости:</span> 
+          <span id="resDynamic">0 лет</span>
+        </div>
+      </div>
+
+      <div class="image-footer" id="img-footer">
+        <img src="{{ '/images/Logo/logo-horizontal.png' | relative_url }}" alt="Caspian Sun">
+        <div class="contacts">📞 <strong>+7 (963) 373-72-74</strong> | ✉️ CaspianSun.energy@gmail.com</div>
+      </div>
+
+      <div id="export-block">
+        <div class="action-group-title">Сохранить или поделиться расчетом:</div>
+        <div class="export-actions">
+          <button class="export-btn" onclick="downloadImage()">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> Чек
+          </button>
+          <button class="export-btn" onclick="shareWA()">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg> WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let currentTariff = 10; 
+    let currentTariffType = 'business';
+    let currentStationType = 'grid';
+    let inputMode = 'kwh';
+
+    function setTariff(price, typeStr, btnElement) {
+      const container = document.getElementById('tariffToggle');
+      container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      currentTariff = price; currentTariffType = typeStr;
+      calculateSolar();
+    }
+
+    function setStation(typeStr, btnElement) {
+      const container = document.getElementById('stationToggle');
+      container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      currentStationType = typeStr;
+      document.getElementById('batteryBlock').style.display = typeStr === 'hybrid' ? 'block' : 'none';
+      calculateSolar();
+    }
+
+    function setInputMode(mode, btnElement) {
+      const container = btnElement.parentNode;
+      container.querySelectorAll('.input-mode-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      inputMode = mode;
+      const slider = document.getElementById('mainSlider');
+      const label = document.getElementById('sliderLabel');
+      const unit = document.getElementById('sliderUnit');
+
+      if (mode === 'bill') {
+        label.innerText = 'Средний счет за свет в месяц:';
+        slider.min = 5000; slider.max = 300000; slider.step = 1000; slider.value = currentTariffType === 'business' ? 30000 : 12000; unit.innerText = '₽';
+      } else {
+        label.innerText = 'Средний расход электроэнергии в месяц:';
+        slider.min = 500; slider.max = 30000; slider.step = 100; slider.value = 3000; unit.innerText = 'кВт·ч';
+      }
+      calculateSolar();
+    }
+
+    function calculateSolar() {
+      const sliderValue = parseFloat(document.getElementById('mainSlider').value);
+      document.getElementById('sliderValue').innerText = sliderValue.toLocaleString('ru-RU');
+      const coveragePercentage = parseFloat(document.getElementById('coverageSlider').value);
+      document.getElementById('coverageValue').innerText = coveragePercentage;
+      const coverageFactor = coveragePercentage / 100;
+      
+      let monthlyBillRub = 0, monthlyConsumptionKwh = 0;
+
+      if (inputMode === 'bill') {
+          monthlyBillRub = sliderValue; monthlyConsumptionKwh = monthlyBillRub / currentTariff;
+      } else {
+          monthlyConsumptionKwh = sliderValue; monthlyBillRub = monthlyConsumptionKwh * currentTariff;
+      }
+
+      const daysInMonth = 30; const sunHoursPerDay = 4.5;
+      const dailyConsumptionKwh = monthlyConsumptionKwh / daysInMonth;
+      const coveredDailyConsumptionKwh = dailyConsumptionKwh * coverageFactor;
+      
+      let extraPanelMultiplier = 1;
+      if (currentStationType === 'hybrid' && coverageFactor > 0.5) {
+          extraPanelMultiplier = 1 + (coverageFactor - 0.5); 
+      }
+      
+      const arrayPowerKw = (coveredDailyConsumptionKwh / sunHoursPerDay) * extraPanelMultiplier;
+      const panelsCount = Math.ceil((arrayPowerKw * 1000) / 620);
+      
+      let inverterPowerKw = 3;
+      if (currentStationType === 'grid') {
+          inverterPowerKw = Math.max(3, Math.ceil(arrayPowerKw)); 
+      } else {
+          const minHybridPower = currentTariffType === 'business' ? 6 : 3;
+          inverterPowerKw = Math.max(minHybridPower, Math.ceil(arrayPowerKw));
+      }
+      
+      const invertersCount = Math.ceil(inverterPowerKw / 6); 
+
+      let batteriesCount = 0;
+      const logicAlert = document.getElementById('logicAlert');
+      let logicText = '';
+      
+      if (currentStationType === 'hybrid') {
+          const baseBatteryCount = Math.ceil(inverterPowerKw / 5); 
+          if (coverageFactor > 0.5) {
+              const nightCoveragePercent = coverageFactor - 0.5;
+              const nightStorageKwh = dailyConsumptionKwh * nightCoveragePercent;
+              const autonomyBatteryCount = Math.ceil(nightStorageKwh / 5.12);
+              batteriesCount = Math.max(baseBatteryCount, autonomyBatteryCount);
+              logicText = 'Гибридная СЭС: Расширенная автономия (SBU) с ночным питанием от АКБ';
+              logicAlert.style.color = '#F1C40F';
+          } else {
+              batteriesCount = baseBatteryCount;
+              logicText = 'Гибридная СЭС: Умное подмешивание (SUB). Экономия днем + резерв от блэкаутов';
+              logicAlert.style.color = 'var(--accent-neon)';
+          }
+      } else {
+          logicText = 'Сетевая СЭС (On-Grid). Исключительно прямая экономия днем без резервирования';
+          logicAlert.style.color = 'var(--text-muted)';
+      }
+      logicAlert.innerText = logicText;
+
+      const roofArea = Math.ceil(panelsCount * 3.1); 
+
+      let hardwareCost = 0;
+      const inverterTotalCost = inverterPowerKw * 12500;
+
+      if (currentStationType === 'grid') {
+          hardwareCost = (panelsCount * 18000) + inverterTotalCost; 
+      } else {
+          hardwareCost = (panelsCount * 18000) + inverterTotalCost + (batteriesCount * 85000) + (invertersCount * 17000);
+      }
+      let totalCost = hardwareCost * 1.3; 
+
+      const efficiencyRate = currentStationType === 'grid' ? 0.85 : 0.75;
+      const firstYearSavings = (monthlyBillRub * 12) * coverageFactor * efficiencyRate;
+      
+      let accumulatedSavings = 0;
+      let dynamicPaybackYears = 0;
+      let simSavings = firstYearSavings;
+      
+      if (simSavings > 0) {
+          while (accumulatedSavings < totalCost && dynamicPaybackYears < 50) {
+              if (accumulatedSavings + simSavings >= totalCost) {
+                  let remaining = totalCost - accumulatedSavings;
+                  dynamicPaybackYears += remaining / simSavings;
+                  accumulatedSavings = totalCost; 
+              } else {
+                  accumulatedSavings += simSavings;
+                  dynamicPaybackYears += 1;
+                  simSavings *= 1.10; 
+              }
+          }
+      }
+      
+      let paybackYears = dynamicPaybackYears.toFixed(1);
+
+      document.getElementById('visPower').innerText = inverterPowerKw + ' кВт';
+      document.getElementById('visPanels').innerText = panelsCount + ' шт.';
+      document.getElementById('visArea').innerText = roofArea + ' м²';
+      document.getElementById('visBatteries').innerText = batteriesCount + ' шт.';
+      document.getElementById('resCost').innerText = 'от ' + Math.round(totalCost).toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('resSavings').innerText = Math.round(firstYearSavings).toLocaleString('ru-RU') + ' ₽';
+      
+      let displayPayback = paybackYears + ' лет';
+      let subtext = '<br><span style="font-size: 11px; font-weight: 400; color: var(--text-muted);">с учетом роста тарифа 10%/год</span>';
+      
+      if (currentTariffType === 'home' && currentStationType === 'hybrid') {
+          document.getElementById('resDynamic').innerHTML = displayPayback + '<br><span style="font-size: 11px; font-weight: 400; color: var(--text-muted);">с учетом резерва 24/7 и инфляции</span>';
+      } else {
+          document.getElementById('resDynamic').innerHTML = displayPayback + subtext;
+      }
+    }
+
+    function getShareText() {
+      const power = document.getElementById('visPower').innerText;
+      const panels = document.getElementById('visPanels').innerText;
+      const bat = document.getElementById('visBatteries').innerText;
+      const area = document.getElementById('visArea').innerText;
+      const cost = document.getElementById('resCost').innerText;
+      const save = document.getElementById('resSavings').innerText;
+      
+      return `⚡ Предварительный расчет СЭС от Caspian Sun:\n\nМощность инверторов: ${power}\nПанели (620W): ${panels}\nАКБ (5.12 кВт·ч): ${bat}\nПлощадь на крыше: ${area}\n\nИнвестиции под ключ: ${cost}\nЭкономия в первый год: ${save}\n\nСвяжитесь с инженером для точного проекта:\n📞 +7 (963) 373-72-74`;
+    }
+
+    function shareWA() {
+      window.open('https://wa.me/79633737274?text=' + encodeURIComponent(getShareText()), '_blank');
+    }
+
+    function downloadImage() {
+      const captureArea = document.getElementById('ui-wrapper');
+      const exportBlock = document.getElementById('export-block');
+      const imgFooter = document.getElementById('img-footer');
+
+      exportBlock.style.display = 'none';
+      imgFooter.style.display = 'block';
+
+      html2canvas(captureArea, {
+          backgroundColor: '#181A1F',
+          scale: 2 
+      }).then(canvas => {
+          exportBlock.style.display = 'block';
+          imgFooter.style.display = 'none';
+
+          const link = document.createElement('a');
+          link.download = 'Smeta_CaspianSun.jpg';
+          link.href = canvas.toDataURL('image/jpeg', 0.95);
+          link.click();
+      });
+    }
+
+    calculateSolar();
+  </script>
+  {% include footer.html %}
+</body>
+</html>
