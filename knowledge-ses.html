@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Что такое СЭС — Caspian Sun</title>
+  <meta name="description" content="Как работает солнечная электростанция и из каких компонентов состоит система.">
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <main class="ses-page">
+    
+    <section class="ses-hero">
+      <img src="img/knowledge-ses/knowledge-ses1.webp" alt="Солнечная электростанция" class="ses-hero__bg">
+      <div class="ses-hero__overlay"></div>
+      
+      <div class="container ses-hero__container">
+        <div class="ses-hero__breadcrumbs">
+          <span>БАЗА ЗНАНИЙ</span>
+          <span style="color: var(--text-light);">ЧТО ТАКОЕ СЭС</span>
+        </div>
+        
+        <div>
+          <h1 class="ses-hero__title">ЧТО ТАКОЕ<br>СОЛНЕЧНАЯ<br>ЭЛЕКТРОСТАНЦИЯ</h1>
+          <p class="ses-hero__desc">Как работает солнечная электростанция<br>и из каких компонентов состоит система.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="container ses-layout">
+      
+      <!-- SIDEBAR -->
+      <aside class="ses-sidebar">
+        <div class="ses-sidebar__title">БАЗА ЗНАНИЙ</div>
+        <ul class="ses-sidebar__list">
+          <li class="ses-sidebar__item">
+            <a href="knowledge-ses.html" class="ses-sidebar__link active">
+              <span class="ses-sidebar__num">01</span> Что такое СЭС
+            </a>
+          </li>
+          <li class="ses-sidebar__item">
+            <a href="knowledge-choice.html" class="ses-sidebar__link">
+              <span class="ses-sidebar__num">02</span> Выбор системы
+            </a>
+          </li>
+          <li class="ses-sidebar__item">
+            <a href="knowledge-panels.html" class="ses-sidebar__link">
+              <span class="ses-sidebar__num">03</span> Солнечные панели
+            </a>
+          </li>
+          <li class="ses-sidebar__item">
+            <a href="knowledge-inverter.html" class="ses-sidebar__link">
+              <span class="ses-sidebar__num">04</span> Инверторы
+            </a>
+          </li>
+          <li class="ses-sidebar__item">
+            <a href="knowledge-lifepo4.html" class="ses-sidebar__link">
+              <span class="ses-sidebar__num">05</span> Батареи LIFEPO4
+            </a>
+          </li>
+        </ul>
+        <a href="knowledge-base.html" class="btn btn--outline-glass" style="width: max-content; margin-top: 1rem;">
+          <span>ВСЕ РАЗДЕЛЫ</span>
+          <svg class="btn-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="13" y2="8"></line><polyline points="9 4 13 8 9 12"></polyline></svg>
+        </a>
+      </aside>
+
+      <div class="ses-content">
+        
+        <!-- BLOCK 1: КАК РАБОТАЕТ -->
+        <section>
+          <div class="ses-block-header">
+            <span class="ses-block-num">01</span>
+            <span class="ses-block-line"></span>
+          </div>
+          <h2 class="ses-block-title">КАК РАБОТАЕТ<br>СОЛНЕЧНАЯ ЭЛЕКТРОСТАНЦИЯ</h2>
+          
+          <div class="ses-text-grid">
+            <div>
+              <p class="ses-text-p">Солнечная электростанция (СЭС) — это комплекс оборудования, который преобразует энергию солнечного света в электрическую и обеспечивает питание вашего дома, бизнеса или объекта.</p>
+              <p class="ses-text-p">Основной принцип работы основан на фотоэлектрическом эффекте: солнечные панели генерируют постоянный ток, который затем преобразуется инвертором в переменный ток, пригодный для использования в бытовой сети.</p>
+            </div>
+            <div class="ses-img-card">
+              <img src="img/knowledge-ses/knowledge-ses2.webp" alt="СЭС для частного дома">
+            </div>
+          </div>
+
+          <!-- СХЕМА -->
+          <div class="ses-schema">
+            <div class="ses-schema__title">
+              <svg viewBox="0 0 16 16" style="width: 12px; fill: none; stroke: var(--accent-gold);"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg>
+              ПРИНЦИПИАЛЬНАЯ СХЕМА
+            </div>
+            <div class="ses-schema__flow">
+              
+              <div class="ses-schema__item">
+                <div class="ses-schema__icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
+                <div class="ses-schema__name">СОЛНЕЧНЫЕ ПАНЕЛИ</div>
+                <div class="ses-schema__desc">Преобразуют солнечный свет в постоянный ток</div>
+              </div>
+
+              <div class="ses-schema__arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+
+              <div class="ses-schema__item">
+                <div class="ses-schema__icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg></div>
+                <div class="ses-schema__name">ИНВЕРТОР</div>
+                <div class="ses-schema__desc">Преобразует постоянный ток в переменный</div>
+              </div>
+
+              <div class="ses-schema__arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+
+              <div class="ses-schema__item">
+                <div class="ses-schema__icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2"/><line x1="22" y1="10" x2="22" y2="14"/></svg></div>
+                <div class="ses-schema__name">АККУМУЛЯТОР</div>
+                <div class="ses-schema__desc">Накопление энергии (опционально)</div>
+              </div>
+
+              <div class="ses-schema__arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+
+              <div class="ses-schema__item">
+                <div class="ses-schema__icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+                <div class="ses-schema__name">НАГРУЗКА</div>
+                <div class="ses-schema__desc">Ваш дом, бизнес или объект</div>
+              </div>
+
+              <div class="ses-schema__arrow"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+
+              <div class="ses-schema__item">
+                <div class="ses-schema__icon"><svg viewBox="0 0 24 24"><path d="M12 2L8 22M12 2L16 22M4 14L20 14M6 8L18 8M12 2v20"/></svg></div>
+                <div class="ses-schema__name">СЕТЬ</div>
+                <div class="ses-schema__desc">Резервное питание (при наличии)</div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- BLOCK 2: ОСНОВНЫЕ КОМПОНЕНТЫ -->
+        <section>
+          <div class="ses-comp-header">
+            <div class="ses-comp-title">ОСНОВНЫЕ КОМПОНЕНТЫ СЭС</div>
+            <div class="ses-block-line"></div>
+          </div>
+
+          <div class="ses-comp-grid">
+            <div class="ses-comp-card">
+              <div class="ses-comp-card__img"><img src="img/knowledge-ses/knowledge-ses3.webp" alt="Солнечные панели"></div>
+              <div class="ses-comp-card__body">
+                <div class="ses-comp-card__name"><span>01</span> СОЛНЕЧНЫЕ ПАНЕЛИ</div>
+                <p class="ses-comp-card__desc">Преобразуют солнечный свет в электрическую энергию (постоянный ток).</p>
+                <a href="knowledge-panels.html" class="ses-comp-card__link">ПОДРОБНЕЕ <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"></line><polyline points="10 4 14 8 10 12"></polyline></svg></a>
+              </div>
+            </div>
+            
+            <div class="ses-comp-card">
+              <div class="ses-comp-card__img"><img src="img/knowledge-ses/knowledge-ses4.webp" alt="Инверторы"></div>
+              <div class="ses-comp-card__body">
+                <div class="ses-comp-card__name"><span>02</span> ИНВЕРТОРЫ</div>
+                <p class="ses-comp-card__desc">Преобразуют постоянный ток в переменный и управляют работой системы.</p>
+                <a href="knowledge-inverter.html" class="ses-comp-card__link">ПОДРОБНЕЕ <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"></line><polyline points="10 4 14 8 10 12"></polyline></svg></a>
+              </div>
+            </div>
+
+            <div class="ses-comp-card">
+              <div class="ses-comp-card__img"><img src="img/knowledge-ses/knowledge-ses5.webp" alt="Аккумуляторы"></div>
+              <div class="ses-comp-card__body">
+                <div class="ses-comp-card__name"><span>03</span> АККУМУЛЯТОРЫ</div>
+                <p class="ses-comp-card__desc">Хранят избыточную энергию для использования в вечернее время.</p>
+                <a href="knowledge-lifepo4.html" class="ses-comp-card__link">ПОДРОБНЕЕ <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"></line><polyline points="10 4 14 8 10 12"></polyline></svg></a>
+              </div>
+            </div>
+
+            <div class="ses-comp-card">
+              <div class="ses-comp-card__img"><img src="img/knowledge-ses/knowledge-ses6.webp" alt="Контроллеры"></div>
+              <div class="ses-comp-card__body">
+                <div class="ses-comp-card__name"><span>04</span> КОНТРОЛЛЕРЫ</div>
+                <p class="ses-comp-card__desc">Обеспечивают безопасную работу и защиту системы.</p>
+                <a href="#" class="ses-comp-card__link">ПОДРОБНЕЕ <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"></line><polyline points="10 4 14 8 10 12"></polyline></svg></a>
+              </div>
+            </div>
+
+            <!-- НОВАЯ КАРТОЧКА: МОНТАЖ -->
+            <div class="ses-comp-card">
+              <div class="ses-comp-card__img"><img src="img/knowledge-ses/knowledge-ses-montage.webp" alt="Монтаж" onerror="this.src='img/catalog/placeholder.webp'"></div>
+              <div class="ses-comp-card__body">
+                <div class="ses-comp-card__name"><span>05</span> МОНТАЖ И ПУСКОНАЛАДКА</div>
+                <p class="ses-comp-card__desc">Профессиональная установка, настройка и тестирование оборудования.</p>
+                <a href="services.html" class="ses-comp-card__link">ПОДРОБНЕЕ <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"></line><polyline points="10 4 14 8 10 12"></polyline></svg></a>
+              </div>
+            </div>
+
+            <div class="ses-comp-card">
+              <div class="ses-comp-card__img"><img src="img/knowledge-ses/knowledge-ses7.webp" alt="Мониторинг"></div>
+              <div class="ses-comp-card__body">
+                <div class="ses-comp-card__name"><span>06</span> МОНИТОРИНГ</div>
+                <p class="ses-comp-card__desc">Контроль выработки, потребления и состояния системы в реальном времени.</p>
+                <a href="#" class="ses-comp-card__link">ПОДРОБНЕЕ <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"></line><polyline points="10 4 14 8 10 12"></polyline></svg></a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BLOCK 3: ВАЖНО ЗНАТЬ -->
+        <section class="ses-important">
+          <div class="ses-important__img">
+            <img src="img/knowledge-ses/knowledge-ses8.webp" alt="Инженер смотрит на панели">
+          </div>
+          <div class="ses-important__body">
+            <div class="ses-important__text">
+              <div class="ses-important__tag">ВАЖНО ЗНАТЬ</div>
+              <h3 class="ses-important__title">СЭС РАБОТАЕТ В ЛЮБЫХ УСЛОВИЯХ</h3>
+              <p class="ses-important__desc">Современные технологии позволяют получать стабильную энергию даже при облачности и в зимний период. Эффективность системы зависит от качества оборудования, правильного проектирования и корректного монтажа.</p>
+            </div>
+            <ul class="ses-important__list">
+              <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg> Работает при рассеянном свете</li>
+              <li><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg> Срок службы 25+ лет</li>
+              <li><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 9.36l-7.1 7.1a1 1 0 0 1-1.41-1.41l7.1-7.1a6 6 0 0 1 9.36-7.94l-3.77 3.77a1 1 0 0 0 0 1.4z"/></svg> Минимальное обслуживание</li>
+              <li><svg viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zM12 8l-4 4h3v4h2v-4h3l-4-4z"/></svg> Экологически чистая энергия</li>
+            </ul>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <section class="ses-bottom-cta">
+      <img src="img/knowledge-ses/knowledge-ses9.webp" class="ses-bottom-cta__bg" alt="Панели на закате">
+      <div class="ses-bottom-cta__overlay"></div>
+      
+      <div class="ses-bottom-cta__content">
+        <span class="ses-bottom-cta__tag">ГОТОВЫ УЗНАТЬ БОЛЬШЕ?</span>
+        <h2 class="ses-bottom-cta__title">ВЫБЕРИТЕ РАЗДЕЛ,<br>КОТОРЫЙ ВАС ИНТЕРЕСУЕТ</h2>
+        <p class="ses-bottom-cta__desc">Изучите детали, сравните варианты и найдите решение,<br>которое подойдет именно вам.</p>
+        <a href="knowledge-base.html" class="btn btn--outline-glass" style="width: max-content;">
+          <span>ПЕРЕЙТИ К РАЗДЕЛАМ</span>
+          <svg class="btn-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="13" y2="8"></line><polyline points="9 4 13 8 9 12"></polyline></svg>
+        </a>
+      </div>
+      
+      <div class="ses-bottom-cta__right">
+        ЧИСТАЯ ЭНЕРГИЯ<br>ДЛЯ УСТОЙЧИВОГО<br>БУДУЩЕГО
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

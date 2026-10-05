@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caspian Sun — Генератор каталога</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0E0F10; color: #F4F4F4; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+    .card { background-color: #16181A; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center; }
+    h1 { margin-top: 0; font-weight: 300; letter-spacing: 0.02em; color: #D4A85A; }
+    p { color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 30px; }
+    .btn { background-color: #6B8F93; color: #fff; border: none; padding: 16px 32px; font-size: 16px; font-weight: 600; letter-spacing: 0.05em; border-radius: 4px; cursor: pointer; transition: transform 0.2s, background-color 0.2s; text-transform: uppercase; }
+    .btn:hover { background-color: #5a7b7e; transform: translateY(-2px); }
+    .btn:disabled { background-color: #333; color: #888; cursor: not-allowed; transform: none; }
+    #log { margin-top: 30px; text-align: left; background: #0E0F10; padding: 15px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); font-family: monospace; font-size: 12px; color: #8E9296; max-height: 200px; overflow-y: auto; display: none; }
+    .success { color: #6B8F93; }
+    .error { color: #ff5555; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Генератор страниц товаров</h1>
+    <p>Нажмите кнопку ниже, чтобы скачать данные из Google Таблицы и сгенерировать готовые HTML-страницы для всех товаров в один ZIP-архив.</p>
+    <button id="generateBtn" class="btn">Сгенерировать каталог</button>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyDeEYycEHvJhx0ZG6GJEo55fmQfKxSRZEaw2JESdpG4j0EzHG_7HdWsl6xvXh-dP4Lcw/exec';
+    const SKIP_COLUMNS = ['Бренд', 'Модель', 'Цена', 'Изображение', 'Теги (для ИИ)', 'Описание (для ИИ)', 'Преимущества (для ИИ)', 'Категория', 'Артикул', 'SEO Заголовок', 'SEO Описание'];
+
+    const btn = document.getElementById('generateBtn');
+    const logBox = document.getElementById('log');
+
+    function log(msg, type = 'normal') {
+      logBox.style.display = 'block';
+      logBox.innerHTML += `<div class="${type}">${msg}</div>`;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    const templateHtml = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{SEO_TITLE}}</title>
+  <meta name="description" content="{{SEO_DESC}}">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../main.js" defer><\/script>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+  <main class="pdp-main">
+    <img src="../img/production/Production1.webp" alt="Фон" class="pdp-main__bg">
+    <div class="pdp-main__overlay"></div>
+    <div class="container pdp-container">
+      <div class="pdp-breadcrumbs">
+        <a href="../products.html" class="pdp-breadcrumbs__link">ПРОДУКЦИЯ</a>
+        <span class="pdp-breadcrumbs__sep">—</span>
+        <a href="../products.html?category={{CATEGORY_ID}}" class="pdp-breadcrumbs__link">{{CATEGORY_NAME}}</a>
+        <span class="pdp-breadcrumbs__sep">—</span>
+        <span class="pdp-breadcrumbs__current">{{MODEL}}</span>
+      </div>
+      <section class="pdp-top">
+        <div class="pdp-gallery">
+          <div class="pdp-gallery__main">
+            <button class="pdp-gallery__arrow pdp-gallery__arrow--prev" aria-label="Предыдущее фото">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <img src="../img/catalog/{{CATEGORY_ID}}/{{SKU}}/main.webp" alt="{{MODEL}}" id="pdpMainImage" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">
+            <button class="pdp-gallery__arrow pdp-gallery__arrow--next" aria-label="Следующее фото">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+          <div class="pdp-gallery__thumbs" id="pdpThumbs">
+            {{GALLERY_THUMBS}}
+          </div>
+        </div>
+        <div class="pdp-info">
+          <div class="pdp-info__tags">
+            <span>{{CATEGORY_NAME}} • {{BRAND}}</span>
+            <span>АРТ: {{SKU}}</span>
+          </div>
+          <h1 class="pdp-info__title">{{MODEL}}</h1>
+          <p class="pdp-info__short-desc">{{SHORT_DESC}}</p>
+          <div class="pdp-purchase">
+            <div class="pdp-price">{{PRICE}} $</div>
+            <div class="purchase-actions">
+              <div class="quantity-picker">
+                <button class="qty-btn qty-btn--minus" type="button" aria-label="Уменьшить">&minus;</button>
+                <div class="qty-val-wrapper"><span class="qty-val">1</span></div>
+                <button class="qty-btn qty-btn--plus" type="button" aria-label="Увеличить">&plus;</button>
+              </div>
+              <button class="btn btn--teal pdp-add-to-cart" data-sku="{{SKU}}">В КОРЗИНУ &rarr;</button>
+            </div>
+          </div>
+          <ul class="pdp-features">{{FEATURES_LIST}}</ul>
+        </div>
+      </section>
+      <section class="pdp-details">
+        <div class="pdp-details__grid">
+          <div class="pdp-description">
+            <h2 class="pdp-section-title">Описание</h2>
+            <div class="pdp-description__text"><p>{{FULL_DESC}}</p></div>
+          </div>
+          <div class="pdp-specs">
+            <h2 class="pdp-section-title">Характеристики</h2>
+            <div class="pdp-specs__table">{{SPECS_TABLE}}</div>
+          </div>
+        </div>
+      </section>
+      <section class="pdp-related">
+        <h2 class="pdp-section-title">Похожее оборудование</h2>
+        <div class="product-grid" id="relatedProductsGrid" data-category="{{CATEGORY_ID}}" data-sku="{{SKU}}"></div>
+      </section>
+    </div>
+  </main>
+  <div id="footer-placeholder"></div>
+</body>
+</html>`;
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.textContent = 'Подготовка...';
+      logBox.innerHTML = '';
+      
+      try {
+        log('Установка соединения с Google Таблицами...');
+        const response = await fetch(API_URL);
+        if (!response.ok) throw new Error('Ошибка сети');
+        const products = await response.json();
+        
+        const zip = new JSZip();
+        const folder = zip.folder("products");
+        folder.file('catalog.json', JSON.stringify(products));
+        
+        let count = 0;
+
+        products.forEach(item => {
+          if (!item['Модель'] || !item['Артикул']) return;
+          const sku = String(item['Артикул']).trim();
+          const categoryId = item['Категория'] || 'other';
+          const brand = item['Бренд'] ? String(item['Бренд']).toUpperCase() : '';
+          const model = item['Модель'];
+          
+          let categoryName = 'ОБОРУДОВАНИЕ';
+          if (categoryId === 'inverters') categoryName = 'ИНВЕРТОРЫ';
+          if (categoryId === 'batteries') categoryName = 'АККУМУЛЯТОРЫ';
+          if (categoryId === 'panels') categoryName = 'СОЛНЕЧНЫЕ ПАНЕЛИ';
+
+          const seoTitle = item['SEO Заголовок'] || `${model} — Купить в Caspian Sun`;
+          const seoDesc = item['SEO Описание'] || `Заказать ${model} от ${brand}. Надежное оборудование для солнечных электростанций.`;
+          const shortDesc = item['Теги (для ИИ)'] || '';
+          const fullDesc = item['Описание (для ИИ)'] || 'Описание готовится к публикации.';
+          const price = item['Цена'] || '0';
+
+          let featuresHtml = '';
+          if (item['Преимущества (для ИИ)']) {
+            featuresHtml = String(item['Преимущества (для ИИ)']).split('\n').map(f => f.replace(/^- /, '').trim()).filter(f => f)
+              .map(f => `<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>${f}</li>`).join('');
+          }
+
+          let specsHtml = '';
+          for (const key in item) {
+            if (!SKIP_COLUMNS.includes(key) && item[key]) {
+              specsHtml += `<div class="pdp-spec-row"><span class="pdp-spec-name">${key}</span><span class="pdp-spec-value">${item[key]}</span></div>`;
+            }
+          }
+
+          let galleryThumbsHtml = `<img src="../img/catalog/${categoryId}/${sku}/main.webp" alt="${model}" class="pdp-gallery__thumb pdp-gallery__thumb--active" onerror="this.style.display='none'">`;
+          for (let i = 1; i <= 5; i++) {
+            galleryThumbsHtml += `<img src="../img/catalog/${categoryId}/${sku}/dop${i}.webp" alt="${model} фото ${i}" class="pdp-gallery__thumb" onerror="this.style.display='none'">`;
+          }
+
+          let pageHtml = templateHtml
+            .replace(/{{SEO_TITLE}}/g, seoTitle).replace(/{{SEO_DESC}}/g, seoDesc).replace(/{{CATEGORY_ID}}/g, categoryId)
+            .replace(/{{CATEGORY_NAME}}/g, categoryName).replace(/{{MODEL}}/g, model).replace(/{{BRAND}}/g, brand)
+            .replace(/{{SKU}}/g, sku).replace(/{{SHORT_DESC}}/g, shortDesc).replace(/{{PRICE}}/g, price)
+            .replace(/{{FEATURES_LIST}}/g, featuresHtml).replace(/{{FULL_DESC}}/g, fullDesc).replace(/{{SPECS_TABLE}}/g, specsHtml)
+            .replace(/{{GALLERY_THUMBS}}/g, galleryThumbsHtml);
+
+          folder.file(`${sku}.html`, pageHtml.trim());
+          count++;
+          log(`Сгенерирован файл: ${sku}.html`);
+        });
+        
+        const content = await zip.generateAsync({type: "blob"});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = "products.zip";
+        link.click();
+        
+        log(`Готово! Сохранено ${count} страниц.`, 'success');
+        btn.textContent = 'Скачивание завершено';
+      } catch (err) {
+        log(`Ошибка: ${err.message}`, 'error');
+        btn.textContent = 'Ошибка';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caspian Sun — Продукция</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+
+  <!-- Сюда JS подтянет единую шапку -->
+  <div id="header-placeholder"></div>
+
+  <main>
+    <section class="products-hero">
+      <img class="products-hero__bg-img" src="img/production/Production1.webp" alt="Комплектующие для солнечных электростанций">
+      <div class="products-hero__overlay"></div>
+      
+      <div class="container products-hero__container">
+        <div class="products-hero__content-left">
+          <div class="products-hero__breadcrumbs">
+            <span class="products-hero__breadcrumb-current">ПРОДУКЦИЯ</span>
+          </div>
+          
+          <h1 class="products-hero__title">
+            Комплектующие<br>
+            для солнечных<br>
+            электростанций
+          </h1>
+          
+          <p class="products-hero__desc">
+            Оборудование от проверенных производителей<br>
+            для надежной и эффективной работы<br>
+            вашей солнечной системы.
+          </p>
+        </div>
+
+        <div class="products-hero__content-right">
+          <div class="products-hero__badge">
+            <span class="products-hero__badge-line"></span>
+            <p class="products-hero__badge-text">
+              Надежные решения<br>
+              для устойчивого<br>
+              энергобудущего
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalog-section">
+      <div class="container catalog-container">
+        
+        <aside class="catalog-sidebar">
+          <div class="catalog-sidebar__header">
+            <h2 class="catalog-sidebar__title">ФИЛЬТРЫ</h2>
+            <button class="catalog-sidebar__reset" type="button" id="resetFiltersBtn">Сбросить</button>
+          </div>
+
+          <div class="catalog-filter" id="catalogFilters">
+            <!-- Категория -->
+            <div class="filter-group filter-group--open">
+              <div class="filter-group__header">
+                <span class="filter-group__title">Категория</span>
+                <svg class="filter-group__icon" viewBox="0 0 10 6"><polyline points="1 5 5 1 9 5"></polyline></svg>
+              </div>
+              <div class="filter-group__content">
+                <label class="custom-checkbox">
+                  <input type="checkbox" data-filter-type="category" value="panels">
+                  <span class="checkmark"><svg viewBox="0 0 10 8"><polyline points="1 4 4 7 9 1"></polyline></svg></span>
+                  <span class="label-text">Солнечные панели</span>
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" data-filter-type="category" value="inverters">
+                  <span class="checkmark"><svg viewBox="0 0 10 8"><polyline points="1 4 4 7 9 1"></polyline></svg></span>
+                  <span class="label-text">Инверторы</span>
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" data-filter-type="category" value="batteries">
+                  <span class="checkmark"><svg viewBox="0 0 10 8"><polyline points="1 4 4 7 9 1"></polyline></svg></span>
+                  <span class="label-text">Аккумуляторы</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Производитель -->
+            <div class="filter-group filter-group--open">
+              <div class="filter-group__header">
+                <span class="filter-group__title">Производитель</span>
+                <svg class="filter-group__icon" viewBox="0 0 10 6"><polyline points="1 5 5 1 9 5"></polyline></svg>
+              </div>
+              <div class="filter-group__content">
+                <label class="custom-checkbox">
+                  <input type="checkbox" data-filter-type="brand" value="growatt">
+                  <span class="checkmark"><svg viewBox="0 0 10 8"><polyline points="1 4 4 7 9 1"></polyline></svg></span>
+                  <span class="label-text">Growatt</span>
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" data-filter-type="brand" value="deye">
+                  <span class="checkmark"><svg viewBox="0 0 10 8"><polyline points="1 4 4 7 9 1"></polyline></svg></span>
+                  <span class="label-text">Deye</span>
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" data-filter-type="brand" value="invt">
+                  <span class="checkmark"><svg viewBox="0 0 10 8"><polyline points="1 4 4 7 9 1"></polyline></svg></span>
+                  <span class="label-text">INVT</span>
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" data-filter-type="brand" value="solis">
+                  <span class="checkmark"><svg viewBox="0 0 10 8"><polyline points="1 4 4 7 9 1"></polyline></svg></span>
+                  <span class="label-text">Solis</span>
+                </label>
+                <label class="custom-checkbox">
+                  <input type="checkbox" data-filter-type="brand" value="dah solar">
+                  <span class="checkmark"><svg viewBox="0 0 10 8"><polyline points="1 4 4 7 9 1"></polyline></svg></span>
+                  <span class="label-text">DAH Solar</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Мощность -->
+            <div class="filter-group filter-group--open">
+              <div class="filter-group__header">
+                <span class="filter-group__title">Мощность (кВт / кВт·ч)</span>
+                <svg class="filter-group__icon" viewBox="0 0 10 6"><polyline points="1 5 5 1 9 5"></polyline></svg>
+              </div>
+              <div class="filter-group__content">
+                <label class="custom-radio">
+                  <input type="radio" name="power" data-filter-type="power" value="0-5">
+                  <span class="radiomark"></span>
+                  <span class="label-text">До 5</span>
+                </label>
+                <label class="custom-radio">
+                  <input type="radio" name="power" data-filter-type="power" value="5-10">
+                  <span class="radiomark"></span>
+                  <span class="label-text">5 – 10</span>
+                </label>
+                <label class="custom-radio">
+                  <input type="radio" name="power" data-filter-type="power" value="10-30">
+                  <span class="radiomark"></span>
+                  <span class="label-text">10 – 30</span>
+                </label>
+                <label class="custom-radio">
+                  <input type="radio" name="power" data-filter-type="power" value="30+">
+                  <span class="radiomark"></span>
+                  <span class="label-text">Более 30</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="catalog-main">
+          <div class="catalog-topbar">
+            <span class="catalog-topbar__count" id="catalogCount">Загрузка...</span>
+            <div class="catalog-topbar__actions">
+              <div class="catalog-sort">
+                <span class="catalog-sort__label">Сортировка:</span>
+                <button class="catalog-sort__btn">По популярности <svg viewBox="0 0 10 6"><polyline points="1 1 5 5 9 1"></polyline></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Контейнер для динамических карточек из Google Таблицы -->
+          <!-- Абсолютно пуст, JS сам вставит сюда карточки -->
+          <div class="product-grid" id="productGrid"></div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCT DETAILS DRAWER (Выдвижная панель) -->
+    <div class="product-drawer">
+      <div class="product-drawer__backdrop"></div>
+      <aside class="product-drawer__panel">
+        <button class="product-drawer__close" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24">
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+            <line x1="6" y1="18" x2="18" y2="6"></line>
+          </svg>
+        </button>
+
+        <div class="product-drawer__gallery">
+          <img class="gallery-main" src="" alt="Изображение товара">
+        </div>
+
+        <div class="product-drawer__body">
+          <span class="product-drawer__category">КАТЕГОРИЯ • БРЕНД</span>
+          <h2 class="product-drawer__title">Название модели</h2>
+          <p class="product-drawer__specs-bar">Краткие теги характеристик</p>
+          
+          <p class="product-drawer__desc">Подробное описание товара.</p>
+
+          <ul class="product-drawer__features">
+            <!-- Сюда вставляются преимущества из таблицы -->
+          </ul>
+
+          <div class="product-drawer__purchase">
+            <span class="product-drawer__price">0 $</span>
+            <div class="purchase-actions">
+              
+              <!-- Анимированный счетчик -->
+              <div class="quantity-picker">
+                <button class="qty-btn qty-btn--minus" type="button" aria-label="Уменьшить">&minus;</button>
+                <div class="qty-val-wrapper">
+                  <span class="qty-val">1</span>
+                </div>
+                <button class="qty-btn qty-btn--plus" type="button" aria-label="Увеличить">&plus;</button>
+              </div>
+
+              <!-- Кнопка В КОРЗИНУ (бирюзовая для акцента) -->
+              <button class="btn btn--teal add-to-cart-btn">В КОРЗИНУ &rarr;</button>
+            </div>
+          </div>
+
+          <div class="product-drawer__accordions">
+            <div class="accordion accordion--open">
+              <div class="accordion__header">
+                Технические характеристики 
+                <svg viewBox="0 0 10 6"><polyline points="1 5 5 1 9 5"></polyline></svg>
+              </div>
+              <div class="accordion__body" id="drawerSpecs">
+                <!-- Динамические характеристики -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Сюда JS подтянет единый подвал -->
+  <div id="footer-placeholder"></div>
+
+</body>
+</html>

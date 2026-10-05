@@ -1,0 +1,73 @@
+<header class="header">
+  <div class="container header__container">
+    <!-- Левая колонка: Логотип -->
+    <a href="index.html" class="header__brand">
+      <div class="header__logo-row">
+        <span class="header__logo">Caspian Sun</span>
+        <span class="header__line"></span>
+      </div>
+      <p class="header__tagline">АРХИТЕКТУРА &bull; ИНЖИНИРИНГ &bull; СОЛНЕЧНАЯ ЭНЕРГИЯ</p>
+    </a>
+
+    <!-- Мобильная кнопка бургера -->
+    <button class="header__burger" id="burgerBtn" type="button" aria-label="Открыть меню" aria-expanded="false">
+      <span class="header__burger-bar"></span>
+      <span class="header__burger-bar"></span>
+      <span class="header__burger-bar"></span>
+    </button>
+
+    <!-- Центр: Меню навигации -->
+    <nav class="header__nav" id="mainNav">
+      <ul class="header__nav-list">
+        <li class="header__nav-item">
+          <a href="index.html" class="header__nav-link">Главная</a>
+        </li>
+        <li class="header__nav-item">
+          <a href="about.html" class="header__nav-link">О компании</a>
+        </li>
+        <li class="header__nav-item">
+          <a href="products.html" class="header__nav-link">Продукция</a>
+        </li>
+        <li class="header__nav-item">
+          <a href="services.html" class="header__nav-link">Услуги</a>
+        </li>
+
+        <!-- Выпадающий список "База знаний" -->
+        <li class="header__nav-item header__dropdown">
+          <a href="knowledge-base.html" class="header__nav-link header__dropdown-btn" id="dropdownBtn" aria-haspopup="true" aria-expanded="false">
+            <span>База знаний</span>
+            <svg class="header__dropdown-arrow" viewBox="0 0 10 6">
+              <polyline points="1 1 5 5 9 1"></polyline>
+            </svg>
+          </a>
+          <ul class="header__dropdown-menu">
+            <li class="header__dropdown-item"><a href="knowledge-ses.html" class="header__dropdown-link">Что такое СЭС</a></li>
+            <li class="header__dropdown-item"><a href="knowledge-choice.html" class="header__dropdown-link">Выбор системы</a></li>
+            <li class="header__dropdown-item"><a href="knowledge-panels.html" class="header__dropdown-link">Солнечные панели</a></li>
+            <li class="header__dropdown-item"><a href="knowledge-inverter.html" class="header__dropdown-link">Инвертор</a></li>
+            <li class="header__dropdown-item"><a href="knowledge-lifepo4.html" class="header__dropdown-link">Батареи LIFEPO4</a></li>
+          </ul>
+        </li>
+
+        <li class="header__nav-item">
+          <a href="contacts.html" class="header__nav-link">Контакты</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Правая симметричная колонка -->
+    <div class="header__spacer" aria-hidden="true"></div>
+  </div>
+</header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.header__dropdown-link').forEach(link => {
+      if (link.getAttribute('href') === currentPath) {
+        link.classList.add('header__dropdown-link--active');
+        link.closest('.header__dropdown').querySelector('.header__dropdown-btn').classList.add('header__nav-link--active');
+      }
+    });
+  });
+</script>
