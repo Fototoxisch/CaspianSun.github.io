@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Контакты | Caspian Sun</title>
+  <link rel="stylesheet" href="css/core.css">
+  <link rel="stylesheet" href="css/contacts.css">
+  <!-- Подключаем скрипт, который грузит шапку и подвал -->
+  <script src="main.js" defer></script>
+</head>
+<body class="contacts-page">
+
+  <!-- Сюда JS подтянет единую шапку -->
+  <div id="header-placeholder"></div>
+  
+  <main>
+    <section class="contacts-hero">
+      <img src="img/contacts-bg.webp" alt="Горы Дагестана" class="contacts-hero__bg">
+      <div class="contacts-hero__overlay"></div>
+      
+      <div class="container contacts-hero__container">
+        <div>
+          <div class="contacts-hero__tag">
+            <span>Контакты</span>
+            <span class="contacts-hero__tag-line"></span>
+          </div>
+          <h1 class="contacts-hero__title">Обсудим ваш проект?</h1>
+          <p class="contacts-hero__desc">Свяжитесь с нами удобным способом — мы проконсультируем, подберем решение и ответим на все вопросы.</p>
+        </div>
+
+        <div class="hero-card__content-bottom">
+          <div class="about-tag">
+            <span class="about-tag__line about-tag__line--short"></span>
+            <span>Солнечная энергия &times; Инженерные решения</span>
+          </div>
+          <div style="text-align: right;">
+            <div class="hero-card__geo">Dagestan / South Russia</div>
+            <div class="hero-card__sub">Solar Engineering</div>
+            <div class="hero-card__year">2026</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contacts-info">
+      <div class="container contacts-info__grid">
+        <div class="contact-item">
+          <div class="contact-item__icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div class="contact-item__label">Адрес</div>
+          <div class="contact-item__text">Республика Дагестан,<br>г. Махачкала, ул. Примерная, д. 12</div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item__icon">
+            <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          </div>
+          <div class="contact-item__label">Телефон</div>
+          <div class="contact-item__text">+7 (928) 555-01-23<br><span style="color: var(--text-muted);">Пн–Пт: 09:00 – 18:00</span></div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item__icon">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </div>
+          <div class="contact-item__label">E-mail</div>
+          <div class="contact-item__text">info@caspian-sun.ru<br><span style="color: var(--text-muted);">Отвечаем в течение 24 часов</span></div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item__icon">
+            <svg viewBox="0 0 24 24"><path d="M21.99 12c0-5.52-4.48-10-10-10S2 6.48 2 12s4.48 10 10 10 10-4.48 10-10zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zM11.5 7h1v5.5l4.5 2.5-.75 1.25L11 13V7z"/></svg>
+          </div>
+          <div class="contact-item__label">Мессенджеры</div>
+          <div class="contact-item__text">Telegram / WhatsApp<br>+7 (928) 555-01-23</div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item__icon">
+            <svg viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+          </div>
+          <div class="contact-item__label">Техподдержка</div>
+          <div class="contact-item__text">Консультации по оборудованию,<br>монтажу и сервису</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contacts-form-section" id="form">
+      <div class="container">
+        <div class="contacts-form" style="max-width: 800px; margin: 0 auto; background: rgba(255,255,255,0.02); border: 1px solid var(--border-dark); padding: 4rem; border-radius: var(--radius-sm);">
+          
+          <div class="contacts-form__header" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+            <div class="contacts-form__tag" style="justify-content: center;">
+              Написать нам
+              <span class="contacts-form__tag-line" style="margin-left: 1rem;"></span>
+            </div>
+            <h2 class="contacts-form__title" style="font-size: 2.25rem;">Оставьте заявку</h2>
+            <p style="color: var(--text-dark-muted); margin-top: 1rem; font-size: 0.875rem;">Мы свяжемся с вами в ближайшее время для обсуждения деталей.</p>
+          </div>
+
+          <form action="#" method="POST">
+            <div class="form-grid">
+              <input type="text" name="name" class="form-input" placeholder="Ваше имя*" required>
+              <input type="tel" name="phone" class="form-input" placeholder="Телефон*" required>
+              <div class="form-group--full">
+                <input type="email" name="email" class="form-input" placeholder="E-mail">
+              </div>
+              <div class="form-group--full">
+                <select name="service" class="form-select">
+                  <option value="" disabled selected>Интересующая услуга</option>
+                  <option value="ses">Сетевая СЭС</option>
+                  <option value="hybrid">Гибридная СЭС</option>
+                  <option value="equipment">Покупка оборудования</option>
+                  <option value="consult">Консультация</option>
+                </select>
+              </div>
+              <div class="form-group--full">
+                <textarea name="message" class="form-textarea" placeholder="Сообщение"></textarea>
+              </div>
+            </div>
+
+            <div class="form-action" style="justify-content: space-between;">
+              <p class="form-disclaimer" style="max-width: 300px;">Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+              <button type="submit" class="btn btn--gold">Отправить заявку <svg class="btn-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="workflow">
+      <div class="workflow__overlay" style="background: var(--bg-main);"></div>
+      <div class="container">
+        <div class="workflow__header">
+          <div class="workflow__tag">Как мы работаем</div>
+          <h2 class="workflow__title">Простой и прозрачный процесс — от заявки до запуска.</h2>
+          <p style="font-size: 0.875rem; color: var(--text-dark-muted); margin-top: 1.5rem; max-width: 400px; line-height: 1.5;">Мы ценим ваше время, поэтому выстраиваем работу максимально четко и прозрачно. На каждом этапе вы будете в курсе статуса проекта.</p>
+        </div>
+        
+        <div class="workflow__timeline">
+          <div class="workflow-step">
+            <span class="workflow-step__num">01</span>
+            <div class="workflow-step__track"><div class="workflow-step__dot"></div></div>
+            <div class="workflow-step__label"><strong>Заявка и консультация</strong><br><span style="color: var(--text-muted); font-size: 0.75rem;">Обсуждаем задачу, отвечаем на вопросы.</span></div>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-step__num">02</span>
+            <div class="workflow-step__track"><div class="workflow-step__dot"></div></div>
+            <div class="workflow-step__label"><strong>Анализ объекта</strong><br><span style="color: var(--text-muted); font-size: 0.75rem;">Изучаем параметры, условия и потребности.</span></div>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-step__num">03</span>
+            <div class="workflow-step__track"><div class="workflow-step__dot"></div></div>
+            <div class="workflow-step__label"><strong>Проектирование</strong><br><span style="color: var(--text-muted); font-size: 0.75rem;">Разрабатываем оптимальное решение.</span></div>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-step__num">04</span>
+            <div class="workflow-step__track"><div class="workflow-step__dot"></div></div>
+            <div class="workflow-step__label"><strong>Подбор оборудования</strong><br><span style="color: var(--text-muted); font-size: 0.75rem;">Выбираем надежное оборудование.</span></div>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-step__num">05</span>
+            <div class="workflow-step__track"><div class="workflow-step__dot"></div></div>
+            <div class="workflow-step__label"><strong>Монтаж</strong><br><span style="color: var(--text-muted); font-size: 0.75rem;">Профессиональная установка и контроль.</span></div>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-step__num">06</span>
+            <div class="workflow-step__track"><div class="workflow-step__dot"></div></div>
+            <div class="workflow-step__label"><strong>Пусконаладка</strong><br><span style="color: var(--text-muted); font-size: 0.75rem;">Проверяем работу и запускаем.</span></div>
+          </div>
+          <div class="workflow-step">
+            <span class="workflow-step__num">07</span>
+            <div class="workflow-step__track" style="border: none;"><div class="workflow-step__dot"></div></div>
+            <div class="workflow-step__label"><strong>Мониторинг</strong><br><span style="color: var(--text-muted); font-size: 0.75rem;">Удаленный контроль и поддержка.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-cta">
+      <img src="img/cta-bg.webp" alt="Солнечная станция" class="services-cta__bg">
+      <div class="services-cta__overlay"></div>
+      
+      <div class="container services-cta__container" style="align-items: center;">
+        <div class="services-cta__brand">
+          <span class="services-cta__logo" style="font-family: inherit;">Caspian Sun</span>
+          <span class="services-cta__line"></span>
+        </div>
+        
+        <div class="services-cta__main">
+          <h2 class="services-cta__title">Профессиональные<br>решения в сфере<br>солнечной энергетики</h2>
+        </div>
+        
+        <div class="services-cta__action">
+          <div class="services-cta__action-inner">
+            <p class="services-cta__desc">Мы проектируем и внедряем энергетические системы под конкретные задачи вашего объекта.</p>
+            <a href="#" class="btn btn--outline-light" style="width: max-content;">Обсудить проект <svg class="btn-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Сюда JS подтянет единый подвал -->
+  <div id="footer-placeholder"></div>
+
+</body>
+</html>

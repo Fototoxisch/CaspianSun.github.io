@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caspian Sun — Продукция</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/core.css">
+  <link rel="stylesheet" href="css/catalog.css">
   <script src="main.js" defer></script>
 </head>
 <body>
 
-  <!-- Сюда JS подтянет единую шапку -->
+  <!-- Модульная точка подключения шапки -->
   <div id="header-placeholder"></div>
 
   <main>
@@ -59,7 +60,6 @@
           </div>
 
           <div class="catalog-filter" id="catalogFilters">
-            <!-- Категория -->
             <div class="filter-group filter-group--open">
               <div class="filter-group__header">
                 <span class="filter-group__title">Категория</span>
@@ -84,7 +84,6 @@
               </div>
             </div>
 
-            <!-- Производитель -->
             <div class="filter-group filter-group--open">
               <div class="filter-group__header">
                 <span class="filter-group__title">Производитель</span>
@@ -119,7 +118,6 @@
               </div>
             </div>
 
-            <!-- Мощность -->
             <div class="filter-group filter-group--open">
               <div class="filter-group__header">
                 <span class="filter-group__title">Мощность (кВт / кВт·ч)</span>
@@ -162,8 +160,6 @@
             </div>
           </div>
 
-          <!-- Контейнер для динамических карточек из Google Таблицы -->
-          <!-- Абсолютно пуст, JS сам вставит сюда карточки -->
           <div class="product-grid" id="productGrid"></div>
           
         </div>
@@ -192,15 +188,11 @@
           
           <p class="product-drawer__desc">Подробное описание товара.</p>
 
-          <ul class="product-drawer__features">
-            <!-- Сюда вставляются преимущества из таблицы -->
-          </ul>
+          <ul class="product-drawer__features"></ul>
 
           <div class="product-drawer__purchase">
             <span class="product-drawer__price">0 $</span>
             <div class="purchase-actions">
-              
-              <!-- Анимированный счетчик -->
               <div class="quantity-picker">
                 <button class="qty-btn qty-btn--minus" type="button" aria-label="Уменьшить">&minus;</button>
                 <div class="qty-val-wrapper">
@@ -208,8 +200,6 @@
                 </div>
                 <button class="qty-btn qty-btn--plus" type="button" aria-label="Увеличить">&plus;</button>
               </div>
-
-              <!-- Кнопка В КОРЗИНУ (бирюзовая для акцента) -->
               <button class="btn btn--teal add-to-cart-btn">В КОРЗИНУ &rarr;</button>
             </div>
           </div>
@@ -220,9 +210,7 @@
                 Технические характеристики 
                 <svg viewBox="0 0 10 6"><polyline points="1 5 5 1 9 5"></polyline></svg>
               </div>
-              <div class="accordion__body" id="drawerSpecs">
-                <!-- Динамические характеристики -->
-              </div>
+              <div class="accordion__body" id="drawerSpecs"></div>
             </div>
           </div>
         </div>
@@ -230,7 +218,7 @@
     </div>
   </main>
 
-  <!-- Сюда JS подтянет единый подвал -->
+  <!-- Модульная точка подключения подвала -->
   <div id="footer-placeholder"></div>
 
 </body>

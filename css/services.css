@@ -1,0 +1,460 @@
+/* ==========================================================================
+   SERVICES PAGE (УСЛУГИ)
+   ========================================================================== */
+
+/* --- Hero Section --- */
+.services-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8rem 0 3rem; /* Срезали верхние и нижние отступы */
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .services-hero {
+    padding: 9rem 0 3.5rem;
+  }
+}
+
+.services-hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.services-hero__overlay {
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(14, 15, 16, 0.95) 0%, rgba(14, 15, 16, 0.6) 50%, rgba(14, 15, 16, 0.8) 100%);
+  z-index: 1;
+}
+
+.services-hero__container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; /* Уменьшили дыру между текстом и нижним баром */
+  width: 100%;
+}
+
+.services-hero__top {
+  max-width: 900px;
+}
+
+.services-hero__tag {
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 1rem;
+}
+
+.services-hero__title {
+  font-size: 2.25rem;
+  font-weight: 400; /* Сделали шрифт чуть плотнее, чтобы не выглядел простенько */
+  line-height: 1.15;
+  color: var(--text-light);
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 768px) {
+  .services-hero__title {
+    font-size: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .services-hero__title {
+    font-size: 4rem;
+  }
+}
+
+.services-hero__desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 520px;
+}
+
+.services-hero__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .services-hero__bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.services-hero__architecture {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+}
+
+.services-hero__line {
+  width: 40px;
+  height: 1px;
+  background-color: var(--accent-gold);
+}
+
+.services-hero__geo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  .services-hero__geo {
+    text-align: right;
+  }
+}
+
+/* --- Service Rows --- */
+.service-row {
+  padding: 3rem 0; /* Существенно уменьшили отступы между блоками */
+}
+
+@media (min-width: 1024px) {
+  .service-row {
+    padding: 4rem 0; /* Компромиссный отступ, как на аудите */
+  }
+}
+
+.service-row--light {
+  background-color: var(--bg-panel);
+  color: var(--text-dark);
+}
+
+.service-row--dark {
+  background-color: var(--bg-main);
+  color: var(--text-light);
+}
+
+.service-row__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .service-row__grid {
+    grid-template-columns: 1fr 1.3fr 1.6fr; /* Идеальные пропорции макета */
+    align-items: start;
+    gap: 3rem;
+  }
+}
+
+.service-row__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-row__num-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.service-row__num {
+  font-size: 2.5rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.service-row__num-line {
+  width: 40px;
+  height: 1px;
+  background-color: currentColor;
+  opacity: 0.3;
+}
+
+.service-row__title {
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 768px) {
+  .service-row__title {
+    font-size: 2rem;
+  }
+}
+
+.service-row__desc-strong {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.service-row__desc {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+/* Ссылка УЗНАТЬ БОЛЬШЕ */
+.service-row__link {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: currentColor;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: auto;
+  transition: color 0.3s;
+  text-decoration: none;
+}
+
+.service-row__link svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  transition: transform 0.3s;
+}
+
+.service-row__link:hover {
+  color: var(--accent-gold);
+}
+
+.service-row__link:hover svg {
+  transform: translateX(4px);
+}
+
+.service-row__img-box {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.service-row__img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.service-row__lists {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 640px) {
+  .service-row__lists {
+    grid-template-columns: 1.3fr 1fr; /* Левый список чуть шире правого */
+    gap: 3rem;
+  }
+}
+
+.list-group__title {
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  opacity: 0.6;
+}
+
+.list-group__items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.15); /* Линия-разделитель */
+}
+
+.list-item:first-child {
+  padding-top: 0;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.list-item__icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-item__icon--arrow {
+  width: 14px;
+  height: 14px;
+}
+
+.list-item__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  stroke-width: 1.2px;
+}
+
+.service-row--light .list-item__icon {
+  color: var(--text-dark);
+}
+
+.service-row--dark .list-item__icon {
+  color: var(--accent-gold);
+}
+
+.list-item__number {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  min-width: 20px;
+}
+
+.list-item__text {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+/* --- Services CTA --- */
+.services-cta {
+  position: relative;
+  padding: 4rem 0;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-main);
+  overflow: hidden;
+}
+
+.services-cta__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.services-cta__overlay {
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(14, 15, 16, 0.95) 0%, rgba(14, 15, 16, 0.7) 100%);
+  z-index: 1;
+}
+
+.services-cta__container {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .services-cta__container {
+    grid-template-columns: minmax(180px, 1fr) 2fr 1.5fr;
+    align-items: start;
+    gap: 3rem;
+  }
+}
+
+.services-cta__brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.services-cta__logo {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--text-light);
+}
+
+.services-cta__line {
+  flex-grow: 1;
+  max-width: 60px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.services-cta__main {
+  display: flex;
+}
+
+.services-cta__title {
+  font-size: 1.25rem;
+  font-weight: 300;
+  line-height: 1.3;
+  color: var(--text-light);
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .services-cta__title {
+    font-size: 1.5rem;
+  }
+}
+
+.services-cta__action {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  gap: 2rem;
+}
+
+.services-cta__action-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: 320px;
+}
+
+.services-cta__desc {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(244, 244, 244, 0.8);
+}
+
+.services-cta__tags {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: auto;
+}

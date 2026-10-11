@@ -291,7 +291,7 @@ function initProductDrawer() {
 }
 
 // ==========================================================================
-// ЛОГИКА ГАЛЕРЕИ НА СТРАНИЦЕ ТОВАРА (СИНХРОННЫЙ СЛАЙДЕР + ПРЕДЗАГРУЗКА)
+// ЛОГИКА ГАЛЕРЕИ НА СТРАНИЦЕ ТОВАРА
 // ==========================================================================
 function initProductGallery() {
   const thumbs = document.querySelectorAll('.pdp-gallery__thumb');
@@ -338,7 +338,6 @@ function initProductGallery() {
     isAnimating = true;
     const newSrc = visibleThumbs[newIndex].src;
 
-    // 1. Подготавливаем буфер
     bufferLayer.src = newSrc;
     bufferLayer.style.transition = 'none';
     bufferLayer.style.display = 'block';
@@ -349,17 +348,12 @@ function initProductGallery() {
       bufferLayer.style.transform = 'translateX(-100%)';
     }
 
-    // 2. Ждем декодирования картинки (устраняет провисание/фризы)
     try {
       await bufferLayer.decode();
-    } catch (e) {
-      // Продолжаем работу даже на старых браузерах
-    }
+    } catch (e) {}
 
-    // 3. Форсируем рендер перед стартом анимации
     void bufferLayer.offsetWidth;
 
-    // 4. Запускаем анимацию
     const transitionStyle = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
     bufferLayer.style.transition = transitionStyle;
     activeLayer.style.transition = transitionStyle;
@@ -376,14 +370,11 @@ function initProductGallery() {
     thumbs.forEach(t => t.classList.remove('pdp-gallery__thumb--active'));
     visibleThumbs[currentIndex].classList.add('pdp-gallery__thumb--active');
 
-    // 5. Уборка
     setTimeout(() => {
       activeLayer.style.display = 'none';
-      
       let temp = activeLayer;
       activeLayer = bufferLayer;
       bufferLayer = temp;
-
       isAnimating = false;
     }, 400); 
   };
@@ -417,7 +408,7 @@ function initProductGallery() {
 }
 
 // ==========================================================================
-// ЛОГИКА АНИМИРОВАННОГО СЧЕТЧИКА (QUANTITY PICKER)
+// ЛОГИКА СЧЕТЧИКА
 // ==========================================================================
 function initQuantityPicker() {
   const pickers = document.querySelectorAll('.quantity-picker');
@@ -428,7 +419,6 @@ function initQuantityPicker() {
     const wrapper = picker.querySelector('.qty-val-wrapper');
 
     if (!btnMinus || !btnPlus || !wrapper) return;
-
     if (picker.dataset.initialized) return;
     picker.dataset.initialized = 'true';
 
@@ -436,7 +426,6 @@ function initQuantityPicker() {
 
     const animateValue = (direction) => {
       if (isAnimating) return;
-      
       const oldSpan = wrapper.querySelector('.qty-val');
       if (!oldSpan) return;
 
@@ -445,7 +434,6 @@ function initQuantityPicker() {
 
       if (direction === 'plus' && currentVal < 99) newVal++;
       if (direction === 'minus' && currentVal > 1) newVal--;
-
       if (currentVal === newVal) return;
 
       isAnimating = true;
@@ -462,14 +450,11 @@ function initQuantityPicker() {
 
       oldSpan.style.transform = direction === 'plus' ? 'translateY(100%)' : 'translateY(-100%)';
       oldSpan.style.opacity = '0';
-      
       newSpan.style.transform = 'translateY(0)';
       newSpan.style.opacity = '1';
 
       setTimeout(() => {
-        if (oldSpan && oldSpan.parentNode) {
-          oldSpan.remove();
-        }
+        if (oldSpan && oldSpan.parentNode) oldSpan.remove();
         isAnimating = false;
       }, 250);
     };
@@ -486,42 +471,53 @@ function initQuantityPicker() {
 }
 
 // ==========================================================================
-// ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+// ЗАГРУЗКА ШАПКИ И ПОДВАЛА
 // ==========================================================================
-async function loadHeaderModule() {
-  const placeholder = document.getElementById('header-placeholder');
+async function loadLayoutModules() {
   const isSubFolder = window.location.pathname.includes('/products/');
   const headerPath = isSubFolder ? '../header.html' : 'header.html';
+  const footerPath = isSubFolder ? '../footer.html' : 'footer.html';
 
-  if (!placeholder) {
-    initHeaderEvents();
-    setActiveMenuLink();
-    if (document.getElementById('productGrid')) loadCatalog();
-    initProductGallery(); 
-    initQuantityPicker();
-    return;
-  }
-
-  try {
-    const response = await fetch(headerPath);
-    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-    let html = await response.text();
-    
-    if (isSubFolder) {
-      html = html.replace(/href="([^"]*\.html)"/g, 'href="../$1"');
+  // 1. Загрузка Шапки
+  const headerPlaceholder = document.getElementById('header-placeholder');
+  if (headerPlaceholder) {
+    try {
+      const response = await fetch(headerPath);
+      if (response.ok) {
+        let html = await response.text();
+        if (isSubFolder) {
+          html = html.replace(/href="([^"]*\.html)"/g, 'href="../$1"');
+        }
+        headerPlaceholder.outerHTML = html;
+      }
+    } catch (error) {
+      console.error('Не удалось загрузить header.html:', error);
     }
-
-    placeholder.outerHTML = html;
-    
-    initHeaderEvents();
-    setActiveMenuLink();
-    if (document.getElementById('productGrid')) loadCatalog();
-    initProductGallery(); 
-    initQuantityPicker();
-    
-  } catch (error) {
-    console.error('Не удалось загрузить header.html:', error);
   }
+
+  // 2. Загрузка Подвала (добавлено)
+  const footerPlaceholder = document.getElementById('footer-placeholder');
+  if (footerPlaceholder) {
+    try {
+      const response = await fetch(footerPath);
+      if (response.ok) {
+        let html = await response.text();
+        if (isSubFolder) {
+          html = html.replace(/href="([^"]*\.html)"/g, 'href="../$1"');
+        }
+        footerPlaceholder.outerHTML = html;
+      }
+    } catch (error) {
+      console.error('Не удалось загрузить footer.html:', error);
+    }
+  }
+
+  // 3. Инициализация интерактивных элементов
+  initHeaderEvents();
+  setActiveMenuLink();
+  if (document.getElementById('productGrid')) loadCatalog();
+  initProductGallery(); 
+  initQuantityPicker();
 }
 
-document.addEventListener('DOMContentLoaded', loadHeaderModule);
+document.addEventListener('DOMContentLoaded', loadLayoutModules);

@@ -3,6 +3,7 @@
     <!-- Левая колонка: Логотип -->
     <a href="index.html" class="header__brand">
       <div class="header__logo-row">
+        <!-- Текстовый логотип (или картинка, если используешь её) -->
         <span class="header__logo">Caspian Sun</span>
         <span class="header__line"></span>
       </div>
@@ -52,22 +53,15 @@
         <li class="header__nav-item">
           <a href="contacts.html" class="header__nav-link">Контакты</a>
         </li>
+
+        <!-- Вернули "Рассчитать систему" как обычный пункт меню -->
+        <li class="header__nav-item">
+          <a href="calculator.html" class="header__nav-link">Рассчитать систему</a>
+        </li>
       </ul>
     </nav>
 
-    <!-- Правая симметричная колонка -->
+    <!-- Правая колонка: пустышка для идеальной центровки меню -->
     <div class="header__spacer" aria-hidden="true"></div>
   </div>
 </header>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.header__dropdown-link').forEach(link => {
-      if (link.getAttribute('href') === currentPath) {
-        link.classList.add('header__dropdown-link--active');
-        link.closest('.header__dropdown').querySelector('.header__dropdown-btn').classList.add('header__nav-link--active');
-      }
-    });
-  });
-</script>
