@@ -6,7 +6,6 @@
   <title>Предварительная смета СЭС | Caspian Sun</title>
   <link rel="stylesheet" href="css/core.css">
   <link rel="stylesheet" href="css/calculator.css">
-  <!-- Скрипты -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="main.js" defer></script>
 </head>
@@ -46,7 +45,7 @@
       
       <div class="calc-form-group">
         <label>Какую долю расходов хотим перекрыть солнцем?</label>
-        <input type="range" id="coverageSlider" min="10" max="100" step="10" value="50" oninput="calculateSolar()">
+        <input type="range" id="coverageSlider" min="10" max="100" step="5" value="50" oninput="calculateSolar()">
         <div class="coverage-display"><span id="coverageValue">50</span>%</div>
         <div id="logicAlert" class="logic-alert">Режим: Умный гибрид (SUB). Экономия днем.</div>
       </div>
@@ -89,44 +88,44 @@
         </div>
       </div>
 
-      <div id="img-footer" style="display: none; padding: 2rem; background: var(--bg-main); border-top: 1px solid var(--border-dark); margin-top: 2rem;">
-        <span class="header__logo" style="display:block; font-size: 1.6rem; color: #fff; margin-bottom: 15px;">Caspian Sun</span>
-        <div style="font-size: 0.875rem; color: var(--text-light);">📞 <strong>+7 (963) 373-72-74</strong> | ✉️ CaspianSun.energy@gmail.com</div>
+      <div id="img-footer" style="display: none; padding: 2rem; background: #E8DECF; border-top: 1px solid rgba(0,0,0,0.1); margin-top: 2rem;">
+        <span class="header__logo" style="display:block; font-size: 1.6rem; color: #121315; margin-bottom: 15px;">Caspian Sun</span>
+        <div style="font-size: 0.875rem; color: rgba(18, 19, 21, 0.8);">📞 <strong>+7 (963) 373-72-74</strong> | ✉️ CaspianSun.energy@gmail.com</div>
       </div>
 
-      <!-- Группа 1: Сохранить/Поделиться (Телеграм -> Ватсап -> Чек) -->
+      <!-- Группа 1: Сохранить/Поделиться -->
       <div id="export-block">
         <div class="action-group-title">Сохранить или поделиться расчетом:</div>
-        <div class="export-actions">
-          <button class="export-btn" onclick="shareTG()">
-            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.534.26l.213-3.053 5.56-5.023c.242-.213-.054-.334-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.535-.195 1.006.132.832.937z"/></svg>
-            Telegram
+        <div class="calc-share-grid">
+          <button class="calc-action-btn" onclick="downloadImage()">
+            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Чек
           </button>
-          <button class="export-btn" onclick="shareWA()">
-            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          <button class="calc-action-btn" onclick="shareWA()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             WhatsApp
           </button>
-          <button class="export-btn" onclick="downloadImage()">
-            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Чек
+          <button class="calc-action-btn" onclick="shareTG()">
+            <svg viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.534.26l.213-3.053 5.56-5.023c.242-.213-.054-.334-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.535-.195 1.006.132.832.937z"/></svg>
+            Telegram
           </button>
         </div>
       </div>
 
-      <!-- Группа 2: Обсудить проект (Телеграм -> Ватсап -> Эмейл) -->
+      <!-- Группа 2: Обсудить проект -->
       <div id="contact-block">
         <div class="action-group-title">Обсудить проект и получить точную смету:</div>
-        <div class="contact-actions">
-          <a href="https://t.me/+79633737274" target="_blank" class="export-btn">
-            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.534.26l.213-3.053 5.56-5.023c.242-.213-.054-.334-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.535-.195 1.006.132.832.937z"/></svg>
-            Telegram
-          </a>
-          <a href="https://wa.me/79633737274" target="_blank" class="export-btn">
-            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        <div class="calc-share-grid">
+          <a href="https://wa.me/79633737274" target="_blank" class="calc-action-btn">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
             WhatsApp
           </a>
-          <a href="mailto:CaspianSun.energy@gmail.com" class="export-btn">
-            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <a href="https://t.me/+79633737274" target="_blank" class="calc-action-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.534.26l.213-3.053 5.56-5.023c.242-.213-.054-.334-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.535-.195 1.006.132.832.937z"/></svg>
+            Telegram
+          </a>
+          <a href="mailto:CaspianSun.energy@gmail.com" class="calc-action-btn">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
             Email
           </a>
         </div>
@@ -142,6 +141,17 @@
     let currentTariffType = 'business';
     let currentStationType = 'grid';
     let inputMode = 'kwh';
+
+    function updateSlidersFill() {
+      const sliders = document.querySelectorAll('input[type="range"]');
+      sliders.forEach(slider => {
+        const min = parseFloat(slider.min) || 0;
+        const max = parseFloat(slider.max) || 100;
+        const val = parseFloat(slider.value);
+        const percentage = ((val - min) / (max - min)) * 100;
+        slider.style.setProperty('--value', `${percentage}%`);
+      });
+    }
 
     function setTariff(price, typeStr, btnElement) {
       const container = document.getElementById('tariffToggle');
@@ -179,7 +189,28 @@
       calculateSolar();
     }
 
+    function animateLogicAlert(text, isHybrid) {
+      const logicAlert = document.getElementById('logicAlert');
+      
+      logicAlert.classList.remove('fade-in');
+      void logicAlert.offsetWidth; 
+      logicAlert.classList.add('fade-in');
+      
+      if (isHybrid) {
+          logicAlert.style.borderColor = 'rgba(0, 0, 0, 0.15)';
+          logicAlert.style.color = '#121315';
+          logicAlert.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
+      } else {
+          logicAlert.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+          logicAlert.style.color = 'rgba(18, 19, 21, 0.7)';
+          logicAlert.style.backgroundColor = 'transparent';
+      }
+      logicAlert.innerText = text;
+    }
+
     function calculateSolar() {
+      updateSlidersFill(); 
+
       const sliderValue = parseFloat(document.getElementById('mainSlider').value);
       document.getElementById('sliderValue').innerText = sliderValue.toLocaleString('ru-RU');
       const coveragePercentage = parseFloat(document.getElementById('coverageSlider').value);
@@ -217,10 +248,10 @@
       const invertersCount = Math.ceil(inverterPowerKw / 6); 
 
       let batteriesCount = 0;
-      const logicAlert = document.getElementById('logicAlert');
       let logicText = '';
+      let isHybrid = currentStationType === 'hybrid';
       
-      if (currentStationType === 'hybrid') {
+      if (isHybrid) {
           const baseBatteryCount = Math.ceil(inverterPowerKw / 5); 
           if (coverageFactor > 0.5) {
               const nightCoveragePercent = coverageFactor - 0.5;
@@ -228,23 +259,18 @@
               const autonomyBatteryCount = Math.ceil(nightStorageKwh / 5.12);
               batteriesCount = Math.max(baseBatteryCount, autonomyBatteryCount);
               logicText = 'Гибридная СЭС: Расширенная автономия (SBU) с ночным питанием от АКБ';
-              logicAlert.style.borderColor = 'var(--accent-gold)';
-              logicAlert.style.color = 'var(--text-light)';
-              logicAlert.style.backgroundColor = 'rgba(212, 168, 90, 0.1)';
           } else {
               batteriesCount = baseBatteryCount;
               logicText = 'Гибридная СЭС: Умное подмешивание (SUB). Экономия днем + резерв от блэкаутов';
-              logicAlert.style.borderColor = 'var(--accent-teal)';
-              logicAlert.style.color = 'var(--text-light)';
-              logicAlert.style.backgroundColor = 'rgba(107, 143, 147, 0.1)';
           }
       } else {
           logicText = 'Сетевая СЭС (On-Grid). Исключительно прямая экономия днем без резервирования';
-          logicAlert.style.borderColor = 'var(--border-dark)';
-          logicAlert.style.color = 'var(--text-light)';
-          logicAlert.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
       }
-      logicAlert.innerText = logicText;
+      
+      const currentText = document.getElementById('logicAlert').innerText;
+      if (currentText !== logicText) {
+         animateLogicAlert(logicText, isHybrid);
+      }
 
       const roofArea = Math.ceil(panelsCount * 3.1); 
 
@@ -289,10 +315,10 @@
       document.getElementById('resSavings').innerText = Math.round(firstYearSavings).toLocaleString('ru-RU') + ' ₽';
       
       let displayPayback = paybackYears + ' лет';
-      let subtext = '<br><span style="font-size: 11px; font-weight: 500; color: var(--text-light); opacity: 0.6; text-transform: uppercase;">с учетом роста тарифа 10%/год</span>';
+      let subtext = '<br><span style="font-size: 11px; font-weight: 500; color: rgba(18, 19, 21, 0.6); text-transform: uppercase;">с учетом роста тарифа 10%/год</span>';
       
       if (currentTariffType === 'home' && currentStationType === 'hybrid') {
-          document.getElementById('resDynamic').innerHTML = displayPayback + '<br><span style="font-size: 11px; font-weight: 500; color: var(--text-light); opacity: 0.6; text-transform: uppercase;">с учетом резерва 24/7 и инфляции</span>';
+          document.getElementById('resDynamic').innerHTML = displayPayback + '<br><span style="font-size: 11px; font-weight: 500; color: rgba(18, 19, 21, 0.6); text-transform: uppercase;">с учетом резерва 24/7 и инфляции</span>';
       } else {
           document.getElementById('resDynamic').innerHTML = displayPayback + subtext;
       }
@@ -328,7 +354,7 @@
       imgFooter.style.display = 'block';
 
       html2canvas(captureArea, {
-          backgroundColor: '#0E0F10',
+          backgroundColor: '#E8DECF',
           scale: 2 
       }).then(canvas => {
           exportBlock.style.display = 'block';
@@ -342,7 +368,10 @@
       });
     }
 
-    calculateSolar();
+    document.addEventListener('DOMContentLoaded', () => {
+      calculateSolar();
+      document.getElementById('logicAlert').classList.add('fade-in');
+    });
   </script>
 </body>
 </html>

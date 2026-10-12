@@ -33,7 +33,7 @@ function setActiveMenuLink() {
   let path = window.location.pathname.split('/').pop();
   if (!path || path === '') path = 'index.html'; 
   
-  if (path.includes('product.html') || path.includes('product-template.html')) {
+  if (path.includes('product.html') || path.includes('product-template.html') || path.includes('PAN-') || path.includes('INV-') || path.includes('BAT-')) {
       path = 'products.html';
   }
 
@@ -58,9 +58,6 @@ function setActiveMenuLink() {
   });
 }
 
-// ==========================================================================
-// ЛОГИКА КАТАЛОГА (FETCH + РЕНДЕР)
-// ==========================================================================
 async function loadCatalog() {
   const grid = document.getElementById('productGrid');
   if (!grid) return;
@@ -79,14 +76,11 @@ async function loadCatalog() {
 
     globalProducts.forEach((item, index) => {
       if (!item['Модель']) return;
-
       const category = item['Категория'] || 'other';
       const brand = item['Бренд'] ? String(item['Бренд']).toLowerCase().trim() : 'other';
       const sku = item['Артикул'] || 'N/A';
-      
       const powerRaw = item['Мощность (кВт)'] || item['Емкость (кВт·ч)'] || 0;
       const power = parseFloat(powerRaw) || 0;
-      
       const price = item['Цена'] || '0';
       const specText = item['Теги (для ИИ)'] || ''; 
 
@@ -106,12 +100,10 @@ async function loadCatalog() {
             <p class="product-card__specs">${specText}</p>
             <div class="product-card__footer">
               <span class="product-card__price">${price} $</span>
-              
               <a href="products/${sku}.html" class="product-card__details-link" aria-label="Смотреть товар">
                 ПОДРОБНЕЕ
                 <svg viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"></line><polyline points="10 4 14 8 10 12"></polyline></svg>
               </a>
-              
             </div>
           </div>
         </article>
@@ -121,18 +113,11 @@ async function loadCatalog() {
 
     initCatalogFilters();
     initProductDrawer();
-
   } catch (error) {
-    console.error('Ошибка загрузки каталога:', error);
-    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #ff5555; padding: 4rem 0;">Не удалось загрузить каталог. Убедитесь, что вы сгенерировали файл catalog.json.</p>';
-    const countEl = document.getElementById('catalogCount');
-    if (countEl) countEl.textContent = 'Ошибка';
+    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #ff5555; padding: 4rem 0;">Не удалось загрузить каталог.</p>';
   }
 }
 
-// ==========================================================================
-// ЛОГИКА ФИЛЬТРОВ
-// ==========================================================================
 function initCatalogFilters() {
   const filterInputs = document.querySelectorAll('#catalogFilters input');
   const productCards = document.querySelectorAll('.product-card');
@@ -173,18 +158,11 @@ function initCatalogFilters() {
     });
 
     if (catalogCount) {
-      catalogCount.textContent = `Найдено: ${visibleCount} товар${getNounPluralForm(visibleCount, '', 'а', 'ов')}`;
+      catalogCount.textContent = `Найдено: ${visibleCount}`;
     }
   }
 
-  function getNounPluralForm(a, str1, str2, str3) {
-    if (a % 10 === 1 && a % 100 !== 11) return str1;
-    if (a % 10 >= 2 && a % 10 <= 4 && (a % 100 < 10 || a % 100 >= 20)) return str2;
-    return str3;
-  }
-
   filterInputs.forEach(input => input.addEventListener('change', updateCatalog));
-
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
       filterInputs.forEach(input => {
@@ -193,13 +171,9 @@ function initCatalogFilters() {
       updateCatalog();
     });
   }
-
   updateCatalog();
 }
 
-// ==========================================================================
-// ЛОГИКА БОКОВОЙ ПАНЕЛИ (DRAWER)
-// ==========================================================================
 function initProductDrawer() {
   const grid = document.getElementById('productGrid');
   const drawer = document.querySelector('.product-drawer');
@@ -216,25 +190,14 @@ function initProductDrawer() {
     const brand = item['Бренд'] ? String(item['Бренд']).toUpperCase() : '';
     const sku = item['Артикул'] || 'N/A';
     
-    let categoryLabel = category === 'inverters' ? 'ИНВЕРТОР' : category === 'batteries' ? 'АККУМУЛЯТОР' : 'СОЛНЕЧНАЯ ПАНЕЛЬ';
-    
-    drawer.querySelector('.product-drawer__category').textContent = `${categoryLabel} • ${brand} • АРТ: ${sku}`;
+    drawer.querySelector('.product-drawer__category').textContent = `${category} • ${brand} • АРТ: ${sku}`;
     drawer.querySelector('.product-drawer__title').textContent = item['Модель'] || 'Без названия';
     drawer.querySelector('.product-drawer__specs-bar').textContent = item['Теги (для ИИ)'] || '';
     drawer.querySelector('.product-drawer__desc').textContent = item['Описание (для ИИ)'] || '';
     drawer.querySelector('.product-drawer__price').textContent = `${item['Цена']} $`;
     
-    const valWrapper = drawer.querySelector('.qty-val-wrapper');
-    if (valWrapper) {
-        valWrapper.innerHTML = '<span class="qty-val">1</span>';
-    }
-
     const galleryMain = drawer.querySelector('.gallery-main');
     galleryMain.src = `img/catalog/${category}/${sku}/main.webp`;
-    galleryMain.onerror = function() {
-        this.onerror = null;
-        this.src = 'img/catalog/placeholder.webp';
-    };
 
     const featuresList = drawer.querySelector('.product-drawer__features');
     featuresList.innerHTML = '';
@@ -247,24 +210,13 @@ function initProductDrawer() {
 
     const specsContainer = document.getElementById('drawerSpecs');
     specsContainer.innerHTML = '';
-    const skipKeys = ['Бренд', 'Модель', 'Цена', 'Изображение', 'Теги (для ИИ)', 'Описание (для ИИ)', 'Преимущества (для ИИ)', 'Категория', 'Артикул', 'SEO Заголовок', 'SEO Описание', 'Количество доп. фото'];
+    const skipKeys = ['Бренд', 'Модель', 'Цена', 'Изображение', 'Теги (для ИИ)', 'Описание (для ИИ)', 'Преимущества (для ИИ)', 'Категория', 'Артикул'];
     
     for (const key in item) {
       if (!skipKeys.includes(key) && item[key]) {
         specsContainer.insertAdjacentHTML('beforeend', `<div class="spec-row"><span>${key}</span><span>${item[key]}</span></div>`);
       }
     }
-
-    let detailsLink = drawer.querySelector('.pdp-link-btn');
-    if(!detailsLink) {
-        const purchaseActions = drawer.querySelector('.purchase-actions');
-        detailsLink = document.createElement('a');
-        detailsLink.className = 'btn btn--outline-light pdp-link-btn';
-        detailsLink.style.marginTop = '1rem';
-        detailsLink.textContent = 'ПОДРОБНЕЕ О ТОВАРЕ';
-        purchaseActions.parentNode.appendChild(detailsLink);
-    }
-    detailsLink.href = `products/${sku}.html`;
 
     drawer.classList.add('product-drawer--open');
   }
@@ -274,15 +226,11 @@ function initProductDrawer() {
   }
 
   grid.addEventListener('click', (e) => {
-    if(e.target.closest('.product-card__details-link')) {
-        return;
-    }
-
+    if(e.target.closest('.product-card__details-link')) return;
     const card = e.target.closest('.product-card');
     if (card) {
       e.preventDefault();
-      const index = card.getAttribute('data-index');
-      openDrawer(index);
+      openDrawer(card.getAttribute('data-index'));
     }
   });
 
@@ -290,15 +238,10 @@ function initProductDrawer() {
   backdrop.addEventListener('click', closeDrawer);
 }
 
-// ==========================================================================
-// ЛОГИКА ГАЛЕРЕИ НА СТРАНИЦЕ ТОВАРА
-// ==========================================================================
 function initProductGallery() {
   const thumbs = document.querySelectorAll('.pdp-gallery__thumb');
   const mainContainer = document.querySelector('.pdp-gallery__main');
   const originalImage = document.getElementById('pdpMainImage');
-  const btnPrev = document.querySelector('.pdp-gallery__arrow--prev');
-  const btnNext = document.querySelector('.pdp-gallery__arrow--next');
 
   if (!thumbs.length || !originalImage || !mainContainer) return;
 
@@ -318,19 +261,6 @@ function initProductGallery() {
 
   const getVisibleThumbs = () => Array.from(thumbs).filter(t => getComputedStyle(t).display !== 'none');
 
-  const updateArrowsVisibility = () => {
-    const visibleThumbs = getVisibleThumbs();
-    if (visibleThumbs.length <= 1) {
-      if (btnPrev) btnPrev.style.display = 'none';
-      if (btnNext) btnNext.style.display = 'none';
-    } else {
-      if (btnPrev) btnPrev.style.display = 'flex';
-      if (btnNext) btnNext.style.display = 'flex';
-    }
-  };
-
-  setTimeout(updateArrowsVisibility, 150);
-
   const slideTo = async (newIndex, direction) => {
     const visibleThumbs = getVisibleThumbs();
     if (newIndex === currentIndex || isAnimating || !visibleThumbs[newIndex]) return;
@@ -342,16 +272,10 @@ function initProductGallery() {
     bufferLayer.style.transition = 'none';
     bufferLayer.style.display = 'block';
     
-    if (direction === 'next') {
-      bufferLayer.style.transform = 'translateX(100%)';
-    } else {
-      bufferLayer.style.transform = 'translateX(-100%)';
-    }
+    if (direction === 'next') bufferLayer.style.transform = 'translateX(100%)';
+    else bufferLayer.style.transform = 'translateX(-100%)';
 
-    try {
-      await bufferLayer.decode();
-    } catch (e) {}
-
+    try { await bufferLayer.decode(); } catch (e) {}
     void bufferLayer.offsetWidth;
 
     const transitionStyle = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
@@ -359,11 +283,8 @@ function initProductGallery() {
     activeLayer.style.transition = transitionStyle;
 
     bufferLayer.style.transform = 'translateX(0)';
-    if (direction === 'next') {
-      activeLayer.style.transform = 'translateX(-100%)';
-    } else {
-      activeLayer.style.transform = 'translateX(100%)';
-    }
+    if (direction === 'next') activeLayer.style.transform = 'translateX(-100%)';
+    else activeLayer.style.transform = 'translateX(100%)';
 
     currentIndex = newIndex;
 
@@ -384,35 +305,14 @@ function initProductGallery() {
       const visibleThumbs = getVisibleThumbs();
       const newIndex = visibleThumbs.indexOf(thumb);
       if (newIndex > -1) {
-        const direction = newIndex > currentIndex ? 'next' : 'prev';
-        slideTo(newIndex, direction);
+        slideTo(newIndex, newIndex > currentIndex ? 'next' : 'prev');
       }
     });
   });
-
-  if (btnPrev && btnNext) {
-    btnPrev.addEventListener('click', () => {
-      const visibleThumbs = getVisibleThumbs();
-      let newIndex = currentIndex - 1;
-      if (newIndex < 0) newIndex = visibleThumbs.length - 1;
-      slideTo(newIndex, 'prev');
-    });
-
-    btnNext.addEventListener('click', () => {
-      const visibleThumbs = getVisibleThumbs();
-      let newIndex = currentIndex + 1;
-      if (newIndex >= visibleThumbs.length) newIndex = 0;
-      slideTo(newIndex, 'next');
-    });
-  }
 }
 
-// ==========================================================================
-// ЛОГИКА СЧЕТЧИКА
-// ==========================================================================
 function initQuantityPicker() {
   const pickers = document.querySelectorAll('.quantity-picker');
-
   pickers.forEach(picker => {
     const btnMinus = picker.querySelector('.qty-btn--minus');
     const btnPlus = picker.querySelector('.qty-btn--plus');
@@ -437,7 +337,6 @@ function initQuantityPicker() {
       if (currentVal === newVal) return;
 
       isAnimating = true;
-
       const newSpan = document.createElement('span');
       newSpan.className = 'qty-val';
       newSpan.textContent = newVal;
@@ -445,7 +344,6 @@ function initQuantityPicker() {
       newSpan.style.transform = direction === 'plus' ? 'translateY(-100%)' : 'translateY(100%)';
       newSpan.style.opacity = '0';
       wrapper.appendChild(newSpan);
-
       void newSpan.offsetWidth;
 
       oldSpan.style.transform = direction === 'plus' ? 'translateY(100%)' : 'translateY(-100%)';
@@ -459,14 +357,66 @@ function initQuantityPicker() {
       }, 250);
     };
 
-    btnMinus.addEventListener('click', (e) => {
-        e.preventDefault();
-        animateValue('minus');
+    btnMinus.addEventListener('click', (e) => { e.preventDefault(); animateValue('minus'); });
+    btnPlus.addEventListener('click', (e) => { e.preventDefault(); animateValue('plus'); });
+  });
+}
+
+// ==========================================================================
+// SCROLL SPY ДЛЯ БАЗЫ ЗНАНИЙ
+// ==========================================================================
+function initScrollSpy() {
+  const links = document.querySelectorAll('.ses-sidebar__link[href^="#"]');
+  if (!links.length) return;
+
+  const sections = Array.from(links).map(link => {
+    const target = document.querySelector(link.getAttribute('href'));
+    return target;
+  }).filter(section => section !== null);
+
+  if (!sections.length) return;
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    const scrollY = window.pageYOffset;
+
+    sections.forEach(section => {
+      // 150px - отступ сверху, чтобы меню подсвечивалось вовремя при прокрутке
+      const sectionTop = section.offsetTop - 150; 
+      if (scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
     });
-    btnPlus.addEventListener('click', (e) => {
-        e.preventDefault();
-        animateValue('plus');
-    });
+
+    if (current) {
+      links.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+          link.classList.add('active');
+        }
+      });
+    }
+  });
+}
+
+// ==========================================================================
+// ПОЛЗУНКИ С ЗАЛИВКОЙ ШКАЛЫ (ДЛЯ КАЛЬКУЛЯТОРА И ДР.)
+// ==========================================================================
+function initRangeSliders() {
+  const sliders = document.querySelectorAll('input[type="range"]');
+  if (!sliders.length) return;
+  
+  function updateSliderFill(slider) {
+    const min = parseFloat(slider.min) || 0;
+    const max = parseFloat(slider.max) || 100;
+    const val = parseFloat(slider.value);
+    const percentage = ((val - min) / (max - min)) * 100;
+    slider.style.setProperty('--value', `${percentage}%`);
+  }
+
+  sliders.forEach(slider => {
+    updateSliderFill(slider);
+    slider.addEventListener('input', () => updateSliderFill(slider));
   });
 }
 
@@ -478,6 +428,8 @@ async function loadLayoutModules() {
   const headerPath = isSubFolder ? '../header.html' : 'header.html';
   const footerPath = isSubFolder ? '../footer.html' : 'footer.html';
 
+  console.log('--- СТАРТ ЗАГРУЗКИ МОДУЛЕЙ ---');
+
   // 1. Загрузка Шапки
   const headerPlaceholder = document.getElementById('header-placeholder');
   if (headerPlaceholder) {
@@ -485,39 +437,43 @@ async function loadLayoutModules() {
       const response = await fetch(headerPath);
       if (response.ok) {
         let html = await response.text();
-        if (isSubFolder) {
-          html = html.replace(/href="([^"]*\.html)"/g, 'href="../$1"');
-        }
+        if (isSubFolder) html = html.replace(/href="([^"]*\.html)"/g, 'href="../\$1"');
         headerPlaceholder.outerHTML = html;
+        console.log('✅ Шапка успешно загружена');
+      } else {
+        console.error(`❌ Ошибка загрузки шапки: Файл ${headerPath} не найден`);
       }
     } catch (error) {
-      console.error('Не удалось загрузить header.html:', error);
+      console.error('❌ Критическая ошибка при fetch шапки:', error);
     }
   }
 
-  // 2. Загрузка Подвала (добавлено)
+  // 2. Загрузка Подвала
   const footerPlaceholder = document.getElementById('footer-placeholder');
   if (footerPlaceholder) {
     try {
       const response = await fetch(footerPath);
       if (response.ok) {
         let html = await response.text();
-        if (isSubFolder) {
-          html = html.replace(/href="([^"]*\.html)"/g, 'href="../$1"');
-        }
+        if (isSubFolder) html = html.replace(/href="([^"]*\.html)"/g, 'href="../\$1"');
         footerPlaceholder.outerHTML = html;
+        console.log('✅ Подвал успешно загружен');
+      } else {
+        console.error(`❌ Ошибка загрузки подвала: Файл ${footerPath} не найден`);
       }
     } catch (error) {
-      console.error('Не удалось загрузить footer.html:', error);
+      console.error('❌ Критическая ошибка при fetch подвала:', error);
     }
   }
 
-  // 3. Инициализация интерактивных элементов
+  // 3. Инициализация всех модулей
   initHeaderEvents();
   setActiveMenuLink();
   if (document.getElementById('productGrid')) loadCatalog();
   initProductGallery(); 
   initQuantityPicker();
+  initScrollSpy();
+  initRangeSliders();
 }
 
 document.addEventListener('DOMContentLoaded', loadLayoutModules);

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CALCULATOR INTEGRATION (КАЛЬКУЛЯТОР В ДИЗАЙН-СИСТЕМЕ)
+   CALCULATOR INTEGRATION (СВЕТЛЫЙ ВАРИАНТ)
    ========================================================================== */
 .calc-page {
   background-color: var(--bg-main);
@@ -7,10 +7,20 @@
 }
 
 .caspian-calc-wrapper {
-  background-color: transparent;
+  background-color: #E8DECF; /* Бежевый фон по просьбе */
   max-width: 800px;
   margin: 0 auto;
+  padding: 3rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
   box-sizing: border-box;
+  color: #121315; /* Темный текст по умолчанию */
+}
+
+@media (max-width: 768px) {
+  .caspian-calc-wrapper {
+    padding: 1.5rem;
+  }
 }
 
 .caspian-calc-wrapper h2 { 
@@ -21,16 +31,16 @@
   font-weight: 300; 
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--text-light);
-  border-bottom: 1px solid var(--border-dark);
+  color: #121315;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
   padding-bottom: 1.5rem;
 }
 
 .calc-form-group { 
   margin-bottom: 1.5rem; 
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.4);
   padding: 2rem;
-  border: 1px solid var(--border-dark);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: var(--radius-sm);
 }
 
@@ -38,7 +48,7 @@
   display: block; 
   font-weight: 500; 
   margin-bottom: 1rem; 
-  color: var(--text-light); 
+  color: rgba(18, 19, 21, 0.7); 
   font-size: 0.75rem; 
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -47,7 +57,7 @@
 .toggle-container { 
   display: flex; 
   background: transparent; 
-  border: 1px solid var(--border-dark); 
+  border: 1px solid rgba(0,0,0,0.15); 
   border-radius: var(--radius-sm);
   overflow: hidden;
 }
@@ -58,8 +68,8 @@
   text-align: center; 
   background: transparent; 
   border: none;
-  border-right: 1px solid var(--border-dark);
-  color: var(--text-muted); 
+  border-right: 1px solid rgba(0,0,0,0.15);
+  color: rgba(18, 19, 21, 0.6); 
   font-family: var(--font-family); 
   font-size: 0.8125rem; 
   font-weight: 500;
@@ -72,15 +82,15 @@
 .toggle-btn:last-child { border-right: none; }
 
 .toggle-btn.active { 
-  background: var(--accent-gold); 
-  color: #121315; 
+  background: #121315; 
+  color: #E8DECF; 
   font-weight: 600;
 }
 
 .input-mode-tabs { 
   display: flex; 
   margin-bottom: 1.5rem; 
-  border-bottom: 1px solid var(--border-dark); 
+  border-bottom: 1px solid rgba(0,0,0,0.15); 
 }
 
 .input-mode-btn {
@@ -88,7 +98,7 @@
   background: transparent; 
   border: none;
   border-bottom: 2px solid transparent;
-  color: var(--text-muted); 
+  color: rgba(18, 19, 21, 0.6); 
   font-size: 0.75rem; 
   font-weight: 500;
   text-transform: uppercase;
@@ -100,34 +110,39 @@
 }
 
 .input-mode-btn.active { 
-  border-color: var(--accent-gold); 
-  color: var(--accent-gold); 
+  border-color: #121315; 
+  color: #121315; 
 }
 
+/* --- Заполнение шкалы ползунка --- */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  width: 100%; 
-  background: transparent;
-  margin: 1rem 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, #121315 0%, #121315 var(--value, 50%), rgba(0,0,0,0.1) var(--value, 50%), rgba(0,0,0,0.1) 100%);
+  border-radius: 2px;
+  outline: none;
+  margin: 1.5rem 0;
   cursor: pointer;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
   height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
+  background: transparent; 
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  height: 20px;
   width: 20px;
-  background: var(--accent-gold);
+  height: 20px;
+  border-radius: 50%;
+  background: #121315;
+  cursor: pointer;
+  border: 2px solid #E8DECF;
   margin-top: -8px;
-  border-radius: 50%; 
   transition: transform 0.2s ease;
 }
 
@@ -139,13 +154,13 @@ input[type="range"]::-webkit-slider-thumb:hover {
   text-align: right; 
   font-size: 2rem; 
   font-weight: 300; 
-  color: var(--text-light); 
+  color: #121315; 
   margin-top: 0.5rem; 
 }
 
 .range-value span:last-child, .coverage-display span:last-child {
   font-size: 1rem;
-  color: var(--text-muted);
+  color: rgba(18, 19, 21, 0.6);
   font-weight: 400;
   margin-left: 0.5rem;
 }
@@ -153,20 +168,30 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .logic-alert { 
   text-align: left; 
   font-size: 0.8125rem; 
-  color: var(--text-light); 
+  color: #121315; 
   padding: 1rem 1.25rem; 
-  border-left: 2px solid var(--accent-gold); 
-  background: rgba(212, 168, 90, 0.1); 
+  border-left: 2px solid rgba(0,0,0,0.1); 
+  background: transparent; 
   margin-top: 1.5rem; 
   line-height: 1.5;
+  transition: all 0.3s ease;
+}
+
+.fade-in {
+  animation: fadeInAlert 0.4s ease forwards;
+}
+
+@keyframes fadeInAlert {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .hardware-visual { 
   display: flex; 
   justify-content: space-between; 
-  background: rgba(255, 255, 255, 0.02); 
+  background: rgba(255, 255, 255, 0.4); 
   padding: 2rem; 
-  border: 1px solid var(--border-dark);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: var(--radius-sm);
   margin-bottom: 2px; 
   flex-wrap: wrap; 
@@ -177,35 +202,35 @@ input[type="range"]::-webkit-slider-thumb:hover {
   text-align: left; 
   flex: 1 1 20%; 
   min-width: 120px; 
-  border-left: 1px solid var(--border-dark);
+  border-left: 1px solid rgba(0,0,0,0.08);
   padding-left: 1.5rem;
 }
 
 .hardware-item:first-child { border-left: none; padding-left: 0; }
 .hardware-icon { font-size: 1.5rem; margin-bottom: 0.75rem; opacity: 0.8; filter: grayscale(100%); }
-.hardware-text { font-size: 0.6875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500;}
-.hardware-count { display: block; font-size: 1.25rem; font-weight: 500; color: var(--text-light); margin-top: 0.5rem; }
+.hardware-text { font-size: 0.6875rem; color: rgba(18, 19, 21, 0.6); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500;}
+.hardware-count { display: block; font-size: 1.25rem; font-weight: 500; color: #121315; margin-top: 0.5rem; }
 
 .results-grid { 
   display: grid; 
   grid-template-columns: 1fr 1fr; 
-  gap: 2px; 
+  gap: 4px; 
   margin-bottom: 3rem; 
-  background: var(--border-dark); 
-  border: 1px solid var(--border-dark);
-  border-radius: var(--radius-sm);
+  background: transparent; 
+  border: none;
   overflow: hidden;
 }
 
 .result-card { 
-  background: #121315; 
+  background: #fff; 
   padding: 2rem; 
   text-align: left; 
+  border-radius: var(--radius-sm);
 }
 
 .result-card span:first-child { 
   display: block; 
-  color: var(--text-muted); 
+  color: rgba(18, 19, 21, 0.6); 
   font-weight: 500;
   font-size: 0.75rem; 
   text-transform: uppercase;
@@ -216,20 +241,70 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .result-card span:last-child { 
   font-weight: 300; 
   font-size: 1.85rem; 
-  color: var(--text-light); 
+  color: #121315; 
 }
 
 .highlight-card { 
   grid-column: span 2; 
-  background: rgba(212, 168, 90, 0.05); 
+  background: #121315; 
 }
 
 .highlight-card span:first-child { color: var(--accent-gold); opacity: 0.8; }
 .highlight-card span:last-child { color: var(--accent-gold); font-size: 2.25rem; }
 
-.export-actions, .contact-actions { 
-  display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-  gap: 1rem; 
-  margin-bottom: 2.5rem; 
+/* --- Кнопки поделиться и обсудить --- */
+.action-group-title {
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(18, 19, 21, 0.6);
+  margin-bottom: 1rem;
+}
+
+.calc-share-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 640px) {
+  .calc-share-grid {
+    grid-template-columns: 1fr; 
+  }
+}
+
+.calc-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background-color: #fff; /* Белые кнопки на бежевом фоне */
+  color: #121315; 
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border: 1px solid rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  font-family: var(--font-family);
+}
+
+.calc-action-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Динамичная реакция - голубой цвет */
+.calc-action-btn:hover {
+  background-color: #4DB6AC; 
+  color: #ffffff;
+  border-color: #4DB6AC;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(77, 182, 172, 0.3);
 }
