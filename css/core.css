@@ -166,6 +166,46 @@ button {
   display: none;
 }
 
+/* Стили кнопки корзины в шапке */
+.header-cart-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.header-cart-link:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.header-cart-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.header-cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  background-color: var(--accent-gold);
+  color: #121315;
+  border-radius: 99px;
+}
+
 .header__nav {
   position: fixed;
   top: 72px;
@@ -257,7 +297,8 @@ button {
     padding: 1.5rem 0;
   }
 
-  .header__burger {
+  .header__burger,
+  .header-cart-mobile-item {
     display: none;
   }
 
@@ -433,24 +474,29 @@ button {
 }
 
 /* ==========================================================================
-   FOOTER (ПОДВАЛ САЙТА)
+   FOOTER (ЛАКОНИЧНЫЙ ПОДВАЛ: УЖАТЫ КРАЯ, ШРИФТ +10%)
    ========================================================================== */
 .footer {
   border-top: 1px solid var(--border-dark);
-  padding: 4rem 0;
+  padding: 2.25rem 0;
   background-color: var(--bg-main);
+}
+
+.footer .container {
+  max-width: 1240px;
 }
 
 .footer__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 3rem;
+  gap: 2rem;
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
   .footer__grid {
-    grid-template-columns: 1.5fr 2fr;
-    gap: 4rem;
+    grid-template-columns: 1.15fr 2fr;
+    gap: 2.5rem;
   }
 }
 
@@ -461,27 +507,33 @@ button {
 
 .footer__logo-row {
   display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-bottom: 0.45rem;
 }
 
 .footer__logo {
-  font-size: 1.5rem;
+  font-size: 1.65rem;
   font-weight: 500;
   color: var(--text-light);
 }
 
+.footer__year {
+  font-size: 0.825rem;
+  color: var(--accent-gold);
+}
+
 .footer__desc {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
-  line-height: 1.6;
-  max-width: 280px;
+  line-height: 1.55;
+  max-width: 310px;
 }
 
 .footer__nav {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem;
+  gap: 1.75rem;
 }
 
 @media (min-width: 640px) {
@@ -491,11 +543,11 @@ button {
 }
 
 .footer__col-title {
-  font-size: 0.6875rem;
+  font-size: 0.76rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-light);
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.85rem;
   font-weight: 600;
 }
 
@@ -503,21 +555,108 @@ button {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.6rem;
 }
 
 .footer__link {
-  font-size: 0.8125rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
+}
+
+.footer__link--strong {
+  color: var(--text-light);
+  font-weight: 500;
 }
 
 .footer__link:hover {
   color: var(--accent-gold);
 }
 
+.footer__messengers {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
 /* ==========================================================================
-   UTILITIES
+   КОНТРАСТНЫЕ ИКОНКИ ТЕХ. ХАРАКТЕРИСТИК И МОНОХРОМНЫЕ БРЕНДЫ ИНВЕРТОРОВ
    ========================================================================== */
+.product-drawer__features svg,
+.pdp-features svg,
+.accordion__header svg,
+.kb-dict-card__icon svg,
+[class*="spec"] svg,
+[class*="metric"] svg {
+  color: var(--bg-panel) !important;
+  stroke: var(--bg-panel) !important;
+}
+
+/* Асимметричная сетка брендов инверторов (Большой DAH Solar + 5 брендов снизу) */
+.inverter-brands-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .inverter-brands-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.inverter-brand-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 90px;
+  transition: var(--transition);
+}
+
+.inverter-brand-card--featured {
+  grid-column: 1 / -1;
+  min-height: 130px;
+  background: rgba(232, 222, 207, 0.06);
+  border-color: rgba(212, 168, 90, 0.35);
+}
+
+.inverter-brand-card img {
+  max-height: 36px;
+  width: auto;
+  object-fit: contain;
+  filter: grayscale(100%) brightness(1.8);
+  opacity: 0.85;
+  transition: var(--transition);
+}
+
+.inverter-brand-card--featured img {
+  max-height: 56px;
+  opacity: 1;
+}
+
+.inverter-brand-card:hover {
+  border-color: var(--accent-gold);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.inverter-brand-card:hover img {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.inverter-brand-card__name {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
 body.no-scroll {
   overflow: hidden;
   touch-action: none;

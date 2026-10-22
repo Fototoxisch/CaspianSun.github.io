@@ -3,17 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caspian Sun — Генератор каталога</title>
+  <title>Caspian Sun — Генератор каталога V2</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0E0F10; color: #F4F4F4; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-    .card { background-color: #16181A; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center; }
+    .card { background-color: #16181A; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 40px; max-width: 640px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center; }
     h1 { margin-top: 0; font-weight: 300; letter-spacing: 0.02em; color: #D4A85A; }
-    p { color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 30px; }
-    .btn { background-color: #6B8F93; color: #fff; border: none; padding: 16px 32px; font-size: 16px; font-weight: 600; letter-spacing: 0.05em; border-radius: 4px; cursor: pointer; transition: transform 0.2s, background-color 0.2s; text-transform: uppercase; }
+    p { color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 24px; font-size: 14px; }
+    .actions { display: flex; flex-direction: column; gap: 14px; margin-bottom: 10px; }
+    .btn { background-color: #6B8F93; color: #fff; border: none; padding: 15px 28px; font-size: 14px; font-weight: 600; letter-spacing: 0.06em; border-radius: 4px; cursor: pointer; transition: transform 0.2s, background-color 0.2s; text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; }
     .btn:hover { background-color: #5a7b7e; transform: translateY(-2px); }
+    .btn--gold { background-color: #D4A85A; color: #121315; }
+    .btn--gold:hover { background-color: #e2b86e; }
     .btn:disabled { background-color: #333; color: #888; cursor: not-allowed; transform: none; }
-    #log { margin-top: 30px; text-align: left; background: #0E0F10; padding: 15px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); font-family: monospace; font-size: 12px; color: #8E9296; max-height: 200px; overflow-y: auto; display: none; }
+    input[type="file"] { display: none; }
+    #log { margin-top: 25px; text-align: left; background: #0E0F10; padding: 15px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); font-family: monospace; font-size: 12px; color: #8E9296; max-height: 220px; overflow-y: auto; display: none; }
     .success { color: #6B8F93; }
     .error { color: #ff5555; }
   </style>
@@ -21,17 +26,44 @@
 <body>
 
   <div class="card">
-    <h1>Генератор страниц товаров</h1>
-    <p>Нажмите кнопку ниже, чтобы скачать данные из Google Таблицы и сгенерировать готовые HTML-страницы для всех товаров в один ZIP-архив.</p>
-    <button id="generateBtn" class="btn">Сгенерировать каталог</button>
+    <h1>Генератор каталога (V2)</h1>
+    <p>Поддерживает новую структуру таблицы, цены в рублях (₽) и автоматическую сборку коллажей для Готовых комплектов. Выберите загрузку из локального файла Excel (.xlsx) или напрямую из облака Google Таблиц.</p>
+    
+    <div class="actions">
+      <label for="excelFileInput" class="btn btn--gold">1. Загрузить из файла .XLSX (Таблица V2)</label>
+      <input type="file" id="excelFileInput" accept=".xlsx,.xls">
+      
+      <button id="generateApiBtn" class="btn">2. Скачать по ссылке Google Таблицы (API)</button>
+    </div>
+
     <div id="log"></div>
   </div>
 
   <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbyDeEYycEHvJhx0ZG6GJEo55fmQfKxSRZEaw2JESdpG4j0EzHG_7HdWsl6xvXh-dP4Lcw/exec';
-    const SKIP_COLUMNS = ['Бренд', 'Модель', 'Цена', 'Изображение', 'Теги (для ИИ)', 'Описание (для ИИ)', 'Преимущества (для ИИ)', 'Категория', 'Артикул', 'SEO Заголовок', 'SEO Описание'];
+    
+    const SKIP_COLUMNS = [
+      'Бренд', 'Модель', 'Название комплекта', 'Модель / Наименование',
+      'Цена', 'Сумма по прайсу ($)', 'Итоговая цена ($)', 'Изображение',
+      'Теги (для ИИ)', 'Описание (для ИИ)', 'Преимущества (для ИИ)',
+      'Категория', 'Артикул', 'SEO Заголовок', 'SEO Описание',
+      'Количество доп фото', 'Позиция для комплекта', 'Состав комплекта',
+      'Себестоимость ($)', 'Себестоимость (₽)', 'Цена +20% (₽)', 'Цена +25% (₽)', 
+      'Цена +30% (₽)', 'Цена +40% (₽)', 'Цена +50% (₽)', 'Цена +60% (₽)', 
+      'Цена +70% (₽)', 'Цена +80% (₽)', 'Цена +90% (₽)', 'Цена +100% (₽)', 
+      'Цена +110% (₽)', 'Цена +120% (₽)', 'Цена +130% (₽)'
+    ];
 
-    const btn = document.getElementById('generateBtn');
+    const SHEET_CATEGORY_MAP = {
+      'Солнечные панели': 'panels',
+      'Аккумуляторы (АКБ)': 'batteries',
+      'Инверторы': 'inverters',
+      'Комплекты': 'kits',
+      'Распределительные щитки': 'shields'
+    };
+
+    const generateApiBtn = document.getElementById('generateApiBtn');
+    const excelFileInput = document.getElementById('excelFileInput');
     const logBox = document.getElementById('log');
 
     function log(msg, type = 'normal') {
@@ -40,7 +72,138 @@
       logBox.scrollTop = logBox.scrollHeight;
     }
 
-    // ОБНОВЛЕННЫЙ ШАБЛОН: С правильными путями к CSS и модульными плейсхолдерами
+    function fixCorruptedDateValue(val) {
+      if (typeof val !== 'string') return val;
+      const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+      if (!isoRegex.test(val.trim())) return val;
+      const dateObj = new Date(val);
+      if (isNaN(dateObj.getTime())) return val;
+      const mskTime = new Date(dateObj.getTime() + 3 * 3600 * 1000);
+      return `${mskTime.getUTCDate()}.${mskTime.getUTCMonth() + 1}`;
+    }
+
+    function formatPrice(priceValue) {
+      const num = parseFloat(String(priceValue).replace(/[^0-9.]/g, ''));
+      if (isNaN(num)) return '0';
+      return new Intl.NumberFormat('ru-RU').format(num);
+    }
+
+    function inferCategoryFromSku(sku) {
+      const s = String(sku || '').trim();
+      if (s.startsWith('PAN-')) return 'panels';
+      if (s.startsWith('INV-')) return 'inverters';
+      if (s.startsWith('BAT-')) return 'batteries';
+      if (s.startsWith('SH-')) return 'shields';
+      return 'other';
+    }
+
+    function buildKitPdpCollage(item) {
+      const extractSku = (str) => {
+        const m = String(str || '').match(/\[([^\]]+)\]/);
+        return m ? m[1].trim() : String(str || '').trim();
+      };
+      const cleanName = (str) => String(str || '').replace(/^\[[^\]]+\]\s*/, '').trim();
+      const comps = [];
+
+      if (item['Солнечная панель'] && Number(item['Кол-во панелей (шт.)']) > 0) {
+        const sku = extractSku(item['Солнечная панель']);
+        comps.push({ sku, category: 'panels', qty: parseInt(item['Кол-во панелей (шт.)'], 10) || 1, title: cleanName(item['Солнечная панель']) });
+      }
+      if (item['Инвертор'] && Number(item['Кол-во инверторов (шт.)']) > 0) {
+        const sku = extractSku(item['Инвертор']);
+        comps.push({ sku, category: 'inverters', qty: parseInt(item['Кол-во инверторов (шт.)'], 10) || 1, title: cleanName(item['Инвертор']) });
+      }
+      if (item['Аккумулятор (АКБ)'] && Number(item['Кол-во АКБ (шт.)']) > 0) {
+        const sku = extractSku(item['Аккумулятор (АКБ)']);
+        comps.push({ sku, category: 'batteries', qty: parseInt(item['Кол-во АКБ (шт.)'], 10) || 1, title: cleanName(item['Аккумулятор (АКБ)']) });
+      }
+
+      if (comps.length === 0 && item['Состав комплекта']) {
+        String(item['Состав комплекта']).split(',').map(s => s.trim()).filter(Boolean).forEach(part => {
+          const [sku, q] = part.split(':').map(s => s.trim());
+          const cat = inferCategoryFromSku(sku);
+          if (cat === 'panels' || cat === 'inverters' || cat === 'batteries') {
+            comps.push({ sku, category: cat, qty: parseInt(q, 10) || 1, title: sku });
+          }
+        });
+      }
+
+      if (comps.length === 0) {
+        return `<img src="../img/catalog/placeholder.webp" alt="Комплект" id="pdpMainImage">`;
+      }
+
+      const cells = comps.slice(0, 4).map(c => {
+        const badge = c.qty > 1 ? `<span class="kit-collage__qty">&times;${c.qty}</span>` : '';
+        return `
+          <div class="kit-collage__cell" title="${c.title.replace(/"/g, '&quot;')}">
+            <img src="../img/catalog/${c.category}/${c.sku}/main.webp" alt="${c.sku}" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">
+            ${badge}
+          </div>
+        `;
+      }).join('');
+
+      return `<div class="kit-collage kit-collage--${Math.min(4, comps.length)}">${cells}</div>`;
+    }
+
+    function normalizeProductRecord(rawItem, fallbackCat = '') {
+      const item = {};
+      for (const k in rawItem) {
+        const cleanVal = fixCorruptedDateValue(rawItem[k]);
+        if (cleanVal !== undefined && cleanVal !== null && cleanVal !== 'Количество доп фото') {
+          item[k.trim()] = cleanVal;
+        }
+      }
+
+      if (!item['Категория'] && fallbackCat) {
+        item['Категория'] = fallbackCat;
+      }
+
+      const sku = String(item['Артикул'] || '').trim();
+      if (!item['Категория']) {
+        if (sku.startsWith('PAN-')) item['Категория'] = 'panels';
+        else if (sku.startsWith('INV-')) item['Категория'] = 'inverters';
+        else if (sku.startsWith('BAT-')) item['Категория'] = 'batteries';
+        else if (sku.startsWith('KIT-')) item['Категория'] = 'kits';
+      }
+
+      if (!item['Модель']) {
+        item['Модель'] = item['Название комплекта'] || item['Модель / Наименование'] || '';
+      }
+
+      if (!item['Бренд'] && item['Категория'] === 'kits') {
+        item['Бренд'] = 'Caspian Sun';
+      }
+
+      if (!item['Цена'] && (item['Итоговая цена ($)'] || item['Сумма по прайсу ($)'])) {
+        item['Цена'] = item['Итоговая цена ($)'] || item['Сумма по прайсу ($)'];
+      }
+
+      if (item['Категория'] === 'kits' && !item['Состав комплекта']) {
+        const compList = [];
+        const extractSku = (str) => {
+          const m = String(str || '').match(/\[([^\]]+)\]/);
+          return m ? m[1] : String(str || '').trim();
+        };
+        if (item['Инвертор'] && Number(item['Кол-во инверторов (шт.)']) > 0) {
+          compList.push(`${extractSku(item['Инвертор'])}:${item['Кол-во инверторов (шт.)']}`);
+        }
+        if (item['Солнечная панель'] && Number(item['Кол-во панелей (шт.)']) > 0) {
+          compList.push(`${extractSku(item['Солнечная панель'])}:${item['Кол-во панелей (шт.)']}`);
+        }
+        if (item['Аккумулятор (АКБ)'] && Number(item['Кол-во АКБ (шт.)']) > 0) {
+          compList.push(`${extractSku(item['Аккумулятор (АКБ)'])}:${item['Кол-во АКБ (шт.)']}`);
+        }
+        if (item['Распределительный щиток'] && Number(item['Кол-во щитков (шт.)']) > 0) {
+          compList.push(`${extractSku(item['Распределительный щиток'])}:${item['Кол-во щитков (шт.)']}`);
+        }
+        if (compList.length > 0) {
+          item['Состав комплекта'] = compList.join(', ');
+        }
+      }
+
+      return item;
+    }
+
     const templateHtml = `<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -55,7 +218,6 @@
 </head>
 <body>
 
-  <!-- Сюда JS подтянет единую шапку -->
   <div id="header-placeholder"></div>
 
   <main class="pdp-main">
@@ -64,7 +226,6 @@
     
     <div class="container pdp-container">
       
-      <!-- Хлебные крошки -->
       <div class="pdp-breadcrumbs">
         <a href="../products.html" class="pdp-breadcrumbs__link">ПРОДУКЦИЯ</a>
         <span class="pdp-breadcrumbs__sep">—</span>
@@ -73,27 +234,16 @@
         <span class="pdp-breadcrumbs__current">{{MODEL}}</span>
       </div>
 
-      <!-- Верхний блок: Галерея + Информация -->
       <section class="pdp-top">
-        
-        <!-- Левая колонка: Галерея (JS будет сам искать доп. фото) -->
         <div class="pdp-gallery">
           <div class="pdp-gallery__main">
-            <button class="pdp-gallery__arrow pdp-gallery__arrow--prev" aria-label="Предыдущее фото">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
-            <img src="../img/catalog/{{CATEGORY_ID}}/{{SKU}}/main.webp" alt="{{MODEL}}" id="pdpMainImage" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">
-            <button class="pdp-gallery__arrow pdp-gallery__arrow--next" aria-label="Следующее фото">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
+            {{GALLERY_MAIN}}
           </div>
-          <!-- Сюда JS добавит миниатюры (dop1.webp, dop2.webp), если найдет их в папке -->
           <div class="pdp-gallery__thumbs" id="pdpThumbs">
             {{GALLERY_THUMBS}}
           </div>
         </div>
 
-        <!-- Правая колонка: Покупка и основные данные -->
         <div class="pdp-info">
           <div class="pdp-info__tags">
             <span>{{CATEGORY_NAME}} • {{BRAND}}</span>
@@ -104,10 +254,9 @@
           <p class="pdp-info__short-desc">{{SHORT_DESC}}</p>
 
           <div class="pdp-purchase">
-            <div class="pdp-price">{{PRICE}} $</div>
+            <div class="pdp-price">{{PRICE}} ₽</div>
             
             <div class="purchase-actions">
-              <!-- Интерактивный переключатель количества -->
               <div class="quantity-picker">
                 <button class="qty-btn qty-btn--minus" type="button" aria-label="Уменьшить">&minus;</button>
                 <div class="qty-val-wrapper"><span class="qty-val">1</span></div>
@@ -117,17 +266,14 @@
             </div>
           </div>
 
-          <!-- Список преимуществ -->
           <ul class="pdp-features">
             {{FEATURES_LIST}}
           </ul>
         </div>
       </section>
 
-      <!-- Нижний блок: Описание и Характеристики -->
       <section class="pdp-details">
         <div class="pdp-details__grid">
-          
           <div class="pdp-description">
             <h2 class="pdp-section-title">Описание</h2>
             <div class="pdp-description__text">
@@ -141,104 +287,148 @@
               {{SPECS_TABLE}}
             </div>
           </div>
-
         </div>
       </section>
 
-      <!-- Блок: Похожие товары (Скрипт будет заполнять его сам) -->
       <section class="pdp-related">
         <h2 class="pdp-section-title">Похожее оборудование</h2>
-        <div class="product-grid" id="relatedProductsGrid" data-category="{{CATEGORY_ID}}" data-sku="{{SKU}}">
-          <!-- Карточки сгенерируются через JS -->
-        </div>
+        <div class="product-grid" id="relatedProductsGrid" data-category="{{CATEGORY_ID}}" data-sku="{{SKU}}"></div>
       </section>
 
     </div>
   </main>
 
-  <!-- Сюда JS подтянет единый подвал -->
   <div id="footer-placeholder"></div>
 
 </body>
 </html>`;
 
-    btn.addEventListener('click', async () => {
-      btn.disabled = true;
-      btn.textContent = 'Подготовка...';
+    async function buildCatalogZip(products) {
+      const validProducts = products.filter(item => {
+        const model = String(item['Модель'] || '').trim();
+        const sku = String(item['Артикул'] || '').trim();
+        return model !== '' && sku !== '' && item['Категория'] !== 'shields';
+      });
+
+      const zip = new JSZip();
+      const folder = zip.folder("products");
+      folder.file('catalog.json', JSON.stringify(validProducts, null, 2));
+      
+      let count = 0;
+
+      validProducts.forEach(item => {
+        const sku = String(item['Артикул']).trim();
+        const categoryId = item['Категория'] || 'other';
+        const brand = item['Бренд'] ? String(item['Бренд']).toUpperCase() : 'CASPIAN SUN';
+        const model = String(item['Модель']).trim();
+        
+        let categoryName = 'ОБОРУДОВАНИЕ';
+        if (categoryId === 'inverters') categoryName = 'ИНВЕРТОРЫ';
+        if (categoryId === 'batteries') categoryName = 'АККУМУЛЯТОРЫ';
+        if (categoryId === 'panels') categoryName = 'СОЛНЕЧНЫЕ ПАНЕЛИ';
+        if (categoryId === 'kits') categoryName = 'ГОТОВЫЕ КОМПЛЕКТЫ';
+
+        const seoTitle = item['SEO Заголовок'] || `${model} — Купить в Caspian Sun`;
+        const seoDesc = item['SEO Описание'] || `Заказать ${model} от ${brand}. Надежное оборудование для солнечных электростанций.`;
+        const shortDesc = item['Теги (для ИИ)'] || '';
+        const fullDesc = item['Описание (для ИИ)'] || 'Описание готовится к публикации.';
+        const price = formatPrice(item['Цена'] || '0');
+
+        let featuresHtml = '';
+        if (item['Преимущества (для ИИ)']) {
+          featuresHtml = String(item['Преимущества (для ИИ)']).split('\n').map(f => f.replace(/^- /, '').trim()).filter(Boolean)
+            .map(f => `<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>${f}</li>`).join('');
+        }
+
+        let specsHtml = '';
+        for (const key in item) {
+          if (!SKIP_COLUMNS.includes(key) && item[key] !== '' && item[key] !== null && item[key] !== undefined) {
+            specsHtml += `<div class="pdp-spec-row"><span class="pdp-spec-name">${key}</span><span class="pdp-spec-value">${item[key]}</span></div>`;
+          }
+        }
+
+        let galleryMainHtml = '';
+        let galleryThumbsHtml = '';
+
+        if (categoryId === 'kits') {
+          galleryMainHtml = buildKitPdpCollage(item);
+          galleryThumbsHtml = '';
+        } else {
+          galleryMainHtml = `<img src="../img/catalog/${categoryId}/${sku}/main.webp" alt="${model}" id="pdpMainImage" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">`;
+          galleryThumbsHtml = `<img src="../img/catalog/${categoryId}/${sku}/main.webp" alt="${model}" class="pdp-gallery__thumb pdp-gallery__thumb--active" onerror="this.style.display='none'">`;
+          for (let i = 1; i <= 5; i++) {
+            galleryThumbsHtml += `<img src="../img/catalog/${categoryId}/${sku}/dop${i}.webp" alt="${model} фото ${i}" class="pdp-gallery__thumb" onerror="this.style.display='none'">`;
+          }
+        }
+
+        let pageHtml = templateHtml
+          .replace(/{{SEO_TITLE}}/g, seoTitle).replace(/{{SEO_DESC}}/g, seoDesc).replace(/{{CATEGORY_ID}}/g, categoryId)
+          .replace(/{{CATEGORY_NAME}}/g, categoryName).replace(/{{MODEL}}/g, model).replace(/{{BRAND}}/g, brand)
+          .replace(/{{SKU}}/g, sku).replace(/{{SHORT_DESC}}/g, shortDesc).replace(/{{PRICE}}/g, price)
+          .replace(/{{FEATURES_LIST}}/g, featuresHtml).replace(/{{FULL_DESC}}/g, fullDesc).replace(/{{SPECS_TABLE}}/g, specsHtml)
+          .replace(/{{GALLERY_MAIN}}/g, galleryMainHtml).replace(/{{GALLERY_THUMBS}}/g, galleryThumbsHtml);
+
+        folder.file(`${sku}.html`, pageHtml.trim());
+        count++;
+        log(`Сгенерирован файл: ${sku}.html (${model})`);
+      });
+
+      const content = await zip.generateAsync({ type: "blob" });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = "products.zip";
+      link.click();
+
+      log(`Готово! Сохранено ${count} страниц и обновленный catalog.json в архиве products.zip.`, 'success');
+    }
+
+    excelFileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      logBox.innerHTML = '';
+      log(`Чтение файла: ${file.name}...`);
+
+      try {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const allProducts = [];
+
+        workbook.SheetNames.forEach(sheetName => {
+          const catId = SHEET_CATEGORY_MAP[sheetName.trim()];
+          if (!catId || catId === 'shields') return;
+          const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+          rows.forEach(r => {
+            allProducts.push(normalizeProductRecord(r, catId));
+          });
+        });
+
+        await buildCatalogZip(allProducts);
+      } catch (err) {
+        log(`Ошибка чтения Excel: ${err.message}`, 'error');
+      } finally {
+        excelFileInput.value = '';
+      }
+    });
+
+    generateApiBtn.addEventListener('click', async () => {
+      generateApiBtn.disabled = true;
+      generateApiBtn.textContent = 'Подготовка...';
       logBox.innerHTML = '';
       
       try {
         log('Установка соединения с Google Таблицами...');
         const response = await fetch(API_URL);
-        if (!response.ok) throw new Error('Ошибка сети');
-        const products = await response.json();
-        
-        const zip = new JSZip();
-        const folder = zip.folder("products");
-        folder.file('catalog.json', JSON.stringify(products));
-        
-        let count = 0;
+        if (!response.ok) throw new Error('Ошибка сети при обращении к Google Script');
+        const rawProducts = await response.json();
 
-        products.forEach(item => {
-          if (!item['Модель'] || !item['Артикул']) return;
-          const sku = String(item['Артикул']).trim();
-          const categoryId = item['Категория'] || 'other';
-          const brand = item['Бренд'] ? String(item['Бренд']).toUpperCase() : '';
-          const model = item['Модель'];
-          
-          let categoryName = 'ОБОРУДОВАНИЕ';
-          if (categoryId === 'inverters') categoryName = 'ИНВЕРТОРЫ';
-          if (categoryId === 'batteries') categoryName = 'АККУМУЛЯТОРЫ';
-          if (categoryId === 'panels') categoryName = 'СОЛНЕЧНЫЕ ПАНЕЛИ';
-
-          const seoTitle = item['SEO Заголовок'] || `${model} — Купить в Caspian Sun`;
-          const seoDesc = item['SEO Описание'] || `Заказать ${model} от ${brand}. Надежное оборудование для солнечных электростанций.`;
-          const shortDesc = item['Теги (для ИИ)'] || '';
-          const fullDesc = item['Описание (для ИИ)'] || 'Описание готовится к публикации.';
-          const price = item['Цена'] || '0';
-
-          let featuresHtml = '';
-          if (item['Преимущества (для ИИ)']) {
-            featuresHtml = String(item['Преимущества (для ИИ)']).split('\n').map(f => f.replace(/^- /, '').trim()).filter(f => f)
-              .map(f => `<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>${f}</li>`).join('');
-          }
-
-          let specsHtml = '';
-          for (const key in item) {
-            if (!SKIP_COLUMNS.includes(key) && item[key]) {
-              specsHtml += `<div class="pdp-spec-row"><span class="pdp-spec-name">${key}</span><span class="pdp-spec-value">${item[key]}</span></div>`;
-            }
-          }
-
-          let galleryThumbsHtml = `<img src="../img/catalog/${categoryId}/${sku}/main.webp" alt="${model}" class="pdp-gallery__thumb pdp-gallery__thumb--active" onerror="this.style.display='none'">`;
-          for (let i = 1; i <= 5; i++) {
-            galleryThumbsHtml += `<img src="../img/catalog/${categoryId}/${sku}/dop${i}.webp" alt="${model} фото ${i}" class="pdp-gallery__thumb" onerror="this.style.display='none'">`;
-          }
-
-          let pageHtml = templateHtml
-            .replace(/{{SEO_TITLE}}/g, seoTitle).replace(/{{SEO_DESC}}/g, seoDesc).replace(/{{CATEGORY_ID}}/g, categoryId)
-            .replace(/{{CATEGORY_NAME}}/g, categoryName).replace(/{{MODEL}}/g, model).replace(/{{BRAND}}/g, brand)
-            .replace(/{{SKU}}/g, sku).replace(/{{SHORT_DESC}}/g, shortDesc).replace(/{{PRICE}}/g, price)
-            .replace(/{{FEATURES_LIST}}/g, featuresHtml).replace(/{{FULL_DESC}}/g, fullDesc).replace(/{{SPECS_TABLE}}/g, specsHtml)
-            .replace(/{{GALLERY_THUMBS}}/g, galleryThumbsHtml);
-
-          folder.file(`${sku}.html`, pageHtml.trim());
-          count++;
-          log(`Сгенерирован файл: ${sku}.html`);
-        });
-        
-        const content = await zip.generateAsync({type: "blob"});
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = "products.zip";
-        link.click();
-        
-        log(`Готово! Сохранено ${count} страниц.`, 'success');
-        btn.textContent = 'Скачивание завершено';
+        const products = rawProducts.map(item => normalizeProductRecord(item));
+        await buildCatalogZip(products);
+        generateApiBtn.textContent = '2. Скачать по ссылке Google Таблицы (API)';
+        generateApiBtn.disabled = false;
       } catch (err) {
         log(`Ошибка: ${err.message}`, 'error');
-        btn.textContent = 'Ошибка';
-        btn.disabled = false;
+        generateApiBtn.textContent = 'Ошибка соединения';
+        generateApiBtn.disabled = false;
       }
     });
   </script>

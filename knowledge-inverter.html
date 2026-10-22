@@ -82,16 +82,103 @@
         </div>
 
         <div id="sec-04" class="inv-solutions">
+          
+          <!-- ================= КАРТОЧКА 01: СЕТЕВЫЕ ИНВЕРТОРЫ ================= -->
           <div class="inv-card">
             <div class="inv-card__num">01</div>
             <h3 class="inv-card__title">СЕТЕВЫЕ<br>ИНВЕРТОРЫ</h3>
             <p class="inv-card__desc">Работают только с электросетью. Преобразуют постоянный ток от солнечных панелей в переменный и подают его в сеть.</p>
-            <div class="inv-card__diagram"><img src="img/knowledge-inverter/knowledge-inv3.webp" alt="Схема"></div>
+            
+            <div class="inv-card__diagram">
+              <div class="inv-schema inv-schema--4col">
+                <!-- Узел 1: Панели -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <circle cx="14" cy="14" r="5.5" stroke="var(--accent-gold)" stroke-width="1.5"/>
+                      <path d="M14 4V6.5M14 21.5V24M4 14H6.5M21.5 14H24M6.9 6.9L8.7 8.7M19.3 19.3L21.1 21.1M21.1 6.9L19.3 8.7M8.7 19.3L6.9 21.1" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round"/>
+                      <polygon points="26,14 58,14 50,44 18,44" stroke="var(--text-dark)" stroke-width="1.5" stroke-linejoin="round"/>
+                      <line x1="36.6" y1="14" x2="28.6" y2="44" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="47.3" y1="14" x2="39.3" y2="44" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="23.3" y1="24" x2="55.3" y2="24" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="20.6" y1="34" x2="52.6" y2="34" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <path d="M34 44V50M27 50H41" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">СОЛНЕЧНЫЕ<br>ПАНЕЛИ</div>
+                </div>
+
+                <!-- Стрелка DC -->
+                <div class="inv-connector">
+                  <span class="inv-connector__tag">DC</span>
+                  <svg class="inv-arrow-svg" viewBox="0 0 42 20" fill="none">
+                    <line x1="2" y1="10" x2="35" y2="10" class="inv-flow-line inv-flow-line--forward"/>
+                    <polyline points="30,5 37,10 30,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <!-- Узел 2: Сетевой инвертор -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <rect x="12" y="12" width="40" height="30" rx="3" stroke="var(--text-dark)" stroke-width="1.5"/>
+                      <path d="M23 27C25.5 21 29.5 21 32 27C34.5 33 38.5 33 41 27" stroke="var(--text-dark)" stroke-width="1.6" stroke-linecap="round"/>
+                      <path d="M20 42V47M17 47H23M44 42V47M41 47H47" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">СЕТЕВОЙ<br>ИНВЕРТОР</div>
+                </div>
+
+                <!-- Стрелка AC -->
+                <div class="inv-connector">
+                  <span class="inv-connector__tag">AC</span>
+                  <svg class="inv-arrow-svg" viewBox="0 0 42 20" fill="none">
+                    <line x1="2" y1="10" x2="35" y2="10" class="inv-flow-line inv-flow-line--forward"/>
+                    <polyline points="30,5 37,10 30,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <!-- Узел 3: Нагрузка -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <path d="M14 26L32 12L50 26" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M19 22.5V46H45V22.5" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <rect x="28" y="31" width="8" height="15" stroke="var(--text-dark)" stroke-width="1.5"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">НАГРУЗКА</div>
+                  <div class="inv-node__sub">Ваш дом,<br>бизнес и т.д.</div>
+                </div>
+
+                <!-- Стрелка связи с сетью -->
+                <div class="inv-connector">
+                  <svg class="inv-arrow-svg" viewBox="0 0 42 20" fill="none">
+                    <line x1="6" y1="10" x2="36" y2="10" class="inv-flow-line inv-flow-line--forward"/>
+                    <polyline points="11,5 4,10 11,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="31,5 38,10 31,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <!-- Узел 4: Электросеть (без боковых черточек) -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <path d="M32 8L20 48M32 8L44 48M16 48H48" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M18 20H46L32 14L18 20ZM15 29H49L32 22L15 29Z" stroke="var(--text-dark)" stroke-width="1.4" stroke-linejoin="round"/>
+                      <path d="M24 34L41 46M40 34L23 46" stroke="var(--text-dark)" stroke-width="1.3" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">ЭЛЕКТРОСЕТЬ</div>
+                </div>
+              </div>
+            </div>
+
             <div class="inv-card__adv-title">ПРЕИМУЩЕСТВА</div>
             <ul class="inv-card__list">
               <li>Высокая эффективность</li>
               <li>Простая и надежная конструкция</li>
-              <li>Подходят для объектов с стабильной сетью</li>
+              <li>Подходят для объектов со стабильной сетью</li>
             </ul>
             <div class="inv-card__ideal">
               <div class="inv-card__ideal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
@@ -99,11 +186,120 @@
             </div>
           </div>
           
+          <!-- ================= КАРТОЧКА 02: ГИБРИДНЫЕ ИНВЕРТОРЫ ================= -->
           <div class="inv-card">
             <div class="inv-card__num">02</div>
             <h3 class="inv-card__title">ГИБРИДНЫЕ<br>ИНВЕРТОРЫ</h3>
             <p class="inv-card__desc">Работают с сетью и аккумуляторами. Позволяют использовать энергию солнца, хранить её и при необходимости подключаться к сети.</p>
-            <div class="inv-card__diagram"><img src="img/knowledge-inverter/knowledge-inv4.webp" alt="Схема"></div>
+            
+            <div class="inv-card__diagram">
+              <div class="inv-schema inv-schema--4col">
+                <!-- Узел 1: Панели -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <circle cx="14" cy="14" r="5.5" stroke="var(--accent-gold)" stroke-width="1.5"/>
+                      <path d="M14 4V6.5M14 21.5V24M4 14H6.5M21.5 14H24M6.9 6.9L8.7 8.7M19.3 19.3L21.1 21.1M21.1 6.9L19.3 8.7M8.7 19.3L6.9 21.1" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round"/>
+                      <polygon points="26,14 58,14 50,44 18,44" stroke="var(--text-dark)" stroke-width="1.5" stroke-linejoin="round"/>
+                      <line x1="36.6" y1="14" x2="28.6" y2="44" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="47.3" y1="14" x2="39.3" y2="44" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="23.3" y1="24" x2="55.3" y2="24" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="20.6" y1="34" x2="52.6" y2="34" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <path d="M34 44V50M27 50H41" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">СОЛНЕЧНЫЕ<br>ПАНЕЛИ</div>
+                </div>
+
+                <!-- Стрелка 1 -->
+                <div class="inv-connector">
+                  <svg class="inv-arrow-svg" viewBox="0 0 42 20" fill="none">
+                    <line x1="2" y1="10" x2="35" y2="10" class="inv-flow-line inv-flow-line--forward"/>
+                    <polyline points="30,5 37,10 30,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <!-- Узел 2: Гибридный инвертор -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <rect x="12" y="12" width="40" height="30" rx="3" stroke="var(--text-dark)" stroke-width="1.5"/>
+                      <path d="M23 27C25.5 21 29.5 21 32 27C34.5 33 38.5 33 41 27" stroke="var(--text-dark)" stroke-width="1.6" stroke-linecap="round"/>
+                      <rect x="18" y="42" width="5" height="4" stroke="var(--text-dark)" stroke-width="1.4"/>
+                      <rect x="41" y="42" width="5" height="4" stroke="var(--text-dark)" stroke-width="1.4"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">ГИБРИДНЫЙ<br>ИНВЕРТОР</div>
+                </div>
+
+                <!-- Стрелка 2 -->
+                <div class="inv-connector">
+                  <svg class="inv-arrow-svg" viewBox="0 0 42 20" fill="none">
+                    <line x1="2" y1="10" x2="35" y2="10" class="inv-flow-line inv-flow-line--forward"/>
+                    <polyline points="30,5 37,10 30,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <!-- Узел 3: Нагрузка -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <path d="M14 26L32 12L50 26" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M19 22.5V46H45V22.5" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <rect x="28" y="31" width="8" height="15" stroke="var(--text-dark)" stroke-width="1.5"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">НАГРУЗКА</div>
+                  <div class="inv-node__sub">Ваш дом,<br>бизнес и т.д.</div>
+                </div>
+
+                <!-- Стрелка 3: Двунаправленная с сетью -->
+                <div class="inv-connector">
+                  <svg class="inv-arrow-svg" viewBox="0 0 42 20" fill="none">
+                    <line x1="6" y1="10" x2="36" y2="10" class="inv-flow-line inv-flow-line--forward"/>
+                    <polyline points="11,5 4,10 11,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="31,5 38,10 31,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <!-- Узел 4: Электросеть -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <path d="M32 8L20 48M32 8L44 48M16 48H48" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M18 20H46L32 14L18 20ZM15 29H49L32 22L15 29Z" stroke="var(--text-dark)" stroke-width="1.4" stroke-linejoin="round"/>
+                      <path d="M24 34L41 46M40 34L23 46" stroke="var(--text-dark)" stroke-width="1.3" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">ЭЛЕКТРОСЕТЬ</div>
+                </div>
+
+                <!-- Ветка АКБ под Гибридным инвертором (колонка 3) -->
+                <div class="inv-branch-battery">
+                  <div class="inv-connector-vert">
+                    <svg viewBox="0 0 36 32" fill="none">
+                      <line x1="12" y1="2" x2="12" y2="26" class="inv-flow-line inv-flow-line--forward"/>
+                      <polyline points="8,21 12,27 16,21" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <line x1="24" y1="29" x2="24" y2="5" class="inv-flow-line inv-flow-line--reverse"/>
+                      <polyline points="20,10 24,4 28,10" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node">
+                    <div class="inv-node__icon inv-node__icon--sm">
+                      <svg viewBox="0 0 64 46" fill="none">
+                        <rect x="12" y="10" width="40" height="28" rx="2.5" stroke="var(--text-dark)" stroke-width="1.5"/>
+                        <path d="M20 10V6H27V10M37 10V6H44V10" stroke="var(--text-dark)" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M23.5 20V28M19.5 24H27.5" stroke="var(--text-dark)" stroke-width="1.6" stroke-linecap="round"/>
+                        <line x1="36.5" y1="24" x2="44.5" y2="24" stroke="var(--text-dark)" stroke-width="1.6" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div class="inv-node__title">АККУМУЛЯТОР</div>
+                    <div class="inv-node__sub">Накопление энергии<br>(опционально)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="inv-card__adv-title">ПРЕИМУЩЕСТВА</div>
             <ul class="inv-card__list">
               <li>Энергия в любое время суток</li>
@@ -116,11 +312,100 @@
             </div>
           </div>
 
+          <!-- ================= КАРТОЧКА 03: АВТОНОМНЫЕ ИНВЕРТОРЫ ================= -->
           <div class="inv-card">
             <div class="inv-card__num">03</div>
             <h3 class="inv-card__title">АВТОНОМНЫЕ<br>ИНВЕРТОРЫ</h3>
             <p class="inv-card__desc">Работают независимо от электросети. Используют энергию солнца и аккумуляторы для полного энергоснабжения объекта.</p>
-            <div class="inv-card__diagram"><img src="img/knowledge-inverter/knowledge-inv5.webp" alt="Схема"></div>
+            
+            <div class="inv-card__diagram">
+              <!-- Чистая 3-колоночная сетка без пустых дыр справа -->
+              <div class="inv-schema inv-schema--3col">
+                <!-- Узел 1: Панели -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <circle cx="14" cy="14" r="5.5" stroke="var(--accent-gold)" stroke-width="1.5"/>
+                      <path d="M14 4V6.5M14 21.5V24M4 14H6.5M21.5 14H24M6.9 6.9L8.7 8.7M19.3 19.3L21.1 21.1M21.1 6.9L19.3 8.7M8.7 19.3L6.9 21.1" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round"/>
+                      <polygon points="26,14 58,14 50,44 18,44" stroke="var(--text-dark)" stroke-width="1.5" stroke-linejoin="round"/>
+                      <line x1="36.6" y1="14" x2="28.6" y2="44" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="47.3" y1="14" x2="39.3" y2="44" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="23.3" y1="24" x2="55.3" y2="24" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <line x1="20.6" y1="34" x2="52.6" y2="34" stroke="var(--text-dark)" stroke-width="1.3"/>
+                      <path d="M34 44V50M27 50H41" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">СОЛНЕЧНЫЕ<br>ПАНЕЛИ</div>
+                </div>
+
+                <!-- Стрелка 1 -->
+                <div class="inv-connector">
+                  <svg class="inv-arrow-svg" viewBox="0 0 42 20" fill="none">
+                    <line x1="2" y1="10" x2="35" y2="10" class="inv-flow-line inv-flow-line--forward"/>
+                    <polyline points="30,5 37,10 30,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <!-- Узел 2: Автономный инвертор -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <rect x="12" y="12" width="40" height="30" rx="3" stroke="var(--text-dark)" stroke-width="1.5"/>
+                      <path d="M23 27C25.5 21 29.5 21 32 27C34.5 33 38.5 33 41 27" stroke="var(--text-dark)" stroke-width="1.6" stroke-linecap="round"/>
+                      <rect x="18" y="42" width="5" height="4" stroke="var(--text-dark)" stroke-width="1.4"/>
+                      <rect x="41" y="42" width="5" height="4" stroke="var(--text-dark)" stroke-width="1.4"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">АВТОНОМНЫЙ<br>ИНВЕРТОР</div>
+                </div>
+
+                <!-- Стрелка 2 -->
+                <div class="inv-connector">
+                  <svg class="inv-arrow-svg" viewBox="0 0 42 20" fill="none">
+                    <line x1="2" y1="10" x2="35" y2="10" class="inv-flow-line inv-flow-line--forward"/>
+                    <polyline points="30,5 37,10 30,15" stroke="var(--accent-gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+
+                <!-- Узел 3: Нагрузка -->
+                <div class="inv-node">
+                  <div class="inv-node__icon">
+                    <svg viewBox="0 0 64 56" fill="none">
+                      <path d="M14 26L32 12L50 26" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M19 22.5V46H45V22.5" stroke="var(--text-dark)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <rect x="28" y="31" width="8" height="15" stroke="var(--text-dark)" stroke-width="1.5"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node__title">НАГРУЗКА</div>
+                  <div class="inv-node__sub">Ваш дом,<br>бизнес и т.д.</div>
+                </div>
+
+                <!-- Ветка АКБ под Автономным инвертором (колонка 3) -->
+                <div class="inv-branch-battery">
+                  <div class="inv-connector-vert">
+                    <svg viewBox="0 0 36 32" fill="none">
+                      <line x1="12" y1="2" x2="12" y2="26" class="inv-flow-line inv-flow-line--forward"/>
+                      <polyline points="8,21 12,27 16,21" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <line x1="24" y1="29" x2="24" y2="5" class="inv-flow-line inv-flow-line--reverse"/>
+                      <polyline points="20,10 24,4 28,10" stroke="var(--accent-gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="inv-node">
+                    <div class="inv-node__icon inv-node__icon--sm">
+                      <svg viewBox="0 0 64 46" fill="none">
+                        <rect x="12" y="10" width="40" height="28" rx="2.5" stroke="var(--text-dark)" stroke-width="1.5"/>
+                        <path d="M20 10V6H27V10M37 10V6H44V10" stroke="var(--text-dark)" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M23.5 20V28M19.5 24H27.5" stroke="var(--text-dark)" stroke-width="1.6" stroke-linecap="round"/>
+                        <line x1="36.5" y1="24" x2="44.5" y2="24" stroke="var(--text-dark)" stroke-width="1.6" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <div class="inv-node__title">АККУМУЛЯТОР</div>
+                    <div class="inv-node__sub">(накопление энергии)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="inv-card__adv-title">ПРЕИМУЩЕСТВА</div>
             <ul class="inv-card__list">
               <li>Полная энергонезависимость</li>
@@ -128,10 +413,11 @@
               <li>Подходят для удалённых объектов</li>
             </ul>
             <div class="inv-card__ideal">
-              <div class="inv-card__ideal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L8 22M12 2L16 22M4 14L20 14M6 8L18 8M12 2v20"/></svg></div>
+              <div class="inv-card__ideal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
               <div class="inv-card__ideal-text"><strong>ИДЕАЛЬНО ДЛЯ</strong><span>Удалённых объектов, загородных домов, платформ и районов с нестабильной сетью.</span></div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -139,26 +425,48 @@
     <section id="sec-05" class="kb-section kb-section--dark">
       <div class="container choice-variants-layout" style="align-items: center;">
         <div class="choice-top-img"><img src="img/knowledge-inverter/knowledge-inv6.webp" alt="Каталог"></div>
-        <div style="display: flex; gap: 4rem; padding-left: 2rem;">
-          <div style="max-width: 320px;">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding-left: 1rem;">
+          <div style="max-width: 420px;">
             <div class="ses-block-header">
               <span class="ses-block-title" style="margin-bottom: 0; font-size: 0.625rem; color: var(--text-muted);">КАТАЛОГ</span>
               <span class="ses-block-line"></span>
             </div>
             <h2 class="ses-block-title">КАТАЛОГ ИНВЕРТОРОВ</h2>
-            <p class="ses-text-p" style="margin-bottom: 2.5rem;">В нашем каталоге представлены современные решения от ведущих производителей — для любых задач и объектов.</p>
+            <p class="ses-text-p" style="margin-bottom: 2rem;">В нашем каталоге представлены современные решения от ведущих производителей — для любых задач и объектов.</p>
             <a href="products.html?category=inverters" class="btn btn--outline-light">
               <span>ПЕРЕЙТИ В КАТАЛОГ</span>
               <svg class="btn-arrow" viewBox="0 0 16 16"><line x1="2" y1="8" x2="13" y2="8"></line><polyline points="9 4 13 8 9 12"></polyline></svg>
             </a>
           </div>
-          <ul class="brand-list">
-            <li>Huawei</li>
-            <li>Solis</li>
-            <li>Growatt</li>
-            <li>GoodWe</li>
-            <li>Sungrow</li>
-          </ul>
+
+          <!-- Сетка брендов в формате SVG -->
+          <div class="inverter-brands-grid">
+            <a href="products.html?category=inverters" class="inverter-brand-card inverter-brand-card--featured">
+              <img src="img/brands/dahsolar.svg" alt="DAH Solar" onerror="this.style.display='none'">
+              <span class="inverter-brand-card__name">DAH Solar</span>
+            </a>
+            <a href="products.html?category=inverters" class="inverter-brand-card">
+              <img src="img/brands/solis.svg" alt="Solis" onerror="this.style.display='none'">
+              <span class="inverter-brand-card__name">Solis</span>
+            </a>
+            <a href="products.html?category=inverters" class="inverter-brand-card">
+              <img src="img/brands/growatt.svg" alt="Growatt" onerror="this.style.display='none'">
+              <span class="inverter-brand-card__name">Growatt</span>
+            </a>
+            <a href="products.html?category=inverters" class="inverter-brand-card">
+              <img src="img/brands/invt.svg" alt="INVT" onerror="this.style.display='none'">
+              <span class="inverter-brand-card__name">INVT</span>
+            </a>
+            <a href="products.html?category=inverters" class="inverter-brand-card">
+              <img src="img/brands/deye.svg" alt="Deye" onerror="this.style.display='none'">
+              <span class="inverter-brand-card__name">Deye</span>
+            </a>
+            <a href="products.html?category=inverters" class="inverter-brand-card">
+              <img src="img/brands/must.svg" alt="Must" onerror="this.style.display='none'">
+              <span class="inverter-brand-card__name">Must</span>
+            </a>
+          </div>
+
         </div>
       </div>
     </section>

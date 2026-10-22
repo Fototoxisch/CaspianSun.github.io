@@ -12,7 +12,6 @@
 </head>
 <body>
 
-  <!-- Сюда JS подтянет единую шапку -->
   <div id="header-placeholder"></div>
 
   <main class="pdp-main">
@@ -21,7 +20,6 @@
     
     <div class="container pdp-container">
       
-      <!-- Хлебные крошки -->
       <div class="pdp-breadcrumbs">
         <a href="../products.html" class="pdp-breadcrumbs__link">ПРОДУКЦИЯ</a>
         <span class="pdp-breadcrumbs__sep">—</span>
@@ -30,27 +28,16 @@
         <span class="pdp-breadcrumbs__current">SUN-30K-G04</span>
       </div>
 
-      <!-- Верхний блок: Галерея + Информация -->
       <section class="pdp-top">
-        
-        <!-- Левая колонка: Галерея (JS будет сам искать доп. фото) -->
         <div class="pdp-gallery">
           <div class="pdp-gallery__main">
-            <button class="pdp-gallery__arrow pdp-gallery__arrow--prev" aria-label="Предыдущее фото">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
             <img src="../img/catalog/inverters/INV-012/main.webp" alt="SUN-30K-G04" id="pdpMainImage" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">
-            <button class="pdp-gallery__arrow pdp-gallery__arrow--next" aria-label="Следующее фото">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
           </div>
-          <!-- Сюда JS добавит миниатюры (dop1.webp, dop2.webp), если найдет их в папке -->
           <div class="pdp-gallery__thumbs" id="pdpThumbs">
             <img src="../img/catalog/inverters/INV-012/main.webp" alt="SUN-30K-G04" class="pdp-gallery__thumb pdp-gallery__thumb--active" onerror="this.style.display='none'"><img src="../img/catalog/inverters/INV-012/dop1.webp" alt="SUN-30K-G04 фото 1" class="pdp-gallery__thumb" onerror="this.style.display='none'"><img src="../img/catalog/inverters/INV-012/dop2.webp" alt="SUN-30K-G04 фото 2" class="pdp-gallery__thumb" onerror="this.style.display='none'"><img src="../img/catalog/inverters/INV-012/dop3.webp" alt="SUN-30K-G04 фото 3" class="pdp-gallery__thumb" onerror="this.style.display='none'"><img src="../img/catalog/inverters/INV-012/dop4.webp" alt="SUN-30K-G04 фото 4" class="pdp-gallery__thumb" onerror="this.style.display='none'"><img src="../img/catalog/inverters/INV-012/dop5.webp" alt="SUN-30K-G04 фото 5" class="pdp-gallery__thumb" onerror="this.style.display='none'">
           </div>
         </div>
 
-        <!-- Правая колонка: Покупка и основные данные -->
         <div class="pdp-info">
           <div class="pdp-info__tags">
             <span>ИНВЕРТОРЫ • DEYE</span>
@@ -61,10 +48,9 @@
           <p class="pdp-info__short-desc">3 фазы • 30 кВт • КПД 98.6%</p>
 
           <div class="pdp-purchase">
-            <div class="pdp-price">806 $</div>
+            <div class="pdp-price">120 000 ₽</div>
             
             <div class="purchase-actions">
-              <!-- Интерактивный переключатель количества -->
               <div class="quantity-picker">
                 <button class="qty-btn qty-btn--minus" type="button" aria-label="Уменьшить">&minus;</button>
                 <div class="qty-val-wrapper"><span class="qty-val">1</span></div>
@@ -74,17 +60,14 @@
             </div>
           </div>
 
-          <!-- Список преимуществ -->
           <ul class="pdp-features">
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Высокий КПД — до 98.6%</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Интегрированный Wi-Fi мониторинг</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Гарантия производителя — 5 лет</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>Широкий диапазон рабочих напряжений</li>
           </ul>
         </div>
       </section>
 
-      <!-- Нижний блок: Описание и Характеристики -->
       <section class="pdp-details">
         <div class="pdp-details__grid">
-          
           <div class="pdp-description">
             <h2 class="pdp-section-title">Описание</h2>
             <div class="pdp-description__text">
@@ -95,25 +78,20 @@
           <div class="pdp-specs">
             <h2 class="pdp-section-title">Характеристики</h2>
             <div class="pdp-specs__table">
-              <div class="pdp-spec-row"><span class="pdp-spec-name">Мощность (кВт)</span><span class="pdp-spec-value">30</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">Кол-во фаз</span><span class="pdp-spec-value">3</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">КПД (%)</span><span class="pdp-spec-value">98.6</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">Гарантия (лет)</span><span class="pdp-spec-value">5</span></div>
+              <div class="pdp-spec-row"><span class="pdp-spec-name">Мощность (кВт)</span><span class="pdp-spec-value">30</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">Кол-во фаз</span><span class="pdp-spec-value">3</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">Тип инвертора</span><span class="pdp-spec-value">Сетевой</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">Кол-во MPPT</span><span class="pdp-spec-value">2</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">КПД (%)</span><span class="pdp-spec-value">98.6</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">Гарантия (лет)</span><span class="pdp-spec-value">5</span></div><div class="pdp-spec-row"><span class="pdp-spec-name">Вес (кг)</span><span class="pdp-spec-value">25.5</span></div>
             </div>
           </div>
-
         </div>
       </section>
 
-      <!-- Блок: Похожие товары (Скрипт будет заполнять его сам) -->
       <section class="pdp-related">
         <h2 class="pdp-section-title">Похожее оборудование</h2>
-        <div class="product-grid" id="relatedProductsGrid" data-category="inverters" data-sku="INV-012">
-          <!-- Карточки сгенерируются через JS -->
-        </div>
+        <div class="product-grid" id="relatedProductsGrid" data-category="inverters" data-sku="INV-012"></div>
       </section>
 
     </div>
   </main>
 
-  <!-- Сюда JS подтянет единый подвал -->
   <div id="footer-placeholder"></div>
 
 </body>

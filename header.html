@@ -1,9 +1,9 @@
+<!-- HEADER -->
 <header class="header">
   <div class="container header__container">
     <!-- Левая колонка: Логотип -->
     <a href="index.html" class="header__brand">
       <div class="header__logo-row">
-        <!-- Текстовый логотип (или картинка, если используешь её) -->
         <span class="header__logo">Caspian Sun</span>
         <span class="header__line"></span>
       </div>
@@ -27,7 +27,10 @@
           <a href="about.html" class="header__nav-link">О компании</a>
         </li>
         <li class="header__nav-item">
-          <a href="products.html" class="header__nav-link">Продукция</a>
+          <a href="products.html" class="header__nav-link">Каталог</a>
+        </li>
+        <li class="header__nav-item">
+          <a href="calculator.html" class="header__nav-link">Калькулятор</a>
         </li>
         <li class="header__nav-item">
           <a href="services.html" class="header__nav-link">Услуги</a>
@@ -53,15 +56,10 @@
         <li class="header__nav-item">
           <a href="contacts.html" class="header__nav-link">Контакты</a>
         </li>
-
-        <!-- Вернули "Рассчитать систему" как обычный пункт меню -->
-        <li class="header__nav-item">
-          <a href="calculator.html" class="header__nav-link">Рассчитать систему</a>
-        </li>
       </ul>
     </nav>
 
-    <!-- Правая колонка: пустышка для идеальной центровки меню -->
-    <div class="header__spacer" aria-hidden="true"></div>
+    <!-- Правая колонка: Контейнер для кнопки Корзины (инжектится через main.js) -->
+    <div class="header__spacer"></div>
   </div>
 </header>

@@ -203,7 +203,6 @@
   box-shadow: 0 12px 24px rgba(212, 168, 90, 0.15);
 }
 
-/* Фотография прилипает к краям (full-bleed) */
 .kb-topic-card__img {
   width: 100%;
   aspect-ratio: 16 / 10;
@@ -1765,7 +1764,9 @@
   line-height: 1.4;
 }
 
-/* --- Inverter Solutions Cards --- */
+/* ==========================================================================
+   INVERTER SOLUTIONS CARDS (ВЫРОВНЕННЫЕ СХЕМЫ И КАРТОЧКИ)
+   ========================================================================== */
 .inv-solutions {
   display: grid;
   grid-template-columns: 1fr;
@@ -1775,31 +1776,48 @@
 @media (min-width: 1024px) {
   .inv-solutions {
     grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
   }
 }
 
 .inv-card {
-  background-color: transparent;
-  border: 1px solid var(--border-dark);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(var(--bg-panel-rgb), 0.95) 100%
+  );
+  border: 1px solid rgba(212, 168, 90, 0.45);
+  box-shadow: 
+    0 10px 28px -8px rgba(14, 15, 16, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55);
   border-radius: var(--radius-sm);
-  padding: 2.5rem 2rem;
+  padding: 2.25rem 1.5rem;
   display: flex;
   flex-direction: column;
   cursor: default;
   transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+@media (min-width: 1280px) {
+  .inv-card {
+    padding: 2.5rem 1.85rem;
+  }
+}
+
 .inv-card:hover {
   border-color: var(--accent-gold);
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(212, 168, 90, 0.1);
+  box-shadow: 
+    0 18px 36px -8px rgba(14, 15, 16, 0.14),
+    0 0 0 1px rgba(212, 168, 90, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 
 .inv-card__num {
   font-size: 0.875rem;
   color: var(--text-dark-muted);
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid rgba(18, 19, 21, 0.12);
   padding-bottom: 0.75rem;
 }
 
@@ -1809,31 +1827,203 @@
   text-transform: uppercase;
   margin-bottom: 1rem;
   color: var(--text-dark);
+  line-height: 1.2;
 }
 
+/* Фиксированная высота описания, чтобы верхняя линия схемы начиналась на одном уровне */
 .inv-card__desc {
   font-size: 0.8125rem;
   color: var(--text-dark-muted);
   line-height: 1.5;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  flex: 0 0 76px;
+  height: 76px;
+  min-height: 76px;
 }
 
+/* Контейнер векторной схемы в виде скрытой карусели */
 .inv-card__diagram {
   margin-bottom: 2rem;
+  padding: 1.65rem 0.25rem 1.25rem;
+  flex: 0 0 276px;
+  height: 276px;
+  min-height: 276px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* Плавный свайп на iOS */
+  scrollbar-width: none; /* Скрытие скроллбара в Firefox */
+  border-top: 1px solid rgba(18, 19, 21, 0.08);
+  border-bottom: 1px solid rgba(18, 19, 21, 0.08);
+}
+
+/* Скрытие скроллбара в Chrome, Safari, Edge */
+.inv-card__diagram::-webkit-scrollbar {
+  display: none;
+}
+
+/* Сетка схемы: первый ряд всегда ровно 106px для идеального совпадения по горизонтали */
+.inv-schema {
+  display: grid;
+  grid-template-rows: 106px auto;
+  align-items: start;
+  justify-items: center;
+  margin: 0 auto;
+}
+
+/* 3 колонки для автономного инвертора (равномерное заполнение без пустоты справа) */
+.inv-schema--3col {
+  grid-template-columns: minmax(74px, 1fr) 44px minmax(74px, 1fr) 44px minmax(74px, 1fr);
+  min-width: 310px;
+  width: 100%;
+}
+
+/* 4 колонки для сетевого и гибридного инверторов */
+.inv-schema--4col {
+  grid-template-columns: minmax(64px, 1fr) 30px minmax(70px, 1fr) 30px minmax(64px, 1fr) 30px minmax(64px, 1fr);
+  min-width: 352px;
+  width: 100%;
+}
+
+.inv-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-.inv-card__diagram img {
-  max-width: 100%;
-  height: auto;
+.inv-node__icon {
+  width: 54px;
+  height: 48px;
+  margin-bottom: 0.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.inv-node__icon--sm {
+  width: 50px;
+  height: 38px;
+  margin-bottom: 0.35rem;
+}
+
+.inv-card:hover .inv-node__icon {
+  transform: translateY(-2px);
+}
+
+.inv-node__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.inv-node__title {
+  font-family: var(--font-family);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  line-height: 1.25;
+}
+
+.inv-node__sub {
+  font-family: var(--font-family);
+  font-size: 0.5625rem;
+  color: var(--text-dark-muted);
+  line-height: 1.25;
+  margin-top: 0.2rem;
+}
+
+/* Горизонтальные стрелки: метки DC/AC вынесены в absolute, чтобы стрелки стояли строго на одной оси */
+.inv-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 100%;
+  position: relative;
+}
+
+.inv-connector__tag {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-dark-muted);
+  text-transform: uppercase;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.inv-arrow-svg {
+  width: 100%;
+  height: 18px;
+  display: block;
+  overflow: visible;
+}
+
+.inv-flow-line {
+  stroke: var(--accent-gold);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 3.5;
+  stroke-linecap: round;
+}
+
+.inv-flow-line--forward {
+  animation: invDashFlowForward 1.2s linear infinite;
+}
+
+.inv-flow-line--reverse {
+  animation: invDashFlowReverse 1.2s linear infinite;
+}
+
+@keyframes invDashFlowForward {
+  from { stroke-dashoffset: 15; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes invDashFlowReverse {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 15; }
+}
+
+/* Нижняя ветка с аккумулятором (всегда в 3-й колонке сетки — ровно под инвертором) */
+.inv-branch-battery {
+  grid-column: 3;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inv-connector-vert {
+  width: 32px;
+  height: 28px;
+  margin-bottom: 0.15rem;
+}
+
+.inv-connector-vert svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .inv-card__adv-title {
   font-size: 0.625rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-dark-muted);
   margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 .inv-card__list {
@@ -1841,7 +2031,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.25rem;
   flex-grow: 1;
 }
 
@@ -1858,31 +2048,35 @@
   content: '';
   display: block;
   width: 16px;
-  height: 1px;
+  height: 1.5px;
   background: var(--accent-gold);
   margin-top: 0.45rem;
   flex-shrink: 0;
 }
 
 .inv-card__ideal {
-  background: rgba(0,0,0,0.03);
-  padding: 1.25rem;
+  background: rgba(18, 19, 21, 0.045);
+  border: 1px solid rgba(18, 19, 21, 0.06);
+  padding: 1.15rem 1.25rem;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: flex-start;
   gap: 1rem;
+  margin-top: auto;
+  flex: 0 0 110px;
+  min-height: 110px;
+  box-sizing: border-box;
 }
 
 .inv-card__ideal-icon {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
-  color: var(--text-dark);
-  transition: color 0.3s ease, transform 0.3s ease;
+  color: var(--accent-gold);
+  transition: transform 0.3s ease;
 }
 
 .inv-card:hover .inv-card__ideal-icon {
-  color: var(--accent-gold);
   transform: scale(1.1);
 }
 
@@ -2162,6 +2356,11 @@
 .ses-hero .choice-feature__icon { color: var(--text-light); }
 .kb-section--panel .choice-factor__icon, 
 .kb-section--light .choice-feature__icon { color: var(--text-dark); }
+
+/* Специальное переопределение иконок для первой темной секции на странице LiFePO4 */
+.ses-content .bat-features-list .bat-feat__icon {
+  color: var(--text-light) !important;
+}
 
 /* --- КАРТОЧКИ: БАЗА ЗНАНИЙ VS ПАНЕЛИ --- */
 .panel-card-img {

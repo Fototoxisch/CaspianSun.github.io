@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{SEO_TITLE}}</title>
   <meta name="description" content="{{SEO_DESC}}">
-  <link rel="stylesheet" href="css/core.css">
-  <link rel="stylesheet" href="css/catalog.css"> 
-  <link rel="stylesheet" href="css/pdp.css">
+  <link rel="stylesheet" href="../css/core.css">
+  <link rel="stylesheet" href="../css/catalog.css"> 
+  <link rel="stylesheet" href="../css/pdp.css">
   <script src="../main.js" defer></script>
 </head>
 <body>
@@ -21,7 +21,7 @@
     
     <div class="container pdp-container">
       
-      <!-- Хлебные крошки (Исправленные) -->
+      <!-- Хлебные крошки -->
       <div class="pdp-breadcrumbs">
         <a href="../products.html" class="pdp-breadcrumbs__link">ПРОДУКЦИЯ</a>
         <span class="pdp-breadcrumbs__sep">—</span>
@@ -33,13 +33,15 @@
       <!-- Верхний блок: Галерея + Информация -->
       <section class="pdp-top">
         
-        <!-- Левая колонка: Галерея (JS будет сам искать доп. фото) -->
+        <!-- Левая колонка: Галерея -->
         <div class="pdp-gallery">
           <div class="pdp-gallery__main">
-            <img src="../img/catalog/{{CATEGORY_ID}}/{{SKU}}/main.webp" alt="{{MODEL}}" id="pdpMainImage" onerror="this.src='../img/catalog/placeholder.webp'">
+            <img src="../img/catalog/{{CATEGORY_ID}}/{{SKU}}/main.webp" alt="{{MODEL}}" id="pdpMainImage" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">
           </div>
-          <!-- Сюда JS добавит миниатюры (dop1.webp, dop2.webp), если найдет их в папке -->
-          <div class="pdp-gallery__thumbs" id="pdpThumbs"></div>
+          <!-- Миниатюры (dop1.webp, dop2.webp) -->
+          <div class="pdp-gallery__thumbs" id="pdpThumbs">
+            {{GALLERY_THUMBS}}
+          </div>
         </div>
 
         <!-- Правая колонка: Покупка и основные данные -->
@@ -56,10 +58,9 @@
             <div class="pdp-price">{{PRICE}} $</div>
             
             <div class="purchase-actions">
-              <!-- Интерактивный переключатель количества -->
               <div class="quantity-picker">
                 <button class="qty-btn qty-btn--minus" type="button" aria-label="Уменьшить">&minus;</button>
-                <span class="qty-val">1</span>
+                <div class="qty-val-wrapper"><span class="qty-val">1</span></div>
                 <button class="qty-btn qty-btn--plus" type="button" aria-label="Увеличить">&plus;</button>
               </div>
               <button class="btn btn--teal pdp-add-to-cart" data-sku="{{SKU}}">В КОРЗИНУ &rarr;</button>
@@ -94,12 +95,10 @@
         </div>
       </section>
 
-      <!-- Блок: Похожие товары (Скрипт будет заполнять его сам) -->
+      <!-- Блок: Похожие товары -->
       <section class="pdp-related">
         <h2 class="pdp-section-title">Похожее оборудование</h2>
-        <div class="product-grid" id="relatedProductsGrid" data-category="{{CATEGORY_ID}}" data-sku="{{SKU}}">
-          <!-- Карточки сгенерируются через JS -->
-        </div>
+        <div class="product-grid" id="relatedProductsGrid" data-category="{{CATEGORY_ID}}" data-sku="{{SKU}}"></div>
       </section>
 
     </div>

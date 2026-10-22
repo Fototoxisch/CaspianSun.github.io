@@ -45,8 +45,8 @@
                 <polyline points="9 4 13 8 9 12"></polyline>
               </svg>
             </a>
-            <a href="about.html" class="btn btn--outline-light">
-              <span>Подробнее</span>
+            <a href="products.html" class="btn btn--outline-light">
+              <span>Каталог оборудования</span>
               <svg class="btn-arrow" viewBox="0 0 16 16">
                 <line x1="2" y1="8" x2="13" y2="8"></line>
                 <polyline points="9 4 13 8 9 12"></polyline>
@@ -72,15 +72,15 @@
       <div class="container">
         <div class="overview__grid">
 
+          <!-- Карточка «СЭС под ключ» (без черточки рядом с тегом) -->
           <div class="feature-card">
             <div class="feature-card__content">
               <div class="feature-card__num-wrapper">
-                <span class="feature-card__num">01</span>
-                <span class="feature-card__bar"></span>
+                <span class="feature-card__tag-label">КОМПЛЕКСНЫЙ ИНЖИНИРИНГ</span>
               </div>
               <h3 class="feature-card__title">СЭС под ключ</h3>
               <p class="feature-card__desc">
-                Проектирование, подбор оборудования и монтаж солнечной электростанции.
+                Берем на себя все этапы создания вашей солнечной станции: от замеров потребления и расчета прочности крыши до прямой поставки оборудования, аккуратного монтажа с автоматикой защиты и настройки приложения на вашем телефоне.
               </p>
             </div>
             <div class="feature-card__image-box">
@@ -88,26 +88,27 @@
             </div>
           </div>
 
-          <div class="metrics-row">
+          <!-- Понятные выгоды для клиента -->
+          <div class="metrics-row metrics-row--benefits">
             <div class="metric-item">
-              <div class="metric-item__val">10 <span>ms</span></div>
-              <p class="metric-item__label">переключение питания</p>
+              <span class="metric-item__badge">Резерв за 10 мс</span>
+              <div class="metric-item__val">Свет без морганий</div>
+              <p class="metric-item__label">Переключение на резерв за 10 мс — техника и котлы даже не заметят отключения сети.</p>
             </div>
             <div class="metric-item">
-              <div class="metric-item__val">380 <span>v</span></div>
-              <p class="metric-item__label">трехфазные решения</p>
+              <span class="metric-item__badge">LiFePO4 технология</span>
+              <div class="metric-item__val">Батареи на 15+ лет</div>
+              <p class="metric-item__label">Используем безопасные накопители (LiFePO4), которые не горят и работают десятилетиями.</p>
             </div>
             <div class="metric-item">
-              <div class="metric-item__val">LiFePO4</div>
-              <p class="metric-item__label">системы хранения энергии</p>
+              <span class="metric-item__badge">Панели N-Type</span>
+              <div class="metric-item__val">Максимум выработки</div>
+              <p class="metric-item__label">Современные панели N-Type собирают солнечный свет даже в пасмурную погоду.</p>
             </div>
             <div class="metric-item">
-              <div class="metric-item__val">N-Type TOPCon</div>
-              <p class="metric-item__label">современные солнечные панели</p>
-            </div>
-            <div class="metric-item">
-              <div class="metric-item__val">24/7</div>
-              <p class="metric-item__label">мониторинг системы</p>
+              <span class="metric-item__badge">Мониторинг 24/7</span>
+              <div class="metric-item__val">Умный контроль 24/7</div>
+              <p class="metric-item__label">Управление станцией и мониторинг экономии прямо в вашем смартфоне.</p>
             </div>
           </div>
 
@@ -115,15 +116,17 @@
       </div>
     </section>
 
+    <!-- Два симметричных по форме блока с легким визуальным противопоставлением -->
     <section class="b2b-section">
       <div class="container">
         <div class="b2b-section__grid">
           
+          <!-- Блок 1: Бизнес (Темная эстетика на фоне фото) -->
           <div class="b2b-card">
             <img class="b2b-card__bg" src="img/main/Main4.webp" alt="Коммерческая солнечная электростанция">
             <div class="b2b-card__overlay"></div>
             <div class="b2b-card__header">
-              <p class="b2b-card__tag">ДЛЯ БИЗНЕСА</p>
+              <p class="b2b-card__tag">КОММЕРЧЕСКИЙ СЕКТОР</p>
               <h2 class="b2b-card__title">
                 СОЛНЕЧНАЯ<br>
                 ЭНЕРГИЯ<br>
@@ -132,10 +135,15 @@
             </div>
             <div class="b2b-card__widget">
               <p class="b2b-card__text">
-                Проектируем системы под реальные нагрузки бизнеса — от небольших коммерческих объектов до крупных энергопотребителей.
+                Снижаем дневное электропотребление вашего предприятия от городской сети до 85%:
               </p>
+              <ul class="home-bullet-list home-bullet-list--light">
+                <li>Фиксируем для вас низкую стоимость киловатта на 25 лет вперед.</li>
+                <li>Решаем проблему дефицита выделенной мощности без долгих согласований.</li>
+                <li>Проектируем системы с гарантированной окупаемостью за 3–4 года.</li>
+              </ul>
               <a href="calculator.html" class="btn btn--outline-light">
-                <span>Получить расчет</span>
+                <span>Рассчитать окупаемость</span>
                 <svg class="btn-arrow" viewBox="0 0 16 16">
                   <line x1="2" y1="8" x2="13" y2="8"></line>
                   <polyline points="9 4 13 8 9 12"></polyline>
@@ -144,25 +152,143 @@
             </div>
           </div>
 
+          <!-- Центральная вертикальная вставка -->
           <div class="b2b-image-vertical">
             <img src="img/main/Main5.webp" alt="Инженерное оборудование">
           </div>
 
+          <!-- Блок 2: Частные дома (Светлая эстетика с такой же формой окошка) -->
           <div class="solutions-card">
-            <h3 class="solutions-card__title">
-              Надежные<br>
-              инженерные<br>
-              решения
-            </h3>
-            <p class="solutions-card__desc">
-              Современные технологии и профессиональный подход на каждом этапе.
-            </p>
+            <div class="solutions-card__header">
+              <span class="solutions-card__tag">ЧАСТНЫЕ ДОМА И РЕЗЕРВ</span>
+              <h2 class="solutions-card__title">
+                НАДЕЖНЫЕ<br>
+                ИНЖЕНЕРНЫЕ<br>
+                РЕШЕНИЯ
+              </h2>
+            </div>
+            <div class="solutions-card__widget">
+              <p class="solutions-card__desc">
+                Мы проектируем резервные и автономные станции, которые навсегда избавят ваш дом от:
+              </p>
+              <ul class="home-bullet-list home-bullet-list--dark">
+                <li>Внезапных отключений электроэнергии.</li>
+                <li>Скачков напряжения, опасных для дорогой бытовой техники.</li>
+                <li>Шума, едких выхлопов и необходимости заправлять бензогенераторы.</li>
+              </ul>
+              <a href="services.html" class="btn btn--outline-dark">
+                <span>Подробнее об инжиниринге</span>
+                <svg class="btn-arrow" viewBox="0 0 16 16">
+                  <line x1="2" y1="8" x2="13" y2="8"></line>
+                  <polyline points="9 4 13 8 9 12"></polyline>
+                </svg>
+              </a>
+            </div>
           </div>
 
         </div>
       </div>
     </section>
 
+    <!-- БЛОК ЧАСТЫХ ВОПРОСОВ (FAQ) — ТЕПЕРЬ ПЕРЕД ЭТАПАМИ РАБОТЫ -->
+    <section class="home-faq">
+      <div class="container home-faq__grid">
+        
+        <div class="home-faq__left">
+          <div class="home-hero__tag" style="margin-bottom: 1.25rem;">
+            <span>ОТВЕТЫ НА ВОПРОСЫ</span>
+            <span class="home-hero__tag-line"></span>
+          </div>
+          <h2 class="home-faq__title">
+            ВСЁ, ЧТО ВАЖНО<br>
+            ЗНАТЬ ПЕРЕД<br>
+            УСТАНОВКОЙ
+          </h2>
+          <p class="home-faq__desc">
+            Собрали простые и честные ответы на главные вопросы о работе солнечных станций в разную погоду, безопасности аккумуляторов и правилах установки.
+          </p>
+
+          <div class="home-faq__cta-box">
+            <span class="home-faq__cta-tag">НУЖНА КОНСУЛЬТАЦИЯ?</span>
+            <p class="home-faq__cta-text">Инженер Caspian Sun поможет подобрать систему под ваш бюджет и задачи без сложных терминов.</p>
+            <a href="contacts.html" class="btn btn--teal">
+              <span>Задать вопрос инженеру</span>
+              <svg class="btn-arrow" viewBox="0 0 16 16">
+                <line x1="2" y1="8" x2="13" y2="8"></line>
+                <polyline points="9 4 13 8 9 12"></polyline>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="home-faq__list">
+          
+          <div class="faq-item faq-item--open">
+            <button class="faq-item__header" type="button" onclick="this.parentElement.classList.toggle('faq-item--open')">
+              <span class="faq-item__num">01</span>
+              <span class="faq-item__question">А что будет зимой или в пасмурную погоду?</span>
+              <span class="faq-item__icon">
+                <svg viewBox="0 0 16 16"><line x1="8" y1="3" x2="8" y2="13"></line><line x1="3" y1="8" x2="13" y2="8"></line></svg>
+              </span>
+            </button>
+            <div class="faq-item__body">
+              <div class="faq-item__inner">
+                <p>Современные солнечные панели генерируют энергию даже при рассеянном свете. Зимой выработка снижается, но умная система автоматически и незаметно компенсирует нехватку из аккумуляторов или городской сети.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__header" type="button" onclick="this.parentElement.classList.toggle('faq-item--open')">
+              <span class="faq-item__num">02</span>
+              <span class="faq-item__question">Нужно ли получать разрешение на установку?</span>
+              <span class="faq-item__icon">
+                <svg viewBox="0 0 16 16"><line x1="8" y1="3" x2="8" y2="13"></line><line x1="3" y1="8" x2="13" y2="8"></line></svg>
+              </span>
+            </button>
+            <div class="faq-item__body">
+              <div class="faq-item__inner">
+                <p>Для резервных станций (без продажи излишков электричества государству) согласования не требуются. Вы просто устанавливаете оборудование на своей территории и пользуетесь им.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__header" type="button" onclick="this.parentElement.classList.toggle('faq-item--open')">
+              <span class="faq-item__num">03</span>
+              <span class="faq-item__question">Насколько безопасны аккумуляторы в доме?</span>
+              <span class="faq-item__icon">
+                <svg viewBox="0 0 16 16"><line x1="8" y1="3" x2="8" y2="13"></line><line x1="3" y1="8" x2="13" y2="8"></line></svg>
+              </span>
+            </button>
+            <div class="faq-item__body">
+              <div class="faq-item__inner">
+                <p>Мы устанавливаем только литий-железо-фосфатные (LiFePO4) батареи. Они химически стабильны, не выделяют вредных газов, не склонны к перегреву и абсолютно пожаробезопасны.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-item__header" type="button" onclick="this.parentElement.classList.toggle('faq-item--open')">
+              <span class="faq-item__num">04</span>
+              <span class="faq-item__question">Как часто нужно обслуживать систему?</span>
+              <span class="faq-item__icon">
+                <svg viewBox="0 0 16 16"><line x1="8" y1="3" x2="8" y2="13"></line><line x1="3" y1="8" x2="13" y2="8"></line></svg>
+              </span>
+            </button>
+            <div class="faq-item__body">
+              <div class="faq-item__inner">
+                <p>Система работает полностью автоматически и не требует регулярного ТО. Встроенный Wi-Fi модуль круглосуточно передает данные в приложение, а в случае ошибок инженеры могут провести удаленную диагностику.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- БЛОК «КАК МЫ РАБОТАЕМ» — ТЕПЕРЬ ВНИЗУ ПЕРЕД ПОДВАЛОМ -->
     <section class="workflow" style="background-image: url('img/main/Main6.webp');">
       <div class="workflow__overlay"></div>
       <div class="container">

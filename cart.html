@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корзина и оформление заявки | Caspian Sun</title>
+  <link rel="stylesheet" href="css/core.css">
+  <link rel="stylesheet" href="css/cart.css">
+  <!-- SDK EmailJS для отправки заявок на Gmail -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script src="main.js" defer></script>
+</head>
+<body>
+
+  <!-- Модульная шапка -->
+  <div id="header-placeholder"></div>
+
+  <main class="cart-page">
+    <div class="container">
+      <div class="cart-header">
+        <div>
+          <span class="cart-header__tag">КОМПЛЕКТАЦИЯ ПРОЕКТА</span>
+          <h1 class="cart-title">Корзина оборудования</h1>
+        </div>
+        <div class="cart-header__actions">
+          <button type="button" class="cart-clear-btn" id="clearCartBtn">Очистить корзину</button>
+          <a href="products.html" class="btn btn--outline-light">&larr; Вернуться в каталог</a>
+        </div>
+      </div>
+
+      <div class="cart-grid">
+        <!-- Левая колонка: Список добавленных товаров -->
+        <div class="cart-items-section">
+          <div class="cart-items-container" id="cart-container">
+            <p class="cart-empty-msg">Загрузка корзины...</p>
+          </div>
+        </div>
+
+        <!-- Правая колонка: Сводка и отправка заявки -->
+        <div class="cart-summary-section">
+          <div class="cart-summary-card">
+            <h2 class="cart-summary-title">Спецификация заказа</h2>
+            
+            <div class="cart-summary-row">
+              <span>Позиций в расчете:</span>
+              <span id="cart-total-count">0 шт.</span>
+            </div>
+
+            <div class="cart-total-row">
+              <span>Итого за оборудование:</span>
+              <span class="cart-total-price" id="cart-total-price">0 $</span>
+            </div>
+            
+            <p class="cart-note">
+              Отправка заявки не обязывает к оплате. Инженер Caspian Sun проверит совместимость выбранных компонентов и подготовит точное КП.
+            </p>
+
+            <form class="checkout-form" id="checkout-form">
+              <div class="form-group">
+                <label for="calc-name">Ваше имя или организация *</label>
+                <input type="text" id="calc-name" required placeholder="Иван / ООО «ЭнергоЮг»">
+              </div>
+              <div class="form-group">
+                <label for="calc-phone">Контактный телефон *</label>
+                <input type="tel" id="calc-phone" required placeholder="+7 (___) ___-__-__">
+              </div>
+              <div class="form-group">
+                <label for="calc-email">Email для получения сметы</label>
+                <input type="email" id="calc-email" placeholder="client@company.ru">
+              </div>
+              <div class="form-group">
+                <label for="calc-msg">Комментарий к проекту</label>
+                <textarea id="calc-msg" rows="3" placeholder="Регион монтажа, тип объекта, необходимость установки под ключ..."></textarea>
+              </div>
+              
+              <button type="submit" class="btn btn--teal cart-submit-btn">
+                <span>Отправить заявку инженеру</span>
+                <svg class="btn-arrow" viewBox="0 0 16 16">
+                  <line x1="2" y1="8" x2="13" y2="8"></line>
+                  <polyline points="9 4 13 8 9 12"></polyline>
+                </svg>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Модульный подвал -->
+  <div id="footer-placeholder"></div>
+
+</body>
+</html>
