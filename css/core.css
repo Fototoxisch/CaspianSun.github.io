@@ -118,19 +118,33 @@ button {
   gap: 1rem;
 }
 
+/* Скрываем старые текстовые логотипы, если они остались в кэше */
 .header__logo {
-  font-size: 1.6rem;
-  font-weight: 500;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--text-light);
+  display: none;
+}
+
+/* --- Логотипы в шапке и подвале --- */
+.header__logo-img {
+  height: 50px;
+  width: auto;
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .header__logo-img {
+    height: 50px;
+  }
+}
+
+.footer__logo-img {
+  height: 50px;
+  width: auto;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 
 .header__line {
-  display: inline-block;
-  width: 36px;
-  height: 1.5px;
-  background-color: var(--text-muted);
+  display: none;
 }
 
 .header__tagline {

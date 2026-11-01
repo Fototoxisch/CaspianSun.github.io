@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Корзина и оформление заявки | Caspian Sun</title>
+  <link rel="icon" type="image/x-icon" href="img/logo/favicon.ico">
   <link rel="stylesheet" href="css/core.css">
   <link rel="stylesheet" href="css/cart.css">
-  <!-- SDK EmailJS для отправки заявок на Gmail -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script src="main.js" defer></script>
 </head>
@@ -48,7 +48,7 @@
 
             <div class="cart-total-row">
               <span>Итого за оборудование:</span>
-              <span class="cart-total-price" id="cart-total-price">0 $</span>
+              <span class="cart-total-price" id="cart-total-price">0 ₽</span>
             </div>
             
             <p class="cart-note">
@@ -56,6 +56,12 @@
             </p>
 
             <form class="checkout-form" id="checkout-form">
+              <!-- Скрытое поле-ловушка от спам-ботов (Honeypot) -->
+              <div style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none;" aria-hidden="true">
+                <label for="calc-website">Ваш сайт (не заполнять)</label>
+                <input type="text" id="calc-website" name="company_website" tabindex="-1" autocomplete="off">
+              </div>
+
               <div class="form-group">
                 <label for="calc-name">Ваше имя или организация *</label>
                 <input type="text" id="calc-name" required placeholder="Иван / ООО «ЭнергоЮг»">

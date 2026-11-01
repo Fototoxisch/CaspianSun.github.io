@@ -2,6 +2,7 @@
 const GOOGLE_SHEET_API_URL = 'products/catalog.json';
 
 let globalProducts = [];
+const PAGE_LOAD_TIMESTAMP = Date.now();
 
 // ==========================================================================
 // 1. ИНИЦИАЛИЗАЦИЯ EMAILJS
@@ -47,14 +48,12 @@ function sanitizeStaticPdpSpecs() {
   });
 }
 
-// Утилита для красивого вывода цены (17000 -> 17 000)
 function formatPriceStr(val) {
   const num = parseFloat(String(val).replace(/[^0-9.-]/g, ''));
   if (isNaN(num)) return '0';
   return new Intl.NumberFormat('ru-RU').format(num);
 }
 
-// Определение категории компонента по артикулу
 function inferCategoryFromSku(sku, allProducts) {
   const cleanSku = String(sku || '').trim();
   if (allProducts && allProducts.length) {
@@ -70,13 +69,11 @@ function inferCategoryFromSku(sku, allProducts) {
   return 'other';
 }
 
-// Генерация HTML-сетки коллажа для готовых комплектов (Вариант А)
 function buildKitCollageHtml(components, basePath = '') {
   if (!components || components.length === 0) {
     return `<img src="${basePath}img/catalog/placeholder.webp" alt="Комплект">`;
   }
 
-  // Сортируем так, чтобы панель шла первой (занимает левую вертикальную ячейку в сетке из 3 элементов)
   const orderWeight = { panels: 1, inverters: 2, batteries: 3 };
   const sorted = [...components]
     .filter(c => c.category === 'panels' || c.category === 'inverters' || c.category === 'batteries')
@@ -103,8 +100,39 @@ function buildKitCollageHtml(components, basePath = '') {
 }
 
 // ==========================================================================
-// 3. ЛОГИКА КОРЗИНЫ
+// 3. ЛОГИКА КОРЗИНЫ И ЗАЩИТА ФОРМ ОТ СПАМА (HONEYPOT)
 // ==========================================================================
+function ensureHoneypotField(form) {
+  if (!form) return null;
+  let hpInput = form.querySelector('input[name="company_website"]');
+  if (!hpInput) {
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none;';
+    wrapper.setAttribute('aria-hidden', 'true');
+    wrapper.innerHTML = `
+      <label>Ваш сайт (не заполнять)</label>
+      <input type="text" name="company_website" tabindex="-1" autocomplete="off">
+    `;
+    form.prepend(wrapper);
+    hpInput = wrapper.querySelector('input[name="company_website"]');
+  }
+  return hpInput;
+}
+
+function isSpamSubmission(form) {
+  const hpInput = form.querySelector('input[name="company_website"]');
+  if (hpInput && hpInput.value.trim() !== '') {
+    console.warn('Заблокирована спам-отправка (сработала Honeypot-ловушка).');
+    return true;
+  }
+  const elapsedMs = Date.now() - PAGE_LOAD_TIMESTAMP;
+  if (elapsedMs < 1500) {
+    console.warn('Заблокирована спам-отправка (слишком быстрая отправка после загрузки).');
+    return true;
+  }
+  return false;
+}
+
 function getCart() {
   try {
     return JSON.parse(localStorage.getItem('caspian_cart')) || [];
@@ -406,11 +434,29 @@ function initCheckoutForm() {
   const form = document.getElementById('checkout-form');
   if (!form) return;
 
+  ensureHoneypotField(form);
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     const cart = getCart();
     if (cart.length === 0) {
       alert('Ваша корзина пуста. Добавьте оборудование из каталога.');
+      return;
+    }
+
+    const userName = document.getElementById('calc-name').value.trim();
+    const userPhone = document.getElementById('calc-phone').value.trim();
+
+    // Проверка на спам-бота (Honeypot + время на странице)
+    if (isSpamSubmission(form)) {
+      form.innerHTML = `
+        <div class="success-msg">
+          <h3>Заявка успешно отправлена!</h3>
+          <p style="font-size: 0.85rem; color: #55575A; line-height: 1.5;">
+            Спасибо, <strong>${userName || 'клиент'}</strong>! Мы свяжемся с вами в ближайшее время.
+          </p>
+        </div>
+      `;
       return;
     }
 
@@ -428,8 +474,6 @@ function initCheckoutForm() {
       cartText += `${idx + 1}. ${item.title} (Арт: ${item.sku})${kitNote} — ${item.qty} шт. × ${formatPriceStr(item.price)} ₽ = ${formatPriceStr(sub)} ₽\n`;
     });
 
-    const userName = document.getElementById('calc-name').value.trim();
-    const userPhone = document.getElementById('calc-phone').value.trim();
     const userEmail = document.getElementById('calc-email').value.trim() || 'Не указан';
     const userMsg = document.getElementById('calc-msg').value.trim() || 'Без комментария';
     const formattedTotal = `${formatPriceStr(total)} ₽`;
@@ -471,15 +515,30 @@ function initContactsPageForm() {
   const form = document.getElementById('contacts-page-form');
   if (!form) return;
 
+  ensureHoneypotField(form);
+
   form.addEventListener('submit', function(e) {
     e.preventDefault();
+
+    const userName = document.getElementById('contact-name').value.trim();
+    const userPhone = document.getElementById('contact-phone').value.trim();
+
+    // Проверка на спам-бота (Honeypot + время на странице)
+    if (isSpamSubmission(form)) {
+      form.innerHTML = `
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--text-light);">
+          <h3 style="color: var(--accent-gold); margin-bottom: 0.75rem; font-weight: 400; text-transform: uppercase;">Заявка отправлена!</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Спасибо, ${userName || 'клиент'}! Мы свяжемся с вами в ближайшее время.</p>
+        </div>
+      `;
+      return;
+    }
+
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalHtml = submitBtn.innerHTML;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span>Отправка...</span>';
 
-    const userName = document.getElementById('contact-name').value.trim();
-    const userPhone = document.getElementById('contact-phone').value.trim();
     const userEmail = document.getElementById('contact-email').value.trim() || 'Не указан';
     const serviceType = document.getElementById('contact-service').value;
     const userMsg = document.getElementById('contact-message').value.trim() || 'Без сообщения';

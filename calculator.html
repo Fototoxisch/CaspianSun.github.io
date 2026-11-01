@@ -3,374 +3,3189 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Предварительная смета СЭС | Caspian Sun</title>
+  <title>Калькулятор и конфигуратор СЭС | Caspian Sun</title>
+  <meta name="description" content="Интерактивный подбор солнечной электростанции и системы резервного питания под ключ в Дагестане и на Юге России.">
+  <link rel="icon" type="image/x-icon" href="img/logo/favicon.ico">
   <link rel="stylesheet" href="css/core.css">
-  <link rel="stylesheet" href="css/calculator.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- EmailJS для отправки сметы инженеру -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script src="main.js" defer></script>
+
+  <style>
+    /* ==========================================================================
+       СТИЛИ ИНТЕРАКТИВНОГО КОНФИГУРАТОРА CASPIAN SUN (СИНХРОНИЗАЦИЯ С КАТАЛОГОМ)
+       ========================================================================== */
+    :root {
+      --calc-bg: #0E0F10;
+      --calc-surface: #16181B;
+      --calc-surface-2: #1E2125;
+      --calc-border: rgba(255, 255, 255, 0.09);
+      --calc-beige: #F4F4F4;
+      --calc-muted: #9A9E9C;
+      --calc-gold: #D4A85A;
+      --calc-gold-hover: #E2B96E;
+      --calc-teal: #6B8F93;
+      --calc-teal-light: #9BD0D6;
+      --calc-radius-lg: 18px;
+      --calc-radius-md: 12px;
+      --calc-transition: 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Отключение стандартных браузерных стрелок у числовых полей */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .calc-page-wrap {
+      background-color: var(--calc-bg);
+      color: var(--calc-beige);
+      min-height: 100vh;
+      padding: 2rem 0 5rem;
+    }
+
+    .calc-container {
+      max-width: 1340px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* Верхняя панель заголовка и крупного переключателя режимов */
+    .calc-topbar {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--calc-border);
+    }
+
+    /* Тонкая линия подгрузки при переключении режимов */
+    .calc-mode-loader {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--calc-gold) 0%, var(--calc-teal-light) 50%, var(--calc-gold) 100%);
+      box-shadow: 0 0 12px rgba(155, 208, 214, 0.65);
+      opacity: 0;
+      pointer-events: none;
+      border-radius: 2px;
+    }
+
+    .calc-mode-loader.is-loading {
+      animation: calcTopbarSweep 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes calcTopbarSweep {
+      0% { width: 0%; opacity: 1; }
+      75% { width: 100%; opacity: 1; }
+      100% { width: 100%; opacity: 0; }
+    }
+
+    .calc-hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--calc-gold);
+      margin-bottom: 0.45rem;
+      font-weight: 700;
+    }
+
+    .calc-hero-tag::before {
+      content: "";
+      width: 24px;
+      height: 1px;
+      background-color: var(--calc-gold);
+    }
+
+    .calc-hero-title {
+      font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: var(--calc-beige);
+      margin: 0;
+    }
+
+    /* КРУПНЫЙ ПЕРЕКЛЮЧАТЕЛЬ 2 РЕЖИМОВ (КЛИЕНТ / PRO) */
+    .calc-mode-tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      background: #111315;
+      padding: 0.4rem;
+      border-radius: 16px;
+      border: 1.5px solid rgba(212, 168, 90, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(212, 168, 90, 0.08);
+      gap: 0.35rem;
+    }
+
+    .calc-mode-tab {
+      padding: 0.75rem 1.4rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--calc-beige);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      transition: all 0.24s ease;
+    }
+
+    .calc-mode-tab:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .calc-mode-tab.is-active {
+      background: var(--calc-gold);
+      color: #121315;
+      font-weight: 700;
+      box-shadow: 0 6px 18px rgba(212, 168, 90, 0.35);
+    }
+
+    .calc-mode-tab--pro.is-active {
+      background: linear-gradient(135deg, #6B8F93 0%, #87B0B5 100%);
+      color: #0E0F10;
+      box-shadow: 0 6px 18px rgba(107, 143, 147, 0.4);
+    }
+
+    /* Основная 2-колоночная сетка с липким правым блоком */
+    .calc-main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    @media (min-width: 1024px) {
+      .calc-main-grid {
+        grid-template-columns: 8fr 4fr;
+      }
+    }
+
+    .calc-steps-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Карточка шага */
+    .calc-step-card {
+      background: var(--calc-surface);
+      border: 1px solid var(--calc-border);
+      border-radius: var(--calc-radius-lg);
+      padding: 1.6rem 1.8rem;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+      transition: border-color var(--calc-transition);
+    }
+
+    .calc-step-card--pro {
+      position: relative;
+      border: 1.5px solid var(--calc-teal);
+      background: linear-gradient(180deg, rgba(107, 143, 147, 0.09) 0%, var(--calc-surface) 100%);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 25px rgba(107, 143, 147, 0.12);
+      overflow: hidden;
+    }
+
+    /* Эффект мягкой подгрузки (shimmer) при появлении PRO-блока */
+    .calc-step-card--pro.is-revealing {
+      animation: proCardAppear 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .calc-step-card--pro.is-revealing::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent 0%, rgba(155, 208, 214, 0.09) 50%, transparent 100%);
+      animation: proShimmerSweep 0.75s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes proCardAppear {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes proShimmerSweep {
+      from { left: -60%; }
+      to { left: 120%; }
+    }
+
+    .calc-step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.35rem;
+      flex-wrap: wrap;
+    }
+
+    .calc-step-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .calc-step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: rgba(212, 168, 90, 0.16);
+      border: 1px solid rgba(212, 168, 90, 0.45);
+      color: var(--calc-gold);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .calc-step-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--calc-beige);
+      margin: 0;
+    }
+
+    .calc-step-badge {
+      font-size: 0.74rem;
+      color: var(--calc-teal-light);
+      background: rgba(107, 143, 147, 0.14);
+      border: 1px solid rgba(107, 143, 147, 0.32);
+      padding: 0.28rem 0.7rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .calc-step-badge.is-pulsing {
+      background: rgba(212, 168, 90, 0.22);
+      border-color: var(--calc-gold);
+      color: var(--calc-gold);
+      transform: scale(1.05);
+    }
+
+    /* Подзаголовок внутри расширенного PRO-блока */
+    .calc-pro-subhead {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--calc-teal-light);
+      font-weight: 700;
+      margin: 1.4rem 0 0.85rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--calc-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* СТРОГАЯ СЕТКА 2 СТОЛБЦА */
+    .calc-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+    }
+
+    @media (min-width: 640px) {
+      .calc-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .calc-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 720px) {
+      .calc-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Широкие интерактивные карточки выбора */
+    .calc-choice-card {
+      background: var(--calc-bg);
+      border: 1.5px solid var(--calc-border);
+      border-radius: var(--calc-radius-md);
+      padding: 1.1rem 1.25rem;
+      text-align: left;
+      color: var(--calc-beige);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--calc-transition);
+      width: 100%;
+    }
+
+    .calc-choice-card:hover {
+      border-color: rgba(212, 168, 90, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .calc-choice-card.is-active {
+      border-color: var(--calc-gold);
+      background: linear-gradient(145deg, rgba(212, 168, 90, 0.15) 0%, rgba(212, 168, 90, 0.03) 100%);
+      box-shadow: 0 8px 24px rgba(212, 168, 90, 0.12);
+    }
+
+    .calc-choice-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .calc-choice-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--calc-beige);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .calc-choice-pill {
+      font-size: 0.66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.18rem 0.5rem;
+      border-radius: 5px;
+      background: var(--calc-gold);
+      color: #121315;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .calc-choice-pill--teal {
+      background: rgba(107, 143, 147, 0.25);
+      color: var(--calc-teal-light);
+    }
+
+    .calc-choice-desc {
+      font-size: 0.81rem;
+      color: var(--calc-muted);
+      line-height: 1.48;
+      margin: 0;
+    }
+
+    .calc-choice-foot {
+      margin-top: 0.8rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.74rem;
+      color: var(--calc-gold);
+      font-weight: 500;
+    }
+
+    /* Поля ввода и кастомные степперы */
+    .calc-field-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--calc-muted);
+      margin-bottom: 0.45rem;
+    }
+
+    .calc-input, .calc-select {
+      width: 100%;
+      height: 44px;
+      background: var(--calc-bg);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 11px;
+      padding: 0 0.95rem;
+      font-size: 0.9rem;
+      color: var(--calc-beige);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      font-family: inherit;
+    }
+
+    .calc-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23D4A85A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.9rem center;
+      padding-right: 2.2rem;
+      cursor: pointer;
+    }
+
+    .calc-input:focus, .calc-select:focus {
+      outline: none;
+      border-color: var(--calc-gold);
+      box-shadow: 0 0 0 3px rgba(212, 168, 90, 0.14);
+    }
+
+    .calc-stepper-box {
+      display: flex;
+      align-items: center;
+      height: 44px;
+      background: var(--calc-bg);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 11px;
+      padding: 0 0.35rem;
+      transition: border-color 0.2s ease;
+    }
+
+    .calc-stepper-box:focus-within {
+      border-color: var(--calc-gold);
+      box-shadow: 0 0 0 3px rgba(212, 168, 90, 0.14);
+    }
+
+    .calc-stepper-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--calc-surface-2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--calc-beige);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.18s ease;
+      user-select: none;
+    }
+
+    .calc-stepper-btn:hover {
+      background: rgba(212, 168, 90, 0.22);
+      border-color: var(--calc-gold);
+      color: var(--calc-gold);
+    }
+
+    .calc-stepper-btn:active {
+      transform: scale(0.9);
+    }
+
+    .calc-stepper-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--calc-gold);
+      font-family: inherit;
+    }
+
+    .calc-stepper-input:focus {
+      outline: none;
+    }
+
+    /* Быстрые пресеты (1 клик) */
+    .calc-presets-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.1rem;
+      padding: 0.8rem 1rem;
+      background: rgba(14, 15, 16, 0.7);
+      border: 1px solid var(--calc-border);
+      border-radius: 12px;
+    }
+
+    .calc-preset-chip {
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      background: var(--calc-surface-2);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--calc-beige);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .calc-preset-chip:hover {
+      border-color: var(--calc-gold);
+      color: var(--calc-gold);
+    }
+
+    .calc-preset-chip.is-active {
+      background: rgba(212, 168, 90, 0.18);
+      border-color: var(--calc-gold);
+      color: var(--calc-gold);
+      font-weight: 600;
+    }
+
+    /* Карточки бытовых приборов — 2 столбца */
+    .calc-appliances-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+    }
+
+    @media (min-width: 640px) {
+      .calc-appliances-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .calc-app-item {
+      background: var(--calc-bg);
+      border: 1px solid var(--calc-border);
+      border-radius: 12px;
+      padding: 0.75rem 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      transition: all 0.22s ease;
+    }
+
+    .calc-app-item.is-selected {
+      border-color: rgba(212, 168, 90, 0.55);
+      background: rgba(212, 168, 90, 0.05);
+    }
+
+    .calc-app-info {
+      min-width: 0;
+    }
+
+    .calc-app-title {
+      font-size: 0.86rem;
+      font-weight: 500;
+      color: var(--calc-beige);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .calc-app-sub {
+      font-size: 0.72rem;
+      color: var(--calc-muted);
+      margin-top: 0.2rem;
+    }
+
+    .calc-app-counter {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .calc-qty-val {
+      width: 24px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--calc-muted);
+    }
+
+    .calc-app-item.is-selected .calc-qty-val {
+      color: var(--calc-gold);
+    }
+
+    /* КРУПНЫЙ ПЕРЕКЛЮЧАТЕЛЬ «ВВЕСТИ КВТ ВРУЧНУЮ / ПО ПРИБОРАМ» */
+    .calc-segmented {
+      display: inline-flex;
+      background: #101214;
+      padding: 0.32rem;
+      border-radius: 12px;
+      border: 1.5px solid rgba(107, 143, 147, 0.45);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      gap: 0.25rem;
+    }
+
+    .calc-seg-btn {
+      padding: 0.55rem 1.15rem;
+      border-radius: 9px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--calc-beige);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.22s ease;
+    }
+
+    .calc-seg-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .calc-seg-btn.is-active {
+      background: var(--calc-teal);
+      color: #0E0F10;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(107, 143, 147, 0.35);
+    }
+
+    /* Крупная плашка-переключатель PRO-режима под анкетой клиента */
+    .calc-pro-banner-btn {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(107, 143, 147, 0.16) 0%, rgba(22, 24, 27, 0.95) 100%);
+      border: 1.5px solid rgba(107, 143, 147, 0.5);
+      border-radius: 16px;
+      padding: 1.1rem 1.5rem;
+      color: var(--calc-beige);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      text-align: left;
+      transition: all 0.25s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .calc-pro-banner-btn:hover {
+      border-color: var(--calc-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Ненавязчивая стеклянная капсула подгрузки новых модулей снизу экрана */
+    .calc-ambient-pill {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translate(-50%, 140%);
+      z-index: 9990;
+      background: rgba(22, 24, 27, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(155, 208, 214, 0.4);
+      border-radius: 999px;
+      padding: 0.6rem 1.15rem;
+      color: var(--calc-beige);
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.65), 0 0 20px rgba(107, 143, 147, 0.2);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease, border-color 0.2s ease;
+    }
+
+    .calc-ambient-pill.is-visible {
+      transform: translate(-50%, 0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .calc-ambient-pill:hover {
+      border-color: var(--calc-gold);
+    }
+
+    .calc-ambient-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(155, 208, 214, 0.25);
+      border-top-color: var(--calc-gold);
+      border-radius: 50%;
+      animation: calcSpin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+
+    .calc-ambient-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--calc-teal-light);
+      box-shadow: 0 0 8px var(--calc-teal-light);
+      flex-shrink: 0;
+    }
+
+    @keyframes calcSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ПРАВАЯ ЛИПКАЯ КОЛОНКА (STICKY SUMMARY) */
+    .calc-right-col {
+      position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      .calc-right-col {
+        position: sticky;
+        top: 96px;
+      }
+    }
+
+    .calc-summary-card {
+      background: linear-gradient(165deg, #191C20 0%, #121417 100%);
+      border: 1.5px solid rgba(212, 168, 90, 0.5);
+      border-radius: var(--calc-radius-lg);
+      padding: 1.4rem 1.5rem;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.55);
+    }
+
+    .calc-live-load-box {
+      background: rgba(14, 15, 16, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .calc-load-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .calc-load-metric-label {
+      font-size: 0.68rem;
+      color: var(--calc-muted);
+    }
+
+    .calc-load-metric-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--calc-beige);
+      margin-top: 0.1rem;
+    }
+
+    .calc-load-bar-track {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .calc-load-bar-fill {
+      height: 100%;
+      width: 30%;
+      background: linear-gradient(90deg, var(--calc-teal) 0%, var(--calc-gold) 100%);
+      border-radius: 99px;
+      transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .calc-sum-node {
+      background: var(--calc-bg);
+      border: 1px solid var(--calc-border);
+      border-radius: 12px;
+      padding: 0.8rem 0.95rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .calc-sum-node-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--calc-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .calc-sum-node-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--calc-beige);
+    }
+
+    .calc-sum-price-big {
+      font-size: clamp(1.55rem, 2.2vw, 2rem);
+      font-weight: 800;
+      color: var(--calc-gold);
+      letter-spacing: -0.02em;
+    }
+
+    .calc-btn-primary {
+      width: 100%;
+      padding: 0.85rem 1.1rem;
+      border-radius: 11px;
+      background: var(--calc-gold);
+      color: #121315;
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.22s ease;
+    }
+
+    .calc-btn-primary:hover {
+      background: var(--calc-gold-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(212, 168, 90, 0.25);
+    }
+
+    .calc-btn-secondary {
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      background: var(--calc-bg);
+      color: var(--calc-beige);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .calc-btn-secondary:hover {
+      border-color: var(--calc-gold);
+      color: var(--calc-gold);
+    }
+
+    /* Секция КП (Смета) */
+    .calc-kp-section {
+      margin-top: 2.75rem;
+      background: var(--calc-surface);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 22px;
+      padding: 2rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .calc-kp-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--calc-border);
+    }
+
+    .calc-kp-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .calc-kp-logo {
+      height: 50px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .calc-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.85rem;
+      margin: 1.5rem 0;
+    }
+
+    .calc-kpi-box {
+      background: var(--calc-bg);
+      border: 1px solid var(--calc-border);
+      border-radius: 14px;
+      padding: 1rem;
+    }
+
+    .calc-bom-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.88rem;
+    }
+
+    .calc-bom-table th {
+      text-align: left;
+      padding: 0.85rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--calc-muted);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .calc-bom-table td {
+      padding: 0.95rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      vertical-align: middle;
+    }
+
+    .calc-lead-box {
+      margin-top: 2rem;
+      background: linear-gradient(135deg, rgba(107, 143, 147, 0.14) 0%, rgba(212, 168, 90, 0.08) 100%);
+      border: 1px solid rgba(107, 143, 147, 0.35);
+      border-radius: 18px;
+      padding: 1.5rem;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    .calc-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      background: var(--calc-surface-2);
+      border: 1.5px solid var(--calc-gold);
+      color: var(--calc-beige);
+      padding: 0.9rem 1.25rem;
+      border-radius: 14px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      transform: translateY(130%);
+      opacity: 0;
+      transition: transform 0.32s ease, opacity 0.32s ease;
+      pointer-events: none;
+    }
+
+    .calc-toast.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media print {
+      #header-placeholder, header, #footer-placeholder, footer, .no-print {
+        display: none !important;
+      }
+      body, .calc-page-wrap {
+        background: #FFFFFF !important;
+        color: #111827 !important;
+        padding: 0 !important;
+      }
+      .calc-kp-section {
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #FFFFFF !important;
+        color: #111827 !important;
+      }
+      .calc-kpi-box, .print-card {
+        background: #F9FAFB !important;
+        border: 1px solid #D1D5DB !important;
+        color: #111827 !important;
+      }
+      .calc-bom-table th, .calc-bom-table td, .print-dark-text {
+        color: #111827 !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Сюда JS подтянет единую шапку -->
+  <!-- Модульная шапка сайта -->
   <div id="header-placeholder"></div>
 
-  <main class="calc-page">
-    <div class="caspian-calc-wrapper container" id="ui-wrapper">
-      <h2>Предварительная смета | Caspian Sun</h2>
-      
-      <div class="calc-form-group">
-        <div class="toggle-container" id="tariffToggle">
-          <button class="toggle-btn active" onclick="setTariff(10, 'business', this)">Бизнес (10 ₽/кВт)</button>
-          <button class="toggle-btn" onclick="setTariff(4, 'home', this)">Дом (4 ₽/кВт)</button>
-        </div>
-      </div>
+  <main class="calc-page-wrap">
+    <div class="calc-container">
 
-      <div class="calc-form-group">
-        <div class="toggle-container" id="stationToggle">
-          <button class="toggle-btn active" onclick="setStation('grid', this)">Сетевая (Только экономия)</button>
-          <button class="toggle-btn" onclick="setStation('hybrid', this)">Гибридная (Резерв с АКБ)</button>
+      <!-- ВЕРХНЯЯ ПАНЕЛЬ С ПЕРЕКЛЮЧАТЕЛЕМ 2 РЕЖИМОВ (БЕЗ БАЗЫ ЦЕН) -->
+      <div class="calc-topbar no-print">
+        <div>
+          <span class="calc-hero-tag">Интерактивный конфигуратор СЭС</span>
+          <h1 class="calc-hero-title">Расчет солнечной станции и генератор сметы</h1>
         </div>
-      </div>
 
-      <div class="calc-form-group">
-        <div class="input-mode-tabs">
-          <button class="input-mode-btn" onclick="setInputMode('bill', this)">Знаю счет в рублях</button>
-          <button class="input-mode-btn active" onclick="setInputMode('kwh', this)">Знаю расход в кВт·ч</button>
-        </div>
-        
-        <label id="sliderLabel">Средний расход электроэнергии в месяц:</label>
-        <input type="range" id="mainSlider" min="500" max="30000" step="100" value="3000" oninput="calculateSolar()">
-        <div class="range-value"><span id="sliderValue">3 000</span> <span id="sliderUnit">кВт·ч</span></div>
-      </div>
-      
-      <div class="calc-form-group">
-        <label>Какую долю расходов хотим перекрыть солнцем?</label>
-        <input type="range" id="coverageSlider" min="10" max="100" step="5" value="50" oninput="calculateSolar()">
-        <div class="coverage-display"><span id="coverageValue">50</span>%</div>
-        <div id="logicAlert" class="logic-alert">Режим: Умный гибрид (SUB). Экономия днем.</div>
-      </div>
-
-      <div class="hardware-visual">
-        <div class="hardware-item">
-          <div class="hardware-icon">⚡</div>
-          <div class="hardware-text">Инверторы AC</div>
-          <span class="hardware-count" id="visPower">0 кВт</span>
-        </div>
-        <div class="hardware-item">
-          <div class="hardware-icon">☀️</div>
-          <div class="hardware-text">Панели 620W</div>
-          <span class="hardware-count" id="visPanels">0 шт.</span>
-        </div>
-        <div class="hardware-item" id="batteryBlock" style="display: none;">
-          <div class="hardware-icon">🔋</div>
-          <div class="hardware-text">АКБ 5.12 кВт·ч</div>
-          <span class="hardware-count" id="visBatteries">0 шт.</span>
-        </div>
-        <div class="hardware-item">
-          <div class="hardware-icon">📐</div>
-          <div class="hardware-text">Кровля</div>
-          <span class="hardware-count" id="visArea">0 м²</span>
-        </div>
-      </div>
-
-      <div class="results-grid">
-        <div class="result-card">
-          <span>Инвестиции (под ключ):</span> 
-          <span id="resCost">0 ₽</span>
-        </div>
-        <div class="result-card">
-          <span>Экономия за 1 год:</span> 
-          <span id="resSavings">0 ₽</span>
-        </div>
-        <div class="result-card highlight-card">
-          <span>Прогноз окупаемости:</span> 
-          <span id="resDynamic">0 лет</span>
-        </div>
-      </div>
-
-      <div id="img-footer" style="display: none; padding: 2rem; background: #E8DECF; border-top: 1px solid rgba(0,0,0,0.1); margin-top: 2rem;">
-        <span class="header__logo" style="display:block; font-size: 1.6rem; color: #121315; margin-bottom: 15px;">Caspian Sun</span>
-        <div style="font-size: 0.875rem; color: rgba(18, 19, 21, 0.8);">📞 <strong>+7 (963) 373-72-74</strong> | ✉️ CaspianSun.energy@gmail.com</div>
-      </div>
-
-      <!-- Группа 1: Сохранить/Поделиться -->
-      <div id="export-block">
-        <div class="action-group-title">Сохранить или поделиться расчетом:</div>
-        <div class="calc-share-grid">
-          <button class="calc-action-btn" onclick="downloadImage()">
-            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Чек
+        <div class="calc-mode-tabs">
+          <button type="button" onclick="switchMode('client')" id="tab-client" class="calc-mode-tab is-active">
+            <span>👤 Быстрый расчет (3 шага)</span>
           </button>
-          <button class="calc-action-btn" onclick="shareWA()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </button>
-          <button class="calc-action-btn" onclick="shareTG()">
-            <svg viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.534.26l.213-3.053 5.56-5.023c.242-.213-.054-.334-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.535-.195 1.006.132.832.937z"/></svg>
-            Telegram
+          <button type="button" onclick="switchMode('pro')" id="tab-pro" class="calc-mode-tab calc-mode-tab--pro">
+            <span>⚙️ Режим инженера (PRO)</span>
           </button>
         </div>
+
+        <!-- Индикатор-линия подгрузки модулей -->
+        <div id="calc-mode-loader" class="calc-mode-loader"></div>
       </div>
 
-      <!-- Группа 2: Обсудить проект -->
-      <div id="contact-block">
-        <div class="action-group-title">Обсудить проект и получить точную смету:</div>
-        <div class="calc-share-grid">
-          <a href="https://wa.me/79633737274" target="_blank" class="calc-action-btn">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.124-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </a>
-          <a href="https://t.me/+79633737274" target="_blank" class="calc-action-btn">
-            <svg viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.534.26l.213-3.053 5.56-5.023c.242-.213-.054-.334-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.535-.195 1.006.132.832.937z"/></svg>
-            Telegram
-          </a>
-          <a href="mailto:CaspianSun.energy@gmail.com" class="calc-action-btn">
-            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-            Email
-          </a>
+      <!-- ====================================================================
+           ОСНОВНОЙ КОНФИГУРАТОР (ЛЕВАЯ КОЛОНКА ШАГОВ + ПРАВАЯ ЛИПКАЯ СВОДКА)
+           ==================================================================== -->
+      <div id="view-configurator" class="calc-main-grid">
+
+        <!-- ЛЕВАЯ КОЛОНКА (ШАГИ) -->
+        <div class="calc-steps-col no-print">
+
+          <!-- ШАГ 1: ГЛАВНАЯ ЗАДАЧА (2 ШИРОКИХ СТОЛБЦА) -->
+          <section class="calc-step-card">
+            <div class="calc-step-header">
+              <div class="calc-step-title-wrap">
+                <span class="calc-step-num">1</span>
+                <h2 class="calc-step-title">Какую задачу должна решать станция?</h2>
+              </div>
+              <span class="calc-step-badge js-step-badge" data-step="1">Шаг 1 из 3</span>
+            </div>
+
+            <div class="calc-grid-2">
+              <button type="button" onclick="setSystemGoal('hybrid')" id="goal-hybrid" class="calc-choice-card is-active">
+                <div>
+                  <div class="calc-choice-top">
+                    <span class="calc-choice-name">🔋☀️ Свет при авариях + Экономия</span>
+                    <span class="calc-choice-pill">Хит выбора</span>
+                  </div>
+                  <p class="calc-choice-desc">Днем станция снижает счета за электричество за счет солнца, а при отключении сети — дом за 10 мс переходит на аккумуляторы.</p>
+                </div>
+                <div class="calc-choice-foot">Гибридный инвертор + АКБ LiFePO4 + Солнечные панели</div>
+              </button>
+
+              <button type="button" onclick="setSystemGoal('ongrid')" id="goal-ongrid" class="calc-choice-card">
+                <div>
+                  <div class="calc-choice-top">
+                    <span class="calc-choice-name">☀️ Снизить счета днем (Сетевая)</span>
+                    <span class="calc-choice-pill calc-choice-pill--teal">Для бизнеса</span>
+                  </div>
+                  <p class="calc-choice-desc">Без аккумуляторов. Вся энергия солнца сразу питает кондиционеры, холодильники, витрины и оборудование в светлое время суток.</p>
+                </div>
+                <div class="calc-choice-foot">Сетевой инвертор + Солнечные панели (быстрая окупаемость)</div>
+              </button>
+
+              <button type="button" onclick="setSystemGoal('backup')" id="goal-backup" class="calc-choice-card">
+                <div>
+                  <div class="calc-choice-top">
+                    <span class="calc-choice-name">🛡️ Защита от отключений (без панелей)</span>
+                  </div>
+                  <p class="calc-choice-desc">Бесшумная замена генератору. Заряжается от городской сети и питает дом при авариях. Солнечные панели можно подключить позже.</p>
+                </div>
+                <div class="calc-choice-foot">Гибридный инвертор + Накопитель LiFePO4</div>
+              </button>
+
+              <button type="button" onclick="setSystemGoal('offgrid')" id="goal-offgrid" class="calc-choice-card">
+                <div>
+                  <div class="calc-choice-top">
+                    <span class="calc-choice-name">🏔️ Полная автономия (Нет сети)</span>
+                  </div>
+                  <p class="calc-choice-desc">Для объектов в горах, ферм, баз отдыха и участков без подключения к столбам ЛЭП. Увеличенный запас батарей и солнечных панелей.</p>
+                </div>
+                <div class="calc-choice-foot">Мощный гибрид + Усиленный банк АКБ + Максимум панелей</div>
+              </button>
+            </div>
+          </section>
+
+          <!-- ШАГ 2: ОБЪЕКТ И ПАРАМЕТРЫ СЕТИ -->
+          <section class="calc-step-card">
+            <div class="calc-step-header">
+              <div class="calc-step-title-wrap">
+                <span class="calc-step-num">2</span>
+                <h2 class="calc-step-title">Параметры вашего объекта и сети</h2>
+              </div>
+              <span class="calc-step-badge js-step-badge" data-step="2">Шаг 2 из 3</span>
+            </div>
+
+            <div class="calc-grid-2" style="margin-bottom: 1.1rem;">
+              <div>
+                <span class="calc-field-label">Тип объекта</span>
+                <div class="calc-grid-2" style="gap: 0.6rem;">
+                  <button type="button" onclick="setObjectType('home')" id="btn-obj-home" class="calc-choice-card is-active" style="padding: 0.85rem 1rem;">
+                    <span class="calc-choice-name" style="font-size: 0.88rem;">🏠 Частный дом / Дача</span>
+                  </button>
+                  <button type="button" onclick="setObjectType('commercial')" id="btn-obj-commercial" class="calc-choice-card" style="padding: 0.85rem 1rem;">
+                    <span class="calc-choice-name" style="font-size: 0.88rem;">🏢 Коммерция / Бизнес</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <span class="calc-field-label">Вводная сеть на объекте</span>
+                <div class="calc-grid-2" style="gap: 0.6rem;">
+                  <button type="button" onclick="setPhaseCount(1)" id="btn-phase-1" class="calc-choice-card is-active" style="padding: 0.85rem 1rem;">
+                    <span class="calc-choice-name" style="font-size: 0.88rem;">⚡ 1 фаза (220В)</span>
+                  </button>
+                  <button type="button" onclick="setPhaseCount(3)" id="btn-phase-3" class="calc-choice-card" style="padding: 0.85rem 1rem;">
+                    <span class="calc-choice-name" style="font-size: 0.88rem;">⚡⚡⚡ 3 фазы (380В)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="calc-grid-3">
+              <div>
+                <label class="calc-field-label" for="client-location">Населенный пункт</label>
+                <select id="client-location" onchange="recalculateAll()" class="calc-select">
+                  <option value="Махачкала" selected>Махачкала</option>
+                  <option value="Каспийск">Каспийск</option>
+                  <option value="Дербент">Дербент</option>
+                  <option value="Избербаш">Избербаш</option>
+                  <option value="Хасавюрт">Хасавюрт</option>
+                  <option value="Кизилюрт">Кизилюрт</option>
+                  <option value="Буйнакск">Буйнакск</option>
+                  <option value="Гуниб / Горный р-н">Гуниб / Горный р-н</option>
+                  <option value="Хунзах">Хунзах</option>
+                  <option value="Другой р-н Дагестана / Юга РФ">Другой район</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="calc-field-label" for="tariff-rate">Тариф за свет (₽ / кВт·ч)</label>
+                <div class="calc-stepper-box">
+                  <button type="button" class="calc-stepper-btn" onclick="stepInput('tariff-rate', -0.5, 1, 25, 1)">&minus;</button>
+                  <input type="number" id="tariff-rate" value="4.5" step="0.5" min="1" max="25" oninput="recalculateAll()" class="calc-stepper-input">
+                  <button type="button" class="calc-stepper-btn" onclick="stepInput('tariff-rate', 0.5, 1, 25, 1)">&plus;</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="calc-field-label" for="monthly-bill">Средний счет в месяц (₽)</label>
+                <div class="calc-stepper-box">
+                  <button type="button" class="calc-stepper-btn" onclick="stepInput('monthly-bill', -500, 0, 500000, 0)">&minus;</button>
+                  <input type="number" id="monthly-bill" value="3500" step="500" min="0" oninput="recalculateAll()" class="calc-stepper-input" style="color: var(--calc-beige);">
+                  <button type="button" class="calc-stepper-btn" onclick="stepInput('monthly-bill', 500, 0, 500000, 0)">&plus;</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ШАГ 3: НАГРУЗКА (ПО УМОЛЧАНИЮ АКТИВНО «ВВЕСТИ КВТ ВРУЧНУЮ») -->
+          <section class="calc-step-card">
+            <div class="calc-step-header">
+              <div class="calc-step-title-wrap">
+                <span class="calc-step-num">3</span>
+                <h2 class="calc-step-title">Нагрузка и время автономной работы</h2>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                <div class="calc-segmented">
+                  <button type="button" onclick="setLoadInputMethod('manual')" id="btn-load-manual" class="calc-seg-btn is-active">
+                    <span>⚡ Ввести кВт вручную</span>
+                  </button>
+                  <button type="button" onclick="setLoadInputMethod('appliances')" id="btn-load-appliances" class="calc-seg-btn">
+                    <span>🔌 По приборам</span>
+                  </button>
+                </div>
+                <span class="calc-step-badge js-step-badge" data-step="3">Шаг 3 из 3</span>
+              </div>
+            </div>
+
+            <!-- Единая панель быстрых пресетов в 1 клик -->
+            <div class="calc-presets-bar">
+              <span style="font-size: 0.78rem; color: var(--calc-muted); font-weight: 600; margin-right: 0.25rem;">⚡ Типовой объект в 1 клик:</span>
+              <button type="button" onclick="applyQuickPreset('dacha', this)" class="calc-preset-chip">🏡 Дача (1.2 кВт)</button>
+              <button type="button" onclick="applyQuickPreset('home', this)" class="calc-preset-chip is-active">🏠 Дом для семьи (2.2 кВт)</button>
+              <button type="button" onclick="applyQuickPreset('cottage', this)" class="calc-preset-chip">🏰 Большой коттедж (4.5 кВт)</button>
+              <button type="button" onclick="applyQuickPreset('business', this)" class="calc-preset-chip">☕ Кофейня / Магазин (6.0 кВт)</button>
+            </div>
+
+            <!-- ВАРИАНТ 1 (АКТИВЕН СО СТАРТА): ПРОСТОЙ РУЧНОЙ ВВОД КВТ -->
+            <div id="load-manual-section" style="margin-bottom: 1rem;">
+              <div class="calc-grid-3">
+                <div>
+                  <label class="calc-field-label" for="manual-running-kw">Средняя рабочая нагрузка (кВт)</label>
+                  <div class="calc-stepper-box">
+                    <button type="button" class="calc-stepper-btn" onclick="stepInput('manual-running-kw', -0.5, 0.5, 50, 1)">&minus;</button>
+                    <input type="number" id="manual-running-kw" value="2.2" step="0.5" min="0.5" oninput="recalculateAll()" class="calc-stepper-input">
+                    <button type="button" class="calc-stepper-btn" onclick="stepInput('manual-running-kw', 0.5, 0.5, 50, 1)">&plus;</button>
+                  </div>
+                </div>
+                <div>
+                  <label class="calc-field-label" for="manual-peak-kw">Пик с пусковыми токами (кВт)</label>
+                  <div class="calc-stepper-box">
+                    <button type="button" class="calc-stepper-btn" onclick="stepInput('manual-peak-kw', -0.5, 1.0, 80, 1)">&minus;</button>
+                    <input type="number" id="manual-peak-kw" value="5.0" step="0.5" min="1.0" oninput="recalculateAll()" class="calc-stepper-input" style="color: var(--calc-beige);">
+                    <button type="button" class="calc-stepper-btn" onclick="stepInput('manual-peak-kw', 0.5, 1.0, 80, 1)">&plus;</button>
+                  </div>
+                </div>
+                <div>
+                  <label class="calc-field-label" for="manual-daily-kwh">Суточное потребление (кВт·ч)</label>
+                  <div class="calc-stepper-box">
+                    <button type="button" class="calc-stepper-btn" onclick="stepInput('manual-daily-kwh', -2, 2, 500, 0)">&minus;</button>
+                    <input type="number" id="manual-daily-kwh" value="18" step="2" min="2" oninput="recalculateAll()" class="calc-stepper-input" style="color: var(--calc-teal-light);">
+                    <button type="button" class="calc-stepper-btn" onclick="stepInput('manual-daily-kwh', 2, 2, 500, 0)">&plus;</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ВАРИАНТ 2: ВЫБОР ПО ПРИБОРАМ -->
+            <div id="load-appliances-section" class="is-hidden">
+              <div id="appliances-list" class="calc-appliances-grid"></div>
+
+              <div class="calc-app-item" style="margin-top: 0.75rem; flex-wrap: wrap;">
+                <div style="display: flex; gap: 0.6rem; flex-grow: 1; flex-wrap: wrap; align-items: center;">
+                  <input type="text" id="custom-app-name" placeholder="+ Свой прибор (например, бойлер или печь)" oninput="recalculateAll()" class="calc-input" style="flex: 1; min-width: 180px; height: 38px; font-size: 0.82rem;">
+                  <div class="calc-stepper-box" style="width: 135px; height: 38px;">
+                    <button type="button" class="calc-stepper-btn" style="width: 26px; height: 26px;" onclick="stepInput('custom-app-kw', -0.5, 0.2, 30, 1)">&minus;</button>
+                    <input type="number" id="custom-app-kw" value="1.5" step="0.5" min="0.2" oninput="recalculateAll()" class="calc-stepper-input" style="font-size: 0.85rem;">
+                    <button type="button" class="calc-stepper-btn" style="width: 26px; height: 26px;" onclick="stepInput('custom-app-kw', 0.5, 0.2, 30, 1)">&plus;</button>
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--calc-muted);">кВт</span>
+                </div>
+                <div class="calc-app-counter">
+                  <button type="button" onclick="changeCustomAppCount(-1)" class="calc-stepper-btn">&minus;</button>
+                  <span id="custom-app-count" class="calc-qty-val">0</span>
+                  <button type="button" onclick="changeCustomAppCount(1)" class="calc-stepper-btn">&plus;</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Выбор часов резерва -->
+            <div id="autonomy-hours-block" style="margin-top: 1.25rem; padding-top: 1.15rem; border-top: 1px solid var(--calc-border);">
+              <span class="calc-field-label" style="color: var(--calc-beige); font-weight: 600; margin-bottom: 0.65rem;">Желаемое время работы от аккумуляторов при отключении света:</span>
+              <div class="calc-grid-3">
+                <button type="button" onclick="setAutonomyHours(3)" id="btn-hours-3" class="calc-choice-card">
+                  <div class="calc-choice-name">⏱️ 2–4 часа</div>
+                  <p class="calc-choice-desc" style="margin-top: 0.25rem;">Базовый резерв (переждать частые аварии)</p>
+                </button>
+                <button type="button" onclick="setAutonomyHours(7)" id="btn-hours-7" class="calc-choice-card is-active">
+                  <div class="calc-choice-name">🌙 6–8 часов</div>
+                  <p class="calc-choice-desc" style="margin-top: 0.25rem;">Комфортный вечер и ночь без экономии</p>
+                </button>
+                <button type="button" onclick="setAutonomyHours(14)" id="btn-hours-14" class="calc-choice-card">
+                  <div class="calc-choice-name">🔋 12–24 часа</div>
+                  <p class="calc-choice-desc" style="margin-top: 0.25rem;">Длительный суточный энергозапас</p>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ЗАМЕТНАЯ ПЛАШКА ДЛЯ ОТКРЫТИЯ РАСШИРЕННОГО PRO-РЕЖИМА -->
+          <button type="button" id="pro-banner-trigger" class="calc-pro-banner-btn" onclick="toggleProModeBanner()">
+            <div>
+              <div style="font-size: 0.96rem; font-weight: 700; color: var(--calc-beige); display: flex; align-items: center; gap: 0.5rem;">
+                <span>⚙️ Условия монтажа, выбор крыши и точных моделей из каталога (Режим PRO)</span>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--calc-muted); margin-top: 0.2rem;">
+                По умолчанию оборудование подбирается автоматически из каталога Caspian Sun. Нажмите для ручной настройки.
+              </div>
+            </div>
+            <span id="pro-banner-action" style="padding: 0.55rem 1rem; border-radius: 10px; background: rgba(107, 143, 147, 0.25); color: var(--calc-teal-light); font-weight: 700; font-size: 0.82rem; white-space: nowrap;">
+              Открыть PRO &darr;
+            </span>
+          </button>
+
+          <!-- ==================================================================
+               ШАГ 4 (PRO): МОНТАЖ + КРОВЛЯ + ОБОРУДОВАНИЕ ИЗ КАТАЛОГА
+               ================================================================== -->
+          <section id="pro-engineering-panel" class="calc-step-card calc-step-card--pro is-hidden">
+            <div class="calc-step-header" style="margin-bottom: 0.5rem;">
+              <div class="calc-step-title-wrap">
+                <span class="calc-step-num" style="background: rgba(107, 143, 147, 0.2); border-color: var(--calc-teal-light); color: var(--calc-teal-light);">4</span>
+                <div>
+                  <h2 class="calc-step-title" style="color: var(--calc-teal-light);">Инженерный конфигуратор и условия монтажа (PRO)</h2>
+                  <p style="font-size: 0.8rem; color: var(--calc-muted); margin: 0.25rem 0 0;">Все модели инверторов, АКБ и панелей синхронизированы с каталогом сайта</p>
+                </div>
+              </div>
+              <button type="button" onclick="resetProOverrides()" class="calc-btn-secondary">
+                Сбросить в «Автоподбор»
+              </button>
+            </div>
+
+            <!-- РАЗДЕЛ PRO 1: КРОВЛЯ, ТРАССА И ФАЗЫ -->
+            <div id="mounting-conditions-block">
+              <div class="calc-pro-subhead" style="margin-top: 0.75rem;">
+                <span>1. Условия монтажа, тип крыши и кабельная трасса</span>
+                <span style="font-size: 0.72rem; color: var(--calc-muted); text-transform: none; font-weight: 500;">Сборный алюминиевый крепеж без сварки</span>
+              </div>
+
+              <span class="calc-field-label">Куда устанавливаем солнечные панели?</span>
+              <div class="calc-grid-3" style="margin-bottom: 1rem;">
+                <button type="button" onclick="setRoofType('metal')" id="roof-metal" class="calc-choice-card is-active">
+                  <div class="calc-choice-name" style="font-size: 0.88rem;">Скатная крыша (Металл)</div>
+                  <p class="calc-choice-desc" style="margin-top: 0.25rem;">Профнастил / металлочерепица (профиль + шпильки)</p>
+                </button>
+                <button type="button" onclick="setRoofType('soft')" id="roof-soft" class="calc-choice-card">
+                  <div class="calc-choice-name" style="font-size: 0.88rem;">Скатная (Мягкая / Черепица)</div>
+                  <p class="calc-choice-desc" style="margin-top: 0.25rem;">Специальные кронштейны под гибкую кровлю</p>
+                </button>
+                <button type="button" onclick="setRoofType('flat')" id="roof-flat" class="calc-choice-card">
+                  <div class="calc-choice-name" style="font-size: 0.88rem;">Плоская крыша / Навес</div>
+                  <p class="calc-choice-desc" style="margin-top: 0.25rem;">Алюминиевые треугольники под углом к солнцу</p>
+                </button>
+              </div>
+
+              <div class="calc-grid-2" style="margin-bottom: 1rem;">
+                <div>
+                  <span class="calc-field-label">Ориентация скатов крыши</span>
+                  <div class="calc-grid-2" style="gap: 0.5rem;">
+                    <button type="button" onclick="setRoofOrientation('south')" id="orient-south" class="calc-choice-card is-active" style="padding: 0.75rem;">
+                      <span class="calc-choice-name" style="font-size: 0.82rem;">🧭 Юг / 1 плоскость</span>
+                    </button>
+                    <button type="button" onclick="setRoofOrientation('eastwest')" id="orient-eastwest" class="calc-choice-card" style="padding: 0.75rem;">
+                      <span class="calc-choice-name" style="font-size: 0.82rem;">↔️ Восток-Запад (2 ската)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="calc-field-label">Длина трассы от панелей до инвертора</span>
+                  <div class="calc-grid-3" style="grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                    <button type="button" onclick="setCableDistance(15)" id="cable-15" class="calc-choice-card is-active" style="padding: 0.75rem; align-items: center;">
+                      <span class="calc-choice-name" style="font-size: 0.82rem;">До 15 м</span>
+                    </button>
+                    <button type="button" onclick="setCableDistance(30)" id="cable-30" class="calc-choice-card" style="padding: 0.75rem; align-items: center;">
+                      <span class="calc-choice-name" style="font-size: 0.82rem;">15–30 м</span>
+                    </button>
+                    <button type="button" onclick="setCableDistance(50)" id="cable-50" class="calc-choice-card" style="padding: 0.75rem; align-items: center;">
+                      <span class="calc-choice-name" style="font-size: 0.82rem;">30–50 м</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Инженерная логика 3 фаз -->
+              <div id="phase-3-subquestion" style="background: rgba(14, 15, 16, 0.75); border: 1px solid var(--calc-border); border-radius: 12px; padding: 0.9rem 1rem;">
+                <span class="calc-field-label" style="color: var(--calc-teal-light); font-weight: 600;">Схема резервирования при 3-фазном вводе (380В):</span>
+                <div class="calc-grid-2" style="margin-top: 0.45rem;">
+                  <label style="display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; font-size: 0.8rem; color: var(--calc-beige);">
+                    <input type="radio" name="threePhaseMode" value="recombine" checked onchange="recalculateAll()" style="margin-top: 3px; accent-color: var(--calc-gold);">
+                    <span><b>Приоритетная группа 220В:</b> объединить важные линии на 1-фазный инвертор (оптимально для дома).</span>
+                  </label>
+                  <label style="display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; font-size: 0.8rem; color: var(--calc-beige);">
+                    <input type="radio" name="threePhaseMode" value="true3p" onchange="recalculateAll()" style="margin-top: 3px; accent-color: var(--calc-gold);">
+                    <span><b>Полноценные 3 фазы 380В:</b> есть трехфазные станки/котлы (принудительный 3ф инвертор).</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- РАЗДЕЛ PRO 2: РУЧНОЙ ВЫБОР ОБОРУДОВАНИЯ ИЗ КАТАЛОГА -->
+            <div class="calc-pro-subhead">
+              <span>2. Выбор конкретных моделей из каталога оборудования</span>
+              <span id="catalog-sync-badge" style="font-size: 0.72rem; color: var(--calc-gold); text-transform: none; font-weight: 600;">Каталог подключен</span>
+            </div>
+
+            <div class="calc-grid-2" style="margin-bottom: 1rem;">
+              <div>
+                <label class="calc-field-label" for="pro-inverter-select">Модель инвертора</label>
+                <select id="pro-inverter-select" onchange="onProOverrideChange()" class="calc-select"></select>
+              </div>
+              <div>
+                <label class="calc-field-label" for="pro-inverter-qty">Количество инверторов (каскад)</label>
+                <select id="pro-inverter-qty" onchange="onProOverrideChange()" class="calc-select">
+                  <option value="auto">🤖 Автоматически</option>
+                  <option value="1">1 шт.</option>
+                  <option value="2">2 шт. (параллель)</option>
+                  <option value="3">3 шт. (3 фазы / каскад)</option>
+                </select>
+              </div>
+              <div>
+                <label class="calc-field-label" for="pro-battery-select">Модель аккумулятора LiFePO4</label>
+                <select id="pro-battery-select" onchange="onProOverrideChange()" class="calc-select"></select>
+              </div>
+              <div>
+                <label class="calc-field-label" for="pro-battery-qty">Количество блоков АКБ</label>
+                <select id="pro-battery-qty" onchange="onProOverrideChange()" class="calc-select">
+                  <option value="auto">🤖 Автоматически по часам резерва</option>
+                  <option value="1">1 блок</option>
+                  <option value="2">2 блока</option>
+                  <option value="3">3 блока</option>
+                  <option value="4">4 блока</option>
+                  <option value="5">5 блоков</option>
+                  <option value="6">6 блоков</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="calc-grid-3" style="margin-bottom: 1rem;">
+              <div>
+                <label class="calc-field-label" for="pro-panel-select">Модель солнечной панели</label>
+                <select id="pro-panel-select" onchange="onProOverrideChange()" class="calc-select"></select>
+              </div>
+
+              <div>
+                <label class="calc-field-label" for="pro-panel-count">Количество панелей (<b id="pro-panel-label" style="color: var(--calc-gold);">Автоподбор</b>)</label>
+                <div style="display: flex; gap: 0.5rem;">
+                  <div class="calc-stepper-box" style="flex: 1;">
+                    <button type="button" class="calc-stepper-btn" onclick="stepPanelCount(-2)">&minus;</button>
+                    <input type="number" id="pro-panel-count" placeholder="Авто" min="0" max="120" oninput="onProOverrideChange()" class="calc-stepper-input">
+                    <button type="button" class="calc-stepper-btn" onclick="stepPanelCount(2)">&plus;</button>
+                  </div>
+                  <button type="button" onclick="document.getElementById('pro-panel-count').value=''; onProOverrideChange();" class="calc-btn-secondary">Авто</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="calc-field-label" for="pro-discount-pct">Персональная скидка (-) или наценка (+) в %</label>
+                <div class="calc-stepper-box">
+                  <button type="button" class="calc-stepper-btn" onclick="stepInput('pro-discount-pct', -5, -50, 50, 0)">&minus;5%</button>
+                  <input type="number" id="pro-discount-pct" value="0" step="1" min="-50" max="50" oninput="recalculateAll()" class="calc-stepper-input" style="color: var(--calc-beige);">
+                  <button type="button" class="calc-stepper-btn" onclick="stepInput('pro-discount-pct', 5, -50, 50, 0)">&plus;5%</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- РАЗДЕЛ PRO 3: ЗАЩИТНАЯ АВТОМАТИКА И МОНТАЖ -->
+            <div class="calc-pro-subhead">
+              <span>3. Комплектация узлов защиты и монтажных работ</span>
+            </div>
+
+            <div class="calc-grid-3" style="font-size: 0.8rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; background: var(--calc-bg); padding: 0.75rem; border-radius: 10px; border: 1px solid var(--calc-border);">
+                <input type="checkbox" id="chk-dc-breaker" checked onchange="recalculateAll()" style="accent-color: var(--calc-gold);">
+                <span>Защита АКБ (Автомат 200А + 35мм²)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; background: var(--calc-bg); padding: 0.75rem; border-radius: 10px; border: 1px solid var(--calc-border);">
+                <input type="checkbox" id="chk-protection-box" checked onchange="recalculateAll()" style="accent-color: var(--calc-gold);">
+                <span>Щит защиты DC/AC (УЗИП, рубильник)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; background: var(--calc-bg); padding: 0.75rem; border-radius: 10px; border: 1px solid var(--calc-border);">
+                <input type="checkbox" id="chk-installation" checked onchange="recalculateAll()" style="accent-color: var(--calc-gold);">
+                <span>Включить монтаж и пусконаладку</span>
+              </label>
+            </div>
+          </section>
+
         </div>
+
+        <!-- ПРАВАЯ ЛИПКАЯ КОЛОНКА (STICKY SUMMARY) -->
+        <aside class="calc-right-col no-print">
+          <div class="calc-summary-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.9rem;">
+              <div>
+                <span style="font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--calc-gold); font-weight: 700;">Живая сводка проекта</span>
+                <h3 style="margin: 0.1rem 0 0; font-size: 1.15rem; font-weight: 700;">Конфигурация СЭС</h3>
+              </div>
+              <div id="brand-quick-toggle" class="calc-segmented" style="padding: 0.2rem;" title="Приоритет бренда инвертора">
+                <button type="button" onclick="setPreferredBrand('auto')" id="btn-brand-auto" class="calc-seg-btn is-active" style="padding: 0.35rem 0.6rem; font-size: 0.7rem;">Авто</button>
+                <button type="button" onclick="setPreferredBrand('growatt')" id="btn-brand-growatt" class="calc-seg-btn" style="padding: 0.35rem 0.6rem; font-size: 0.7rem;">Growatt</button>
+                <button type="button" onclick="setPreferredBrand('dah')" id="btn-brand-dah" class="calc-seg-btn" style="padding: 0.35rem 0.6rem; font-size: 0.7rem;">DAH</button>
+              </div>
+            </div>
+
+            <!-- Живой индикатор нагрузки прямо в липкой панели -->
+            <div class="calc-live-load-box">
+              <div class="calc-load-metrics">
+                <div>
+                  <div class="calc-load-metric-label">Рабочая (ср.)</div>
+                  <div id="calc-running-kw" class="calc-load-metric-val">0.0 кВт</div>
+                </div>
+                <div>
+                  <div class="calc-load-metric-label">Пик с пусками</div>
+                  <div id="calc-peak-kw" class="calc-load-metric-val" style="color: var(--calc-gold);">0.0 кВт</div>
+                </div>
+                <div>
+                  <div class="calc-load-metric-label">За сутки</div>
+                  <div id="calc-daily-kwh" class="calc-load-metric-val" style="color: var(--calc-teal-light);">0 кВт·ч</div>
+                </div>
+              </div>
+              <div class="calc-load-bar-track">
+                <div id="calc-load-bar" class="calc-load-bar-fill"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--calc-muted); margin-top: 0.4rem;">
+                <span id="calc-load-bar-text">Загрузка инвертора в пике: ~45%</span>
+                <span style="color: var(--calc-gold);">Запас учтен</span>
+              </div>
+            </div>
+
+            <!-- Узел 1: Инвертор -->
+            <div class="calc-sum-node">
+              <div class="calc-sum-node-top">
+                <span>Инвертор (<span id="sum-inv-type">Гибридный</span>):</span>
+                <span id="sum-inv-power" style="color: var(--calc-gold); font-weight: 700;">6 кВт</span>
+              </div>
+              <div id="sum-inv-name" class="calc-sum-node-title">Загрузка из каталога...</div>
+            </div>
+
+            <!-- Узел 2: Аккумуляторы -->
+            <div class="calc-sum-node">
+              <div class="calc-sum-node-top">
+                <span>Запас энергии LiFePO4:</span>
+                <span id="sum-bat-kwh" style="color: var(--calc-teal-light); font-weight: 700;">10.24 кВт·ч</span>
+              </div>
+              <div id="sum-bat-name" class="calc-sum-node-title">Загрузка из каталога...</div>
+              <div id="sum-bat-badge" style="margin-top: 0.4rem; display: inline-block; font-size: 0.69rem; padding: 0.18rem 0.5rem; border-radius: 5px; background: rgba(107, 143, 147, 0.2); color: var(--calc-teal-light); border: 1px solid rgba(107, 143, 147, 0.35);">
+                Оптимальный подбор из каталога
+              </div>
+            </div>
+
+            <!-- Узел 3: Солнечный массив -->
+            <div class="calc-sum-node">
+              <div class="calc-sum-node-top">
+                <span>Солнечный массив:</span>
+                <span id="sum-pv-kw" style="color: var(--calc-gold); font-weight: 700;">4.96 кВт</span>
+              </div>
+              <div id="sum-pv-name" class="calc-sum-node-title">8 шт. &times; DAH Solar 620W</div>
+              <div id="sum-mppt-hint" style="margin-top: 0.25rem; font-size: 0.7rem; color: var(--calc-muted);">
+                Стринг: 1 × 8 шт. (Voc ~388В — норма MPPT)
+              </div>
+            </div>
+
+            <!-- Итоговая цена -->
+            <div style="padding-top: 0.9rem; margin: 0.9rem 0 1.1rem; border-top: 1px solid var(--calc-border);">
+              <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                <span style="font-size: 0.8rem; color: var(--calc-muted);">Итого «под ключ»:</span>
+                <span id="sum-total-price" class="calc-sum-price-big">0 ₽</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--calc-muted); margin-top: 0.3rem;">
+                <span>Оборудование: <b id="sum-equip-price" style="color: var(--calc-beige);">0 ₽</b></span>
+                <span>Монтаж и защита: <b id="sum-install-price" style="color: var(--calc-beige);">0 ₽</b></span>
+              </div>
+            </div>
+
+            <!-- Кнопки действий -->
+            <div style="display: flex; flex-direction: column; gap: 0.55rem;">
+              <a href="#commercial-proposal" class="calc-btn-primary">
+                <span>Смотреть детальную смету (КП) &darr;</span>
+              </a>
+              <button type="button" onclick="addConfiguredEquipmentToCart()" class="calc-btn-secondary" style="width: 100%; border-color: rgba(107, 143, 147, 0.45); color: var(--calc-teal-light);">
+                🛒 Добавить оборудование в корзину
+              </button>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                <button type="button" onclick="window.print()" class="calc-btn-secondary">🖨️ Печать / PDF</button>
+                <button type="button" onclick="shareViaWhatsApp()" class="calc-btn-secondary">📲 В WhatsApp</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
       </div>
+
+      <!-- ====================================================================
+           ДЕТАЛЬНАЯ СМЕТА (КП) И ОТПРАВКА ЗАЯВКИ
+           ==================================================================== -->
+      <section id="commercial-proposal" class="calc-kp-section">
+
+        <div class="calc-kp-head">
+          <div class="calc-kp-brand">
+            <img src="img/logo/logo.webp" alt="Caspian Sun" class="calc-kp-logo" onerror="this.style.display='none'">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                <h2 class="print-dark-text" style="margin: 0; font-size: 1.5rem; font-weight: 700;">CASPIAN <span style="color: var(--calc-gold);">SUN</span></h2>
+                <span style="font-size: 0.68rem; padding: 0.2rem 0.55rem; border-radius: 4px; background: rgba(107, 143, 147, 0.2); color: var(--calc-teal-light); font-weight: 600;">SOLAR ENERGY SYSTEMS • ДАГЕСТАН</span>
+              </div>
+              <p style="margin: 0.25rem 0 0; font-size: 0.82rem; color: var(--calc-muted);">Солнечные электростанции и системы бесперебойного питания под ключ</p>
+              <p style="margin: 0.2rem 0 0; font-size: 0.78rem; color: var(--calc-teal);">Тел.: +7 (963) 373-72-74 &bull; CaspianSun.energy@gmail.com</p>
+            </div>
+          </div>
+
+          <div style="text-align: right; font-size: 0.82rem;">
+            <div style="display: inline-block; padding: 0.35rem 0.75rem; border-radius: 8px; background: rgba(212, 168, 90, 0.15); border: 1px solid rgba(212, 168, 90, 0.4); color: var(--calc-gold); font-weight: 700; margin-bottom: 0.4rem;">
+              КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ № CS-1026
+            </div>
+            <div style="color: var(--calc-muted);">Дата расчета: <b id="kp-date" class="print-dark-text" style="color: var(--calc-beige);"></b></div>
+            <div style="color: var(--calc-muted);">Заказчик: <b id="kp-client" class="print-dark-text" style="color: var(--calc-beige);">Частный дом</b> (<span id="kp-location">Махачкала</span>)</div>
+          </div>
+        </div>
+
+        <!-- KPI Карточки -->
+        <div class="calc-kpi-grid">
+          <div class="calc-kpi-box">
+            <div style="font-size: 0.7rem; color: var(--calc-muted); text-transform: uppercase;">Мощность инвертора</div>
+            <div id="kp-kpi-inv" class="print-dark-text" style="font-size: 1.35rem; font-weight: 800; color: var(--calc-gold); margin-top: 0.25rem;">6.0 кВт</div>
+            <div id="kp-kpi-inv-sub" style="font-size: 0.74rem; color: var(--calc-muted); margin-top: 0.15rem;">Гибридный • 1 фаза</div>
+          </div>
+
+          <div class="calc-kpi-box">
+            <div style="font-size: 0.7rem; color: var(--calc-muted); text-transform: uppercase;">Емкость LiFePO4 АКБ</div>
+            <div id="kp-kpi-bat" class="print-dark-text" style="font-size: 1.35rem; font-weight: 800; color: var(--calc-teal-light); margin-top: 0.25rem;">10.24 кВт·ч</div>
+            <div id="kp-kpi-bat-sub" style="font-size: 0.74rem; color: var(--calc-muted); margin-top: 0.15rem;">До 7–8 часов резерва</div>
+          </div>
+
+          <div class="calc-kpi-box">
+            <div style="font-size: 0.7rem; color: var(--calc-muted); text-transform: uppercase;">Солнечное поле</div>
+            <div id="kp-kpi-pv" class="print-dark-text" style="font-size: 1.35rem; font-weight: 800; color: var(--calc-beige); margin-top: 0.25rem;">4.96 кВт</div>
+            <div id="kp-kpi-pv-sub" style="font-size: 0.74rem; color: var(--calc-muted); margin-top: 0.15rem;">8 шт. × 620 Вт TOPCon</div>
+          </div>
+
+          <div class="calc-kpi-box">
+            <div style="font-size: 0.7rem; color: var(--calc-muted); text-transform: uppercase;">Выработка за год</div>
+            <div id="kp-kpi-gen" class="print-dark-text" style="font-size: 1.35rem; font-weight: 800; color: var(--calc-gold); margin-top: 0.25rem;">~7 190 кВт·ч</div>
+            <div style="font-size: 0.74rem; color: var(--calc-muted); margin-top: 0.15rem;">Инсоляция Дагестана</div>
+          </div>
+
+          <div class="calc-kpi-box">
+            <div style="font-size: 0.7rem; color: var(--calc-teal-light); text-transform: uppercase; font-weight: 600;">Срок окупаемости</div>
+            <div id="kp-kpi-payback" class="print-dark-text" style="font-size: 1.35rem; font-weight: 800; color: var(--calc-beige); margin-top: 0.25rem;">2,5 – 5 лет</div>
+            <div id="kp-kpi-savings" style="font-size: 0.74rem; color: var(--calc-teal-light); margin-top: 0.15rem;">Экономия + защита техники</div>
+          </div>
+        </div>
+
+        <div class="print-card" style="background: rgba(14, 15, 16, 0.65); border: 1px solid var(--calc-border); border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.85rem; line-height: 1.55; color: var(--calc-muted);">
+          <strong class="print-dark-text" style="color: var(--calc-beige);">Инженерное резюме конфигурации:</strong>
+          <span id="kp-engineering-note"></span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="calc-bom-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;">№</th>
+                <th>Наименование оборудования и работ</th>
+                <th style="text-align: center; width: 110px;">Кол-во</th>
+                <th style="text-align: right; width: 130px;">Цена за ед.</th>
+                <th style="text-align: right; width: 140px;">Сумма</th>
+              </tr>
+            </thead>
+            <tbody id="bom-table-body"></tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--calc-border); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 1.5rem;">
+          <div style="max-width: 560px; font-size: 0.78rem; color: var(--calc-muted); line-height: 1.55;">
+            <strong class="print-dark-text" style="color: var(--calc-beige); display: block; margin-bottom: 0.3rem;">Что входит в монтаж и пусконаладку:</strong>
+            • Бесшовная сборка опорной конструкции из анодированного алюминия на кровле (без сварки и повреждения покрытия).<br>
+            • Сборка щита защиты постоянного и переменного тока (УЗИП, плавкие вставки, силовой размыкатель АКБ 200А, реверсивный рубильник I-0-II).<br>
+            • Настройка профилей заряда LiFePO4 по шине CAN/RS485 и режима подмешивания солнечной энергии.
+          </div>
+
+          <div class="print-card" style="min-width: 300px; background: var(--calc-bg); border: 1px solid rgba(212, 168, 90, 0.45); border-radius: 16px; padding: 1.15rem 1.35rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--calc-muted); margin-bottom: 0.4rem;">
+              <span>Оборудование и материалы:</span>
+              <span id="kp-subtotal-equip" class="print-dark-text" style="color: var(--calc-beige); font-weight: 600;">0 ₽</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--calc-muted); margin-bottom: 0.4rem;">
+              <span>Монтаж и пусконаладка:</span>
+              <span id="kp-subtotal-work" class="print-dark-text" style="color: var(--calc-beige); font-weight: 600;">0 ₽</span>
+            </div>
+            <div id="kp-discount-row" class="is-hidden" style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--calc-teal-light); margin-bottom: 0.5rem;">
+              <span>Корректировка / Скидка:</span>
+              <span id="kp-discount-val" style="font-weight: 700;">0 ₽</span>
+            </div>
+            <div style="padding-top: 0.65rem; border-top: 1px solid var(--calc-border); display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;">
+              <span class="print-dark-text" style="font-weight: 700; font-size: 0.88rem;">ИТОГО К ОПЛАТЕ:</span>
+              <span id="kp-grand-total" class="print-dark-text" style="font-weight: 800; font-size: 1.55rem; color: var(--calc-gold);">0 ₽</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Форма отправки КП инженеру (EmailJS + Корзина + мессенджеры) -->
+        <div class="calc-lead-box no-print">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+            <div>
+              <h3 style="margin: 0; font-size: 1.08rem; color: var(--calc-beige);">Зафиксировать смету или отправить расчет инженеру</h3>
+              <p style="margin: 0.25rem 0 0; font-size: 0.8rem; color: var(--calc-muted);">Оставьте контакты для проверки комплектации, перенесите товары в корзину или поделитесь КП:</p>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+              <button type="button" onclick="addConfiguredEquipmentToCart()" class="calc-btn-secondary" style="border-color: rgba(107, 143, 147, 0.5); color: var(--calc-teal-light);">🛒 В корзину</button>
+              <button type="button" onclick="window.print()" class="calc-btn-secondary">🖨️ Сохранить PDF</button>
+              <button type="button" onclick="copyProposalToClipboard()" class="calc-btn-secondary">📋 Скопировать КП</button>
+              <button type="button" onclick="shareViaWhatsApp()" class="calc-btn-secondary">📲 В WhatsApp</button>
+            </div>
+          </div>
+
+          <form id="calc-kp-send-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.75rem; align-items: end;">
+            <!-- Honeypot-ловушка от спама -->
+            <div style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none;" aria-hidden="true">
+              <label for="kp-company-website">Ваш сайт</label>
+              <input type="text" id="kp-company-website" name="company_website" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div>
+              <label class="calc-field-label" for="client-name">Имя клиента / Название *</label>
+              <input type="text" id="client-name" required placeholder="Например: Магомед" oninput="recalculateAll()" class="calc-input">
+            </div>
+            <div>
+              <label class="calc-field-label" for="client-phone">Телефон для связи *</label>
+              <input type="tel" id="client-phone" required placeholder="+7 (999) 000-00-00" oninput="recalculateAll()" class="calc-input">
+            </div>
+            <div>
+              <label class="calc-field-label" for="client-comment">Комментарий к объекту</label>
+              <input type="text" id="client-comment" placeholder="Вопросы или пожелания" class="calc-input">
+            </div>
+            <div>
+              <button type="submit" id="kp-submit-btn" class="calc-btn-primary" style="height: 44px; padding: 0 1rem;">
+                <span>Отправить инженеру &rarr;</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </section>
+
     </div>
   </main>
 
-  <!-- Сюда JS подтянет единый подвал -->
+  <!-- Ненавязчивая статусная капсула подгрузки Шага 4 (автоматически скрывается при докрутке) -->
+  <div id="pro-ambient-pill" class="calc-ambient-pill no-print" onclick="scrollToProPanel()">
+    <span id="pro-ambient-icon" class="calc-ambient-spinner"></span>
+    <span id="pro-ambient-text">Подгрузка инженерных модулей...</span>
+  </div>
+
+  <!-- Всплывающее уведомление -->
+  <div id="calc-toast" class="calc-toast no-print">
+    <span style="width: 22px; height: 22px; border-radius: 50%; background: var(--calc-gold); color: #121315; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem;">✓</span>
+    <span id="calc-toast-msg">Текст КП скопирован в буфер обмена!</span>
+  </div>
+
+  <!-- Модульный подвал сайта -->
   <div id="footer-placeholder"></div>
 
+  <!-- ==========================================================================
+       JAVASCRIPT: ЗАГРУЗКА ИЗ PRODUCTS/CATALOG.JSON И АВТОПОДБОР КОМПОНЕНТОВ
+       ========================================================================== -->
   <script>
-    let currentTariff = 10; 
-    let currentTariffType = 'business';
-    let currentStationType = 'grid';
-    let inputMode = 'kwh';
+    const CALC_LOAD_TIME = Date.now();
 
-    function updateSlidersFill() {
-      const sliders = document.querySelectorAll('input[type="range"]');
-      sliders.forEach(slider => {
-        const min = parseFloat(slider.min) || 0;
-        const max = parseFloat(slider.max) || 100;
-        const val = parseFloat(slider.value);
-        const percentage = ((val - min) / (max - min)) * 100;
-        slider.style.setProperty('--value', `${percentage}%`);
-      });
+    // Базовые резервные позиции (используются до ответа fetch('products/catalog.json') или при локальном открытии без сервера)
+    const FALLBACK_CATALOG = {
+      inverters: [
+        {
+          id: 'INV-GROWATT-6000',
+          sku: 'INV-GROWATT-6000',
+          name: 'Growatt SPF 6000 ES Plus',
+          brand: 'growatt',
+          category: 'Гибридный',
+          invType: 'hybrid',
+          powerKw: 6.0,
+          phases: 1,
+          mpptCount: 2,
+          maxPvKw: 8.0,
+          maxVoc: 500,
+          price: 75000,
+          note: '1 фаза, 48В, 2 независимых MPPT до 500В, режим подмешивания'
+        },
+        {
+          id: 'INV-DAH-6K',
+          sku: 'INV-DAH-6K',
+          name: 'DAH Solar DHN-LVEH1P6K-EU-G16',
+          brand: 'dah solar',
+          category: 'Гибридный',
+          invType: 'hybrid',
+          powerKw: 6.0,
+          phases: 1,
+          mpptCount: 2,
+          maxPvKw: 9.0,
+          maxVoc: 500,
+          price: 96000,
+          note: 'Премиум гибрид 1 фаза, 48В, 2 MPPT, монобренд DAH Solar'
+        },
+        {
+          id: 'INV-GROWATT-12K',
+          sku: 'INV-GROWATT-12K',
+          name: 'Growatt SPE 12000 ES',
+          brand: 'growatt',
+          category: 'Гибридный',
+          invType: 'hybrid',
+          powerKw: 12.0,
+          phases: 1,
+          mpptCount: 2,
+          maxPvKw: 12.0,
+          maxVoc: 500,
+          price: 119400,
+          note: 'Мощный 1-фазный гибрид 12 кВт, 48В, 2 MPPT'
+        },
+        {
+          id: 'INV-DAH-15K-3P',
+          sku: 'INV-DAH-15K-3P',
+          name: 'DAH Solar DHN-LVEH3P15K-EU-G1',
+          brand: 'dah solar',
+          category: 'Гибридный',
+          invType: 'hybrid',
+          powerKw: 15.0,
+          phases: 3,
+          mpptCount: 2,
+          maxPvKw: 22.5,
+          maxVoc: 800,
+          price: 213000,
+          note: 'Трехфазный низковольтный гибрид 15 кВт (380В), 48В АКБ'
+        },
+        {
+          id: 'INV-INVT-5K',
+          sku: 'INV-INVT-5K',
+          name: 'INVT iMars MG5KTL',
+          brand: 'invt',
+          category: 'Сетевой',
+          invType: 'ongrid',
+          powerKw: 5.0,
+          phases: 1,
+          mpptCount: 2,
+          maxPvKw: 6.5,
+          maxVoc: 550,
+          price: 44780,
+          note: 'Сетевой 1-фазный инвертор для дневной экономии'
+        },
+        {
+          id: 'INV-DEYE-5K',
+          sku: 'INV-DEYE-5K',
+          name: 'Deye SUN-5K-G05P1-EU-AM2',
+          brand: 'deye',
+          category: 'Сетевой',
+          invType: 'ongrid',
+          powerKw: 5.0,
+          phases: 1,
+          mpptCount: 2,
+          maxPvKw: 7.5,
+          maxVoc: 550,
+          price: 55150,
+          note: 'Сетевой 1-фазный инвертор Deye, 2 MPPT'
+        },
+        {
+          id: 'INV-DEYE-10K-3P',
+          sku: 'INV-DEYE-10K-3P',
+          name: 'Deye SUN-10K-G06P3-EU-BM2-P1',
+          brand: 'deye',
+          category: 'Сетевой',
+          invType: 'ongrid',
+          powerKw: 10.0,
+          phases: 3,
+          mpptCount: 2,
+          maxPvKw: 13.0,
+          maxVoc: 1000,
+          price: 65000,
+          note: 'Сетевой 3-фазный инвертор 10 кВт, 2 MPPT'
+        },
+        {
+          id: 'INV-DEYE-15K-3P',
+          sku: 'INV-DEYE-15K-3P',
+          name: 'Deye SUN-15K-G06P3-EU-BM2-P1',
+          brand: 'deye',
+          category: 'Сетевой',
+          invType: 'ongrid',
+          powerKw: 15.0,
+          phases: 3,
+          mpptCount: 2,
+          maxPvKw: 19.5,
+          maxVoc: 1000,
+          price: 78000,
+          note: 'Сетевой 3-фазный инвертор 15 кВт, 2 MPPT'
+        },
+        {
+          id: 'INV-DEYE-30K-3P',
+          sku: 'INV-DEYE-30K-3P',
+          name: 'Deye SUN-30K-G04',
+          brand: 'deye',
+          category: 'Сетевой',
+          invType: 'ongrid',
+          powerKw: 30.0,
+          phases: 3,
+          mpptCount: 3,
+          maxPvKw: 39.0,
+          maxVoc: 1000,
+          price: 120000,
+          note: 'Промышленный сетевой 3-фазный инвертор 30 кВт'
+        }
+      ],
+      batteries: [
+        {
+          id: 'BAT-DAH-5',
+          sku: 'BAT-DAH-5',
+          name: 'DAH Solar Powerwall 51.2V 100Ah',
+          brand: 'dah solar',
+          capacityKwh: 5.12,
+          voltage: 51.2,
+          price: 85000,
+          note: 'Настенный LiFePO4 модуль 5,12 кВт·ч (51.2В, BMS CAN/RS485)'
+        },
+        {
+          id: 'BAT-DAH-10',
+          sku: 'BAT-DAH-10',
+          name: 'DAH Solar Powerwall 51.2V 200Ah',
+          brand: 'dah solar',
+          capacityKwh: 10.24,
+          voltage: 51.2,
+          price: 153000,
+          note: 'Настенный LiFePO4 моноблок 10,24 кВт·ч'
+        },
+        {
+          id: 'BAT-DAH-16',
+          sku: 'BAT-DAH-16',
+          name: 'DAH Solar Powerwall 51.2V 314Ah',
+          brand: 'dah solar',
+          capacityKwh: 16.0,
+          voltage: 51.2,
+          price: 201700,
+          note: 'Мощный LiFePO4 моноблок 16,0 кВт·ч'
+        }
+      ],
+      panels: [
+        {
+          id: 'PAN-DAH-620',
+          sku: 'PAN-DAH-620',
+          name: 'Солнечная панель DAH Solar DHN-66Z16/DG-620W',
+          brand: 'dah solar',
+          watt: 620,
+          voc: 48.5,
+          price: 17000,
+          note: 'Двусторонняя (Bifacial Dual-Glass), N-type TOPCon'
+        }
+      ],
+      shields: [],
+      bos: {
+        mountMetalPerPanel: 3800,
+        mountSoftPerPanel: 4500,
+        mountFlatPerPanel: 5800,
+        dcBreakerKit: 7500,
+        protectionBox1P: 14000,
+        protectionBox3P: 22000,
+        solarCablePerMeter: 300,
+        installBase: 25000,
+        installPerPanel: 3000
+      }
+    };
+
+    const APPLIANCES = [
+      { id: 'lights', name: 'Освещение, роутер, ТВ, зарядки', icon: '💡', runKw: 0.3, surgeKw: 0.0, dailyHours: 8, count: 1, intermittent: false },
+      { id: 'fridge', name: 'Холодильник / Морозильная камера', icon: '🧊', runKw: 0.2, surgeKw: 1.2, dailyHours: 8, count: 1, intermittent: false },
+      { id: 'boiler_gas', name: 'Газовый котел и насосы отопления', icon: '🔥', runKw: 0.25, surgeKw: 0.2, dailyHours: 10, count: 1, intermittent: false },
+      { id: 'pump', name: 'Скважинный или водяной насос', icon: '💧', runKw: 1.2, surgeKw: 2.3, dailyHours: 1.5, count: 0, intermittent: true },
+      { id: 'ac', name: 'Кондиционер (сплит-система)', icon: '❄️', runKw: 1.0, surgeKw: 0.6, dailyHours: 6, count: 1, intermittent: false },
+      { id: 'kettle', name: 'Электрочайник / Кофемашина / СВЧ', icon: '☕', runKw: 2.0, surgeKw: 0.0, dailyHours: 1.0, count: 1, intermittent: true },
+      { id: 'washer', name: 'Стиральная / Посудомойка / Бойлер', icon: '🧺', runKw: 2.0, surgeKw: 0.3, dailyHours: 2.0, count: 0, intermittent: true },
+      { id: 'induction', name: 'Индукционная плита / Духовка', icon: '🍳', runKw: 2.4, surgeKw: 1.2, dailyHours: 1.5, count: 0, intermittent: true }
+    ];
+
+    let state = {
+      mode: 'client',
+      objectType: 'home',
+      phases: 1,
+      systemGoal: 'hybrid',
+      loadMethod: 'manual',
+      autonomyHours: 7,
+      roofType: 'metal',
+      roofOrientation: 'south',
+      cableDistance: 15,
+      preferredBrand: 'auto',
+      customAppCount: 0
+    };
+
+    let catalog = JSON.parse(JSON.stringify(FALLBACK_CATALOG));
+    let currentConfigCartItems = [];
+    let lastProposalText = '';
+    let ambientTimer = null;
+    const animatedValuesMap = {};
+
+    // ========================================================================
+    // ПАРСИНГ И СИНХРОНИЗАЦИЯ С PRODUCTS/CATALOG.JSON
+    // ========================================================================
+    function cleanCatalogValue(val) {
+      if (typeof fixCorruptedDateValue === 'function') {
+        return fixCorruptedDateValue(val);
+      }
+      if (typeof val !== 'string') return val;
+      const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+      if (!isoRegex.test(val.trim())) return val;
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return val;
+      const msk = new Date(d.getTime() + 3 * 3600 * 1000);
+      return `${msk.getUTCDate()}.${msk.getUTCMonth() + 1}`;
     }
 
-    function setTariff(price, typeStr, btnElement) {
-      const container = document.getElementById('tariffToggle');
-      container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
-      currentTariff = price; currentTariffType = typeStr;
-      calculateSolar();
+    function parseNum(val, fallback = 0) {
+      if (val === undefined || val === null || val === '') return fallback;
+      const str = String(cleanCatalogValue(val)).replace(/\s+/g, '').replace(',', '.');
+      const m = str.match(/-?\d+(?:\.\d+)?/);
+      return m ? parseFloat(m[0]) : fallback;
     }
 
-    function setStation(typeStr, btnElement) {
-      const container = document.getElementById('stationToggle');
-      container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
-      currentStationType = typeStr;
-      document.getElementById('batteryBlock').style.display = typeStr === 'hybrid' ? 'block' : 'none';
-      calculateSolar();
+    function buildFullProductName(brand, model) {
+      const b = String(brand || '').trim();
+      const m = String(model || '').trim();
+      if (!b || b.toLowerCase() === 'caspian sun') return m;
+      if (m.toLowerCase().includes(b.toLowerCase())) return m;
+      return `${b} ${m}`;
     }
 
-    function setInputMode(mode, btnElement) {
-      const container = btnElement.parentNode;
-      container.querySelectorAll('.input-mode-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
-      inputMode = mode;
-      const slider = document.getElementById('mainSlider');
-      const label = document.getElementById('sliderLabel');
-      const unit = document.getElementById('sliderUnit');
+    async function loadSiteCatalogIntoCalculator() {
+      try {
+        const response = await fetch('products/catalog.json');
+        if (!response.ok) throw new Error('Не удалось загрузить products/catalog.json');
+        const rawItems = await response.json();
 
-      if (mode === 'bill') {
-        label.innerText = 'Средний счет за свет в месяц:';
-        slider.min = 5000; slider.max = 300000; slider.step = 1000; slider.value = currentTariffType === 'business' ? 30000 : 12000; unit.innerText = '₽';
-      } else {
-        label.innerText = 'Средний расход электроэнергии в месяц:';
-        slider.min = 500; slider.max = 30000; slider.step = 100; slider.value = 3000; unit.innerText = 'кВт·ч';
-      }
-      calculateSolar();
-    }
+        const parsedInverters = [];
+        const parsedBatteries = [];
+        const parsedPanels = [];
+        const parsedShields = [];
 
-    function animateLogicAlert(text, isHybrid) {
-      const logicAlert = document.getElementById('logicAlert');
-      
-      logicAlert.classList.remove('fade-in');
-      void logicAlert.offsetWidth; 
-      logicAlert.classList.add('fade-in');
-      
-      if (isHybrid) {
-          logicAlert.style.borderColor = 'rgba(0, 0, 0, 0.15)';
-          logicAlert.style.color = '#121315';
-          logicAlert.style.backgroundColor = 'rgba(0, 0, 0, 0.04)';
-      } else {
-          logicAlert.style.borderColor = 'rgba(0, 0, 0, 0.1)';
-          logicAlert.style.color = 'rgba(18, 19, 21, 0.7)';
-          logicAlert.style.backgroundColor = 'transparent';
-      }
-      logicAlert.innerText = text;
-    }
+        rawItems.forEach(raw => {
+          const item = {};
+          for (const k in raw) item[k] = cleanCatalogValue(raw[k]);
 
-    function calculateSolar() {
-      updateSlidersFill(); 
+          const sku = String(item['Артикул'] || '').trim();
+          const model = String(item['Модель'] || item['Название комплекта'] || item['Модель / Наименование'] || '').trim();
+          if (!sku || !model) return;
 
-      const sliderValue = parseFloat(document.getElementById('mainSlider').value);
-      document.getElementById('sliderValue').innerText = sliderValue.toLocaleString('ru-RU');
-      const coveragePercentage = parseFloat(document.getElementById('coverageSlider').value);
-      document.getElementById('coverageValue').innerText = coveragePercentage;
-      const coverageFactor = coveragePercentage / 100;
-      
-      let monthlyBillRub = 0, monthlyConsumptionKwh = 0;
-
-      if (inputMode === 'bill') {
-          monthlyBillRub = sliderValue; monthlyConsumptionKwh = monthlyBillRub / currentTariff;
-      } else {
-          monthlyConsumptionKwh = sliderValue; monthlyBillRub = monthlyConsumptionKwh * currentTariff;
-      }
-
-      const daysInMonth = 30; const sunHoursPerDay = 4.5;
-      const dailyConsumptionKwh = monthlyConsumptionKwh / daysInMonth;
-      const coveredDailyConsumptionKwh = dailyConsumptionKwh * coverageFactor;
-      
-      let extraPanelMultiplier = 1;
-      if (currentStationType === 'hybrid' && coverageFactor > 0.5) {
-          extraPanelMultiplier = 1 + (coverageFactor - 0.5); 
-      }
-      
-      const arrayPowerKw = (coveredDailyConsumptionKwh / sunHoursPerDay) * extraPanelMultiplier;
-      const panelsCount = Math.ceil((arrayPowerKw * 1000) / 620);
-      
-      let inverterPowerKw = 3;
-      if (currentStationType === 'grid') {
-          inverterPowerKw = Math.max(3, Math.ceil(arrayPowerKw)); 
-      } else {
-          const minHybridPower = currentTariffType === 'business' ? 6 : 3;
-          inverterPowerKw = Math.max(minHybridPower, Math.ceil(arrayPowerKw));
-      }
-      
-      const invertersCount = Math.ceil(inverterPowerKw / 6); 
-
-      let batteriesCount = 0;
-      let logicText = '';
-      let isHybrid = currentStationType === 'hybrid';
-      
-      if (isHybrid) {
-          const baseBatteryCount = Math.ceil(inverterPowerKw / 5); 
-          if (coverageFactor > 0.5) {
-              const nightCoveragePercent = coverageFactor - 0.5;
-              const nightStorageKwh = dailyConsumptionKwh * nightCoveragePercent;
-              const autonomyBatteryCount = Math.ceil(nightStorageKwh / 5.12);
-              batteriesCount = Math.max(baseBatteryCount, autonomyBatteryCount);
-              logicText = 'Гибридная СЭС: Расширенная автономия (SBU) с ночным питанием от АКБ';
-          } else {
-              batteriesCount = baseBatteryCount;
-              logicText = 'Гибридная СЭС: Умное подмешивание (SUB). Экономия днем + резерв от блэкаутов';
+          let cat = String(item['Категория'] || '').toLowerCase().trim();
+          if (!cat) {
+            if (sku.startsWith('INV-')) cat = 'inverters';
+            else if (sku.startsWith('BAT-')) cat = 'batteries';
+            else if (sku.startsWith('PAN-')) cat = 'panels';
+            else if (sku.startsWith('SH-')) cat = 'shields';
           }
-      } else {
-          logicText = 'Сетевая СЭС (On-Grid). Исключительно прямая экономия днем без резервирования';
-      }
-      
-      const currentText = document.getElementById('logicAlert').innerText;
-      if (currentText !== logicText) {
-         animateLogicAlert(logicText, isHybrid);
-      }
 
-      const roofArea = Math.ceil(panelsCount * 3.1); 
+          const brandRaw = String(item['Бренд'] || 'Caspian Sun').trim();
+          const brand = brandRaw.toLowerCase();
+          const fullName = buildFullProductName(brandRaw, model);
+          const price = parseNum(item['Цена'] || item['Итоговая цена ($)'] || item['Сумма по прайсу ($)'], 0);
+          if (price <= 0) return;
 
-      let hardwareCost = 0;
-      const inverterTotalCost = inverterPowerKw * 12500;
+          const tagsAndDesc = `${item['Теги (для ИИ)'] || ''} ${item['Описание (для ИИ)'] || ''} ${model}`;
+          const noteText = String(item['Теги (для ИИ)'] || item['Описание (для ИИ)'] || '').trim();
 
-      if (currentStationType === 'grid') {
-          hardwareCost = (panelsCount * 18000) + inverterTotalCost; 
-      } else {
-          hardwareCost = (panelsCount * 18000) + inverterTotalCost + (batteriesCount * 85000) + (invertersCount * 17000);
-      }
-      let totalCost = hardwareCost * 1.3; 
-
-      const efficiencyRate = currentStationType === 'grid' ? 0.85 : 0.75;
-      const firstYearSavings = (monthlyBillRub * 12) * coverageFactor * efficiencyRate;
-      
-      let accumulatedSavings = 0;
-      let dynamicPaybackYears = 0;
-      let simSavings = firstYearSavings;
-      
-      if (simSavings > 0) {
-          while (accumulatedSavings < totalCost && dynamicPaybackYears < 50) {
-              if (accumulatedSavings + simSavings >= totalCost) {
-                  let remaining = totalCost - accumulatedSavings;
-                  dynamicPaybackYears += remaining / simSavings;
-                  accumulatedSavings = totalCost;
-              } else {
-                  accumulatedSavings += simSavings;
-                  dynamicPaybackYears += 1;
-                  simSavings *= 1.10; 
+          if (cat === 'inverters') {
+            let powerKw = parseNum(item['Мощность (кВт)'] || item['Мощность инвертора (кВт)'], 0);
+            if (!powerKw && item['Мощность (Вт)']) {
+              powerKw = parseNum(item['Мощность (Вт)'], 0) / 1000;
+            }
+            if (!powerKw) {
+              const kwMatch = tagsAndDesc.match(/(\d+(?:[.,]\d+)?)\s*кВт/i) || model.match(/(\d{1,2})K/i);
+              if (kwMatch) powerKw = parseFloat(kwMatch[1].replace(',', '.'));
+              else {
+                const wMatch = model.match(/\b(3000|3500|5000|5500|6000|8000|10000|12000|15000)\b/);
+                if (wMatch) powerKw = parseInt(wMatch[1], 10) / 1000;
               }
+            }
+            if (!powerKw) powerKw = 5.0;
+
+            let phases = parseInt(item['Кол-во фаз'], 10);
+            if (isNaN(phases)) {
+              phases = /3\s*фаз|380|3P/i.test(tagsAndDesc) ? 3 : 1;
+            }
+
+            const mpptCount = parseInt(item['Кол-во MPPT'] || item['MPPT'], 10) || 2;
+            const rawInvType = `${item['Тип инвертора'] || ''} ${tagsAndDesc}`.toLowerCase();
+
+            let invType = 'ongrid';
+            let categoryLabel = 'Сетевой';
+            if (rawInvType.includes('гибрид')) {
+              invType = 'hybrid';
+              categoryLabel = 'Гибридный';
+            } else if (rawInvType.includes('автоном') || rawInvType.includes('off-grid') || rawInvType.includes('spf') || rawInvType.includes('spe')) {
+              invType = 'offgrid';
+              categoryLabel = 'Автономный / Гибрид';
+            }
+
+            const maxPvKw = parseNum(item['Макс. мощность PV (кВт)'] || item['Макс. мощность солнечного поля (кВт)'], Number((powerKw * 1.35).toFixed(1)));
+            const maxVoc = parseNum(item['Макс. входное напряжение (В)'] || item['Макс. напряжение DC (В)'], phases === 3 ? 800 : 500);
+
+            parsedInverters.push({
+              id: sku,
+              sku,
+              name: fullName,
+              brand,
+              category: categoryLabel,
+              invType,
+              powerKw,
+              phases,
+              mpptCount,
+              maxPvKw,
+              maxVoc,
+              price,
+              img: `img/catalog/inverters/${sku}/main.webp`,
+              note: noteText || `${phases} фаза, ${powerKw} кВт, ${mpptCount} MPPT`
+            });
+          } else if (cat === 'batteries') {
+            let capacityKwh = parseNum(item['Емкость (кВт·ч)'] || item['Запас энергии (кВт·ч)'], 0);
+            let voltage = parseNum(item['Номинальное напряжение (В)'] || item['Напряжение (В)'], 0);
+            const ah = parseNum(item['Емкость (А·ч)'], 0);
+
+            if (!voltage) {
+              if (/51[.,]2|48\s*V|48\s*В/i.test(tagsAndDesc)) voltage = 51.2;
+              else if (/25[.,]6|24\s*V|24\s*В/i.test(tagsAndDesc)) voltage = 25.6;
+              else if (/12[.,]8|12\s*V|12\s*В/i.test(tagsAndDesc)) voltage = 12.8;
+              else voltage = 51.2;
+            }
+
+            if (!capacityKwh && ah > 0) {
+              capacityKwh = Number(((voltage * ah) / 1000).toFixed(2));
+            }
+            if (!capacityKwh) {
+              const kwhMatch = tagsAndDesc.match(/(\d+(?:[.,]\d+)?)\s*кВт[·.]?ч/i);
+              if (kwhMatch) capacityKwh = parseFloat(kwhMatch[1].replace(',', '.'));
+              else if (/314\s*Ah/i.test(tagsAndDesc)) capacityKwh = 16.0;
+              else if (/200\s*Ah/i.test(tagsAndDesc)) capacityKwh = 10.24;
+              else if (/100\s*Ah/i.test(tagsAndDesc)) capacityKwh = 5.12;
+              else capacityKwh = 5.12;
+            }
+
+            parsedBatteries.push({
+              id: sku,
+              sku,
+              name: fullName,
+              brand,
+              capacityKwh,
+              voltage,
+              price,
+              img: `img/catalog/batteries/${sku}/main.webp`,
+              note: noteText || `Накопитель LiFePO4 ${capacityKwh} кВт·ч (${voltage}В)`
+            });
+          } else if (cat === 'panels') {
+            let watt = parseNum(item['Мощность (Вт)'], 0);
+            if (!watt && item['Мощность (кВт)']) {
+              watt = Math.round(parseNum(item['Мощность (кВт)'], 0) * 1000);
+            }
+            if (!watt) {
+              const wMatch = tagsAndDesc.match(/(\d{3})\s*(?:W|Вт)/i);
+              watt = wMatch ? parseInt(wMatch[1], 10) : 620;
+            }
+            const voc = parseNum(item['Напряжение холостого хода Voc (В)'] || item['Voc (В)'], 48.5);
+
+            parsedPanels.push({
+              id: sku,
+              sku,
+              name: fullName,
+              brand,
+              watt,
+              voc,
+              price,
+              img: `img/catalog/panels/${sku}/main.webp`,
+              note: noteText || `Мощность ${watt} Вт`
+            });
+          } else if (cat === 'shields') {
+            const phases = /3\s*фаз|380|3P/i.test(tagsAndDesc) ? 3 : 1;
+            parsedShields.push({
+              id: sku,
+              sku,
+              name: fullName,
+              phases,
+              price,
+              img: `img/catalog/shields/${sku}/main.webp`,
+              note: noteText || 'Щит автоматики и защиты в сборе'
+            });
           }
-      }
-      
-      let paybackYears = dynamicPaybackYears.toFixed(1);
+        });
 
-      document.getElementById('visPower').innerText = inverterPowerKw + ' кВт';
-      document.getElementById('visPanels').innerText = panelsCount + ' шт.';
-      document.getElementById('visArea').innerText = roofArea + ' м²';
-      document.getElementById('visBatteries').innerText = batteriesCount + ' шт.';
-      document.getElementById('resCost').innerText = 'от ' + Math.round(totalCost).toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('resSavings').innerText = Math.round(firstYearSavings).toLocaleString('ru-RU') + ' ₽';
-      
-      let displayPayback = paybackYears + ' лет';
-      let subtext = '<br><span style="font-size: 11px; font-weight: 500; color: rgba(18, 19, 21, 0.6); text-transform: uppercase;">с учетом роста тарифа 10%/год</span>';
-      
-      if (currentTariffType === 'home' && currentStationType === 'hybrid') {
-          document.getElementById('resDynamic').innerHTML = displayPayback + '<br><span style="font-size: 11px; font-weight: 500; color: rgba(18, 19, 21, 0.6); text-transform: uppercase;">с учетом резерва 24/7 и инфляции</span>';
+        if (parsedInverters.length > 0) {
+          catalog.inverters = parsedInverters.sort((a, b) => a.powerKw - b.powerKw || a.price - b.price);
+        }
+        if (parsedBatteries.length > 0) {
+          catalog.batteries = parsedBatteries.sort((a, b) => a.capacityKwh - b.capacityKwh || a.price - b.price);
+        }
+        if (parsedPanels.length > 0) {
+          catalog.panels = parsedPanels.sort((a, b) => b.watt - a.watt || a.price - b.price);
+        }
+        if (parsedShields.length > 0) {
+          catalog.shields = parsedShields;
+          const shield1P = parsedShields.find(s => s.phases === 1);
+          const shield3P = parsedShields.find(s => s.phases === 3);
+          if (shield1P) catalog.bos.protectionBox1P = shield1P.price;
+          if (shield3P) catalog.bos.protectionBox3P = shield3P.price;
+        }
+
+        const syncBadge = document.getElementById('catalog-sync-badge');
+        if (syncBadge) {
+          syncBadge.textContent = `✓ Из каталога: ${catalog.inverters.length} инв., ${catalog.batteries.length} АКБ, ${catalog.panels.length} пан.`;
+        }
+      } catch (err) {
+        console.warn('Используется встроенный резервный каталог:', err);
+      }
+
+      populateProDropdowns();
+      recalculateAll();
+    }
+
+    function formatRub(num) {
+      return Math.round(num).toLocaleString('ru-RU') + ' ₽';
+    }
+
+    function animateCurrency(elId, targetValue) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      const startValue = animatedValuesMap[elId] ?? targetValue;
+      animatedValuesMap[elId] = targetValue;
+
+      if (startValue === targetValue) {
+        el.textContent = formatRub(targetValue);
+        return;
+      }
+
+      const duration = 340;
+      const startTime = performance.now();
+
+      function step(now) {
+        const progress = Math.min(1, (now - startTime) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(startValue + (targetValue - startValue) * eased);
+        el.textContent = formatRub(current);
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function stepInput(inputId, delta, min, max, decimals = 0) {
+      const el = document.getElementById(inputId);
+      if (!el) return;
+      let val = parseFloat(el.value) || 0;
+      val = Math.min(max, Math.max(min, val + delta));
+      el.value = decimals > 0 ? val.toFixed(decimals) : Math.round(val);
+      document.querySelectorAll('.calc-preset-chip').forEach(b => b.classList.remove('is-active'));
+      recalculateAll();
+    }
+
+    function stepPanelCount(delta) {
+      const el = document.getElementById('pro-panel-count');
+      let val = parseInt(el.value, 10);
+      if (isNaN(val)) val = 8;
+      val = Math.min(120, Math.max(0, val + delta));
+      el.value = val;
+      onProOverrideChange();
+    }
+
+    // Ненавязчивая анимация подгрузки модулей при переключении режима
+    function triggerSubtleModeLoader(isPro) {
+      const loader = document.getElementById('calc-mode-loader');
+      if (loader) {
+        loader.classList.remove('is-loading');
+        void loader.offsetWidth;
+        loader.classList.add('is-loading');
+      }
+
+      const stepBadges = document.querySelectorAll('.js-step-badge');
+      stepBadges.forEach(badge => {
+        const stepNum = badge.getAttribute('data-step');
+        badge.textContent = isPro ? `Шаг ${stepNum} из 4 • PRO` : `Шаг ${stepNum} из 3`;
+        badge.classList.add('is-pulsing');
+        setTimeout(() => badge.classList.remove('is-pulsing'), 550);
+      });
+
+      const pill = document.getElementById('pro-ambient-pill');
+      const icon = document.getElementById('pro-ambient-icon');
+      const text = document.getElementById('pro-ambient-text');
+      const proPanel = document.getElementById('pro-engineering-panel');
+
+      if (!pill || !proPanel) return;
+      if (ambientTimer) clearTimeout(ambientTimer);
+
+      if (!isPro) {
+        pill.classList.remove('is-visible');
+        return;
+      }
+
+      const rect = proPanel.getBoundingClientRect();
+      const isAlreadyInView = rect.top < window.innerHeight - 100;
+
+      if (!isAlreadyInView) {
+        icon.className = 'calc-ambient-spinner';
+        text.textContent = 'Подгрузка инженерных модулей...';
+        pill.classList.add('is-visible');
+
+        ambientTimer = setTimeout(() => {
+          icon.className = 'calc-ambient-dot';
+          text.textContent = 'Подключен Шаг 4: Кровля, трасса и модели из каталога ↓';
+        }, 420);
+      }
+    }
+
+    function scrollToProPanel() {
+      const pill = document.getElementById('pro-ambient-pill');
+      if (pill) pill.classList.remove('is-visible');
+      const panel = document.getElementById('pro-engineering-panel');
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function initProPanelObserver() {
+      const panel = document.getElementById('pro-engineering-panel');
+      const pill = document.getElementById('pro-ambient-pill');
+      if (!panel || !pill || !('IntersectionObserver' in window)) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            pill.classList.remove('is-visible');
+          }
+        });
+      }, { threshold: 0.12 });
+
+      observer.observe(panel);
+    }
+
+    // Переключение между 2 режимами (Клиент / Инженер PRO)
+    function switchMode(mode) {
+      state.mode = mode;
+      ['client', 'pro'].forEach(m => {
+        const btn = document.getElementById('tab-' + m);
+        if (btn) btn.classList.toggle('is-active', m === mode);
+      });
+
+      const proPanel = document.getElementById('pro-engineering-panel');
+      const proBannerAction = document.getElementById('pro-banner-action');
+      const isPro = (mode === 'pro');
+
+      if (isPro) {
+        proPanel.classList.remove('is-hidden');
+        proPanel.classList.remove('is-revealing');
+        void proPanel.offsetWidth;
+        proPanel.classList.add('is-revealing');
       } else {
-          document.getElementById('resDynamic').innerHTML = displayPayback + subtext;
+        proPanel.classList.add('is-hidden');
+        proPanel.classList.remove('is-revealing');
+      }
+
+      if (proBannerAction) {
+        proBannerAction.innerHTML = isPro ? 'Скрыть PRO &uarr;' : 'Открыть PRO &darr;';
+      }
+
+      triggerSubtleModeLoader(isPro);
+      recalculateAll();
+    }
+
+    function toggleProModeBanner() {
+      if (state.mode === 'pro') {
+        switchMode('client');
+      } else {
+        switchMode('pro');
+        const panel = document.getElementById('pro-engineering-panel');
+        if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     }
 
-    function getShareText() {
-      const power = document.getElementById('visPower').innerText;
-      const panels = document.getElementById('visPanels').innerText;
-      const bat = document.getElementById('visBatteries').innerText;
-      const area = document.getElementById('visArea').innerText;
-      const cost = document.getElementById('resCost').innerText;
-      const save = document.getElementById('resSavings').innerText;
-      
-      return `⚡ Предварительный расчет СЭС от Caspian Sun:\n\nМощность инверторов: ${power}\nПанели (620W): ${panels}\nАКБ (5.12 кВт·ч): ${bat}\nПлощадь на крыше: ${area}\n\nИнвестиции под ключ: ${cost}\nЭкономия в первый год: ${save}\n\nСвяжитесь с инженером для точного проекта:\n📞 +7 (963) 373-72-74\n✉️ CaspianSun.energy@gmail.com`;
+    // Универсальные пресеты в 1 клик
+    function applyQuickPreset(presetName, btnEl) {
+      document.querySelectorAll('.calc-preset-chip').forEach(b => b.classList.remove('is-active'));
+      if (btnEl) btnEl.classList.add('is-active');
+
+      const manualMap = {
+        dacha:    { run: 1.2, peak: 2.8, kwh: 8 },
+        home:     { run: 2.2, peak: 5.0, kwh: 18 },
+        cottage:  { run: 4.5, peak: 9.5, kwh: 32 },
+        business: { run: 6.0, peak: 11.5, kwh: 45 }
+      };
+
+      const appMap = {
+        dacha:    { lights: 1, fridge: 1, boiler_gas: 1, pump: 0, ac: 0, kettle: 1, washer: 0, induction: 0 },
+        home:     { lights: 1, fridge: 1, boiler_gas: 1, pump: 0, ac: 1, kettle: 1, washer: 0, induction: 0 },
+        cottage:  { lights: 2, fridge: 2, boiler_gas: 1, pump: 1, ac: 2, kettle: 1, washer: 1, induction: 1 },
+        business: { lights: 2, fridge: 3, boiler_gas: 0, pump: 0, ac: 2, kettle: 2, washer: 0, induction: 0 }
+      };
+
+      const m = manualMap[presetName] || manualMap.home;
+      document.getElementById('manual-running-kw').value = m.run.toFixed(1);
+      document.getElementById('manual-peak-kw').value = m.peak.toFixed(1);
+      document.getElementById('manual-daily-kwh').value = m.kwh;
+
+      const a = appMap[presetName] || appMap.home;
+      APPLIANCES.forEach(app => {
+        app.count = a[app.id] ?? 0;
+      });
+
+      renderAppliances();
+      recalculateAll();
+      showToast('Применен типовой профиль нагрузки');
     }
 
-    function shareWA() {
-      window.open('https://wa.me/79633737274?text=' + encodeURIComponent(getShareText()), '_blank');
+    function renderAppliances() {
+      const container = document.getElementById('appliances-list');
+      if (!container) return;
+      container.innerHTML = APPLIANCES.map((app, idx) => `
+        <div class="calc-app-item ${app.count > 0 ? 'is-selected' : ''}">
+          <div class="calc-app-info">
+            <div class="calc-app-title">
+              <span>${app.icon}</span>
+              <span>${app.name}</span>
+            </div>
+            <div class="calc-app-sub">
+              Раб: <b style="color: var(--calc-gold);">${app.runKw} кВт</b> ${app.surgeKw > 0 ? `• Пуск +${app.surgeKw} кВт` : ''}
+            </div>
+          </div>
+          <div class="calc-app-counter">
+            <button type="button" onclick="changeApplianceCount(${idx}, -1)" class="calc-stepper-btn" aria-label="Уменьшить">&minus;</button>
+            <span class="calc-qty-val">${app.count}</span>
+            <button type="button" onclick="changeApplianceCount(${idx}, 1)" class="calc-stepper-btn" aria-label="Увеличить">&plus;</button>
+          </div>
+        </div>
+      `).join('');
     }
 
-    function shareTG() {
-      window.open('https://t.me/share/url?url=https://caspiansun.ru&text=' + encodeURIComponent(getShareText()), '_blank');
+    function changeApplianceCount(idx, delta) {
+      APPLIANCES[idx].count = Math.max(0, APPLIANCES[idx].count + delta);
+      document.querySelectorAll('.calc-preset-chip').forEach(b => b.classList.remove('is-active'));
+      renderAppliances();
+      recalculateAll();
     }
 
-    function downloadImage() {
-      const captureArea = document.getElementById('ui-wrapper');
-      const exportBlock = document.getElementById('export-block');
-      const contactBlock = document.getElementById('contact-block');
-      const imgFooter = document.getElementById('img-footer');
+    function changeCustomAppCount(delta) {
+      state.customAppCount = Math.max(0, state.customAppCount + delta);
+      document.getElementById('custom-app-count').textContent = state.customAppCount;
+      recalculateAll();
+    }
 
-      exportBlock.style.display = 'none';
-      contactBlock.style.display = 'none';
-      imgFooter.style.display = 'block';
-
-      html2canvas(captureArea, {
-          backgroundColor: '#E8DECF',
-          scale: 2 
-      }).then(canvas => {
-          exportBlock.style.display = 'block';
-          contactBlock.style.display = 'block';
-          imgFooter.style.display = 'none';
-
-          const link = document.createElement('a');
-          link.download = 'Smeta_CaspianSun.jpg';
-          link.href = canvas.toDataURL('image/jpeg', 0.95);
-          link.click();
+    function setActiveCardGroup(ids, activeId) {
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('is-active', id === activeId);
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      calculateSolar();
-      document.getElementById('logicAlert').classList.add('fade-in');
+    function setSystemGoal(goal) {
+      state.systemGoal = goal;
+      setActiveCardGroup(['goal-hybrid', 'goal-ongrid', 'goal-backup', 'goal-offgrid'], 'goal-' + goal);
+
+      document.getElementById('autonomy-hours-block').classList.toggle('is-hidden', goal === 'ongrid');
+      document.getElementById('mounting-conditions-block').classList.toggle('is-hidden', goal === 'backup');
+      recalculateAll();
+    }
+
+    function setObjectType(type) {
+      state.objectType = type;
+      setActiveCardGroup(['btn-obj-home', 'btn-obj-commercial'], 'btn-obj-' + type);
+      document.getElementById('tariff-rate').value = type === 'home' ? '4.5' : '8.5';
+      recalculateAll();
+    }
+
+    function setPhaseCount(phases) {
+      state.phases = phases;
+      setActiveCardGroup(['btn-phase-1', 'btn-phase-3'], 'btn-phase-' + phases);
+      recalculateAll();
+    }
+
+    function setLoadInputMethod(method) {
+      state.loadMethod = method;
+      document.getElementById('btn-load-manual').classList.toggle('is-active', method === 'manual');
+      document.getElementById('btn-load-appliances').classList.toggle('is-active', method === 'appliances');
+      document.getElementById('load-manual-section').classList.toggle('is-hidden', method !== 'manual');
+      document.getElementById('load-appliances-section').classList.toggle('is-hidden', method !== 'appliances');
+      recalculateAll();
+    }
+
+    function setAutonomyHours(h) {
+      state.autonomyHours = h;
+      setActiveCardGroup(['btn-hours-3', 'btn-hours-7', 'btn-hours-14'], 'btn-hours-' + h);
+      recalculateAll();
+    }
+
+    function setRoofType(rt) {
+      state.roofType = rt;
+      setActiveCardGroup(['roof-metal', 'roof-soft', 'roof-flat'], 'roof-' + rt);
+      recalculateAll();
+    }
+
+    function setRoofOrientation(or) {
+      state.roofOrientation = or;
+      setActiveCardGroup(['orient-south', 'orient-eastwest'], 'orient-' + or);
+      recalculateAll();
+    }
+
+    function setCableDistance(dist) {
+      state.cableDistance = dist;
+      setActiveCardGroup(['cable-15', 'cable-30', 'cable-50'], 'cable-' + dist);
+      recalculateAll();
+    }
+
+    function setPreferredBrand(brand) {
+      state.preferredBrand = brand;
+      ['auto', 'growatt', 'dah'].forEach(b => {
+        const btn = document.getElementById('btn-brand-' + b);
+        if (btn) btn.classList.toggle('is-active', b === brand);
+      });
+      recalculateAll();
+    }
+
+    function getActivePanelModel() {
+      const selEl = document.getElementById('pro-panel-select');
+      const selectedId = selEl ? selEl.value : 'auto';
+      if (selectedId && selectedId !== 'auto') {
+        const found = catalog.panels.find(p => p.id === selectedId);
+        if (found) return found;
+      }
+      // В авторежиме выбираем панель ~580–650 Вт (например, DAH Solar 620W) или первую в каталоге
+      return catalog.panels.find(p => p.watt >= 580 && p.watt <= 650) || catalog.panels[0] || FALLBACK_CATALOG.panels[0];
+    }
+
+    function populateProDropdowns() {
+      const invSel = document.getElementById('pro-inverter-select');
+      if (invSel) {
+        const curInv = invSel.value || 'auto';
+        invSel.innerHTML = `<option value="auto">🤖 Автоподбор из каталога по нагрузке и фазам</option>` +
+          catalog.inverters.map(inv => `<option value="${inv.id}">[${inv.category}] ${inv.name} (${inv.powerKw} кВт, ${inv.phases}ф) — ${formatRub(inv.price)}</option>`).join('');
+        if ([...invSel.options].some(o => o.value === curInv)) invSel.value = curInv;
+      }
+
+      const batSel = document.getElementById('pro-battery-select');
+      if (batSel) {
+        const curBat = batSel.value || 'auto';
+        batSel.innerHTML = `<option value="auto">🤖 Автоподбор из каталога (оптимальная цена за кВт·ч)</option><option value="none">Без аккумулятора</option>` +
+          catalog.batteries.map(b => `<option value="${b.id}">${b.name} (${b.capacityKwh} кВт·ч) — ${formatRub(b.price)}</option>`).join('');
+        if ([...batSel.options].some(o => o.value === curBat)) batSel.value = curBat;
+      }
+
+      const panSel = document.getElementById('pro-panel-select');
+      if (panSel) {
+        const curPan = panSel.value || 'auto';
+        panSel.innerHTML = `<option value="auto">🤖 Автоподбор панели из каталога</option>` +
+          catalog.panels.map(p => `<option value="${p.id}">${p.name} (${p.watt} Вт) — ${formatRub(p.price)}</option>`).join('');
+        if ([...panSel.options].some(o => o.value === curPan)) panSel.value = curPan;
+      }
+    }
+
+    function onProOverrideChange() {
+      const activePanel = getActivePanelModel();
+      const pCount = document.getElementById('pro-panel-count').value;
+      document.getElementById('pro-panel-label').textContent = pCount !== '' ? `${pCount} шт. (${(pCount * activePanel.watt / 1000).toFixed(2)} кВт)` : 'Автоподбор';
+      recalculateAll();
+    }
+
+    function resetProOverrides() {
+      document.getElementById('pro-inverter-select').value = 'auto';
+      document.getElementById('pro-inverter-qty').value = 'auto';
+      document.getElementById('pro-battery-select').value = 'auto';
+      document.getElementById('pro-battery-qty').value = 'auto';
+      if (document.getElementById('pro-panel-select')) document.getElementById('pro-panel-select').value = 'auto';
+      document.getElementById('pro-panel-count').value = '';
+      document.getElementById('pro-discount-pct').value = '0';
+      document.getElementById('pro-panel-label').textContent = 'Автоподбор';
+      setRoofType('metal');
+      setRoofOrientation('south');
+      setCableDistance(15);
+      recalculateAll();
+      showToast('Все инженерные настройки сброшены в Автоподбор');
+    }
+
+    // Умный подбор инвертора из загруженного каталога products/catalog.json
+    function selectBestInverterFromCatalog(peakKw, needTrueThreePhase) {
+      const isOnGridGoal = (state.systemGoal === 'ongrid');
+
+      // 1. Фильтруем по типу станции (сетевая или аккумуляторная)
+      let pool = catalog.inverters.filter(inv => {
+        if (isOnGridGoal) return inv.invType === 'ongrid';
+        return inv.invType === 'hybrid' || inv.invType === 'offgrid';
+      });
+      if (pool.length === 0) pool = [...catalog.inverters];
+
+      // 2. Фильтруем по фазности
+      let phasePool = pool.filter(inv => needTrueThreePhase ? inv.phases === 3 : inv.phases === 1);
+      // Если однофазных нужной мощности нет (например, пик > 12.5 кВт), разрешаем переход на 3-фазный
+      const max1PhaseKw = phasePool.reduce((m, i) => Math.max(m, i.powerKw), 0);
+      if (phasePool.length === 0 || (!needTrueThreePhase && peakKw > max1PhaseKw * 1.05)) {
+        const threePhaseFallback = pool.filter(inv => inv.phases === 3);
+        if (threePhaseFallback.length > 0) phasePool = threePhaseFallback;
+        else if (phasePool.length === 0) phasePool = pool;
+      }
+
+      // 3. Учитываем приоритет бренда, если выбран пользователем
+      if (state.preferredBrand !== 'auto') {
+        const brandKey = state.preferredBrand === 'dah' ? 'dah' : state.preferredBrand;
+        const brandMatches = phasePool.filter(inv => inv.brand.includes(brandKey) || inv.name.toLowerCase().includes(brandKey));
+        if (brandMatches.length > 0) phasePool = brandMatches;
+      }
+
+      // Сортируем по мощности и цене
+      phasePool.sort((a, b) => a.powerKw - b.powerKw || a.price - b.price);
+
+      // Ищем одиночный инвертор, который покрывает пиковую нагрузку (с допуском 4%)
+      const singleFit = phasePool.find(inv => inv.powerKw * 1.04 >= peakKw);
+      if (singleFit) {
+        return { inverter: singleFit, qty: 1 };
+      }
+
+      // Если нагрузка выше самого мощного инвертора в пуле — берем самый мощный в каскад
+      const largest = phasePool[phasePool.length - 1] || catalog.inverters[0];
+      const neededQty = Math.min(3, Math.max(1, Math.ceil(peakKw / largest.powerKw)));
+      return { inverter: largest, qty: neededQty };
+    }
+
+    // Умный подбор аккумулятора из каталога по минимальной стоимости за требуемую емкость
+    function selectBestBatteryFromCatalog(requiredKwh) {
+      // Для мощных станций (48В/51.2В) отдаем приоритет высоковольтным модулям 48–51.2В
+      let pool = catalog.batteries.filter(b => !b.voltage || b.voltage >= 48);
+      if (pool.length === 0) pool = [...catalog.batteries];
+      if (pool.length === 0) return { battery: null, qty: 0, badge: '' };
+
+      let bestCombo = null;
+
+      pool.forEach(bat => {
+        const qty = Math.max(1, Math.ceil((requiredKwh * 0.92) / bat.capacityKwh));
+        if (qty > 6) return;
+        const totalKwh = bat.capacityKwh * qty;
+        const totalCost = bat.price * qty;
+
+        if (!bestCombo || totalCost < bestCombo.totalCost || (totalCost === bestCombo.totalCost && totalKwh > bestCombo.totalKwh)) {
+          bestCombo = { battery: bat, qty, totalKwh, totalCost };
+        }
+      });
+
+      if (!bestCombo) {
+        const largestBat = pool[pool.length - 1];
+        const qty = Math.max(1, Math.ceil(requiredKwh / largestBat.capacityKwh));
+        bestCombo = {
+          battery: largestBat,
+          qty,
+          totalKwh: largestBat.capacityKwh * qty,
+          totalCost: largestBat.price * qty
+        };
+      }
+
+      // Вычисляем реальную выгоду по сравнению с набором из базовых младших батарей каталога
+      const smallestBat = pool[0];
+      let badgeText = `Подобрано из каталога: ${bestCombo.totalKwh.toFixed(2)} кВт·ч`;
+      if (smallestBat && bestCombo.battery.id !== smallestBat.id) {
+        const eqSmallQty = Math.round(bestCombo.totalKwh / smallestBat.capacityKwh);
+        const smallCost = eqSmallQty * smallestBat.price;
+        const diff = smallCost - bestCombo.totalCost;
+        if (diff > 1000) {
+          badgeText = `Выгода ${formatRub(diff)} вместо ${eqSmallQty}×${smallestBat.capacityKwh} кВт·ч!`;
+        }
+      }
+
+      return { battery: bestCombo.battery, qty: bestCombo.qty, badge: badgeText };
+    }
+
+    // Главный пересчет конфигурации и сметы
+    function recalculateAll() {
+      let runningKw = 0;
+      let peakKw = 0;
+      let dailyKwh = 0;
+
+      if (state.loadMethod === 'appliances') {
+        let baseContinuousKw = 0;
+        let intermittentKw = 0;
+        let maxSingleSurge = 0;
+
+        APPLIANCES.forEach(app => {
+          if (app.count > 0) {
+            const totalAppRun = app.runKw * app.count;
+            if (app.intermittent) intermittentKw += totalAppRun;
+            else baseContinuousKw += totalAppRun;
+
+            if (app.surgeKw > maxSingleSurge) maxSingleSurge = app.surgeKw;
+            dailyKwh += totalAppRun * app.dailyHours * (app.intermittent ? 0.5 : 0.7);
+          }
+        });
+
+        const customKw = parseFloat(document.getElementById('custom-app-kw').value) || 0;
+        if (state.customAppCount > 0 && customKw > 0) {
+          intermittentKw += customKw * state.customAppCount;
+          dailyKwh += customKw * state.customAppCount * 3;
+        }
+
+        runningKw = Math.max(0.5, Math.round((baseContinuousKw + intermittentKw * 0.65) * 10) / 10);
+        peakKw = Math.max(runningKw * 1.2, Math.round((baseContinuousKw + intermittentKw * 0.85 + maxSingleSurge) * 10) / 10);
+        dailyKwh = Math.max(5, Math.round(dailyKwh));
+      } else {
+        runningKw = parseFloat(document.getElementById('manual-running-kw').value) || 2.2;
+        peakKw = parseFloat(document.getElementById('manual-peak-kw').value) || 5.0;
+        dailyKwh = parseFloat(document.getElementById('manual-daily-kwh').value) || 18;
+      }
+
+      const tariff = parseFloat(document.getElementById('tariff-rate').value) || 4.5;
+      const monthlyBill = parseFloat(document.getElementById('monthly-bill').value) || 0;
+      const billDailyKwh = monthlyBill > 0 ? Math.round((monthlyBill / tariff) / 30) : 0;
+      const effectiveDailyKwh = Math.max(dailyKwh, billDailyKwh);
+
+      document.getElementById('calc-running-kw').textContent = runningKw.toFixed(1) + ' кВт';
+      document.getElementById('calc-peak-kw').textContent = peakKw.toFixed(1) + ' кВт';
+      document.getElementById('calc-daily-kwh').textContent = effectiveDailyKwh + ' кВт·ч';
+
+      const threePhaseModeEl = document.querySelector('input[name="threePhaseMode"]:checked');
+      const needTrueThreePhase = (state.phases === 3 && ((threePhaseModeEl && threePhaseModeEl.value === 'true3p') || state.objectType === 'commercial'));
+
+      // 1. Подбор инвертора из каталога
+      let selectedInverter = null;
+      let inverterQty = 1;
+      const proInvId = document.getElementById('pro-inverter-select')?.value;
+      const proInvQty = document.getElementById('pro-inverter-qty')?.value;
+
+      if (proInvId && proInvId !== 'auto') {
+        selectedInverter = catalog.inverters.find(i => i.id === proInvId) || catalog.inverters[0];
+      } else {
+        const autoInv = selectBestInverterFromCatalog(peakKw, needTrueThreePhase);
+        selectedInverter = autoInv.inverter;
+        inverterQty = autoInv.qty;
+      }
+
+      if (proInvQty && proInvQty !== 'auto') {
+        inverterQty = parseInt(proInvQty, 10) || 1;
+      }
+
+      const totalInvPower = selectedInverter.powerKw * inverterQty;
+      const loadPct = Math.min(100, Math.max(12, Math.round((peakKw / totalInvPower) * 100)));
+      document.getElementById('calc-load-bar').style.width = `${loadPct}%`;
+      document.getElementById('calc-load-bar-text').textContent = `Загрузка инвертора (${totalInvPower} кВт) в пике: ~${loadPct}%`;
+
+      // 2. Подбор АКБ из каталога
+      let selectedBattery = null;
+      let batteryQty = 0;
+      let batteryBadgeText = '';
+
+      const proBatId = document.getElementById('pro-battery-select')?.value;
+      const proBatQty = document.getElementById('pro-battery-qty')?.value;
+
+      if (state.systemGoal === 'ongrid' && (!proBatId || proBatId === 'auto')) {
+        selectedBattery = null;
+        batteryQty = 0;
+      } else if (proBatId === 'none') {
+        selectedBattery = null;
+        batteryQty = 0;
+      } else if (proBatId && proBatId !== 'auto') {
+        selectedBattery = catalog.batteries.find(b => b.id === proBatId);
+        batteryQty = (proBatQty && proBatQty !== 'auto') ? parseInt(proBatQty, 10) : 1;
+        batteryBadgeText = 'Выбрано вручную из каталога';
+      } else {
+        const reserveLoadKw = Math.max(0.8, runningKw * 0.75);
+        const hours = state.systemGoal === 'offgrid' ? Math.max(12, state.autonomyHours) : state.autonomyHours;
+        const requiredKwh = (reserveLoadKw * hours) / 0.85;
+
+        const autoBat = selectBestBatteryFromCatalog(requiredKwh);
+        selectedBattery = autoBat.battery;
+        batteryQty = autoBat.qty;
+        batteryBadgeText = autoBat.badge;
+
+        if (proBatQty && proBatQty !== 'auto') {
+          batteryQty = parseInt(proBatQty, 10);
+        }
+      }
+
+      // 3. Подбор солнечных панелей из каталога
+      const activePanel = getActivePanelModel();
+      let panelCount = 0;
+      const proPanelInput = document.getElementById('pro-panel-count')?.value || '';
+
+      if (proPanelInput !== '') {
+        panelCount = Math.max(0, parseInt(proPanelInput, 10) || 0);
+      } else if (state.systemGoal === 'backup') {
+        panelCount = 0;
+      } else {
+        const singlePanelDailyKwh = (activePanel.watt / 1000) * 4.2;
+        const neededByConsumption = Math.ceil(effectiveDailyKwh / singlePanelDailyKwh);
+        const minForInverter = selectedInverter.powerKw <= 6 ? 8 : (selectedInverter.powerKw <= 12 ? 12 : 16);
+        panelCount = Math.max(minForInverter, neededByConsumption);
+
+        const maxPanelsByInverter = Math.floor((selectedInverter.maxPvKw * inverterQty * 1000) / activePanel.watt);
+        panelCount = Math.min(panelCount, maxPanelsByInverter);
+
+        if ((state.roofOrientation === 'eastwest' || panelCount > 8) && panelCount % 2 !== 0) {
+          panelCount += 1;
+        }
+        if (panelCount > 0 && panelCount < 4) panelCount = 4;
+      }
+
+      const totalPvKw = (panelCount * activePanel.watt) / 1000;
+      const annualGenKwh = Math.round(totalPvKw * 1450);
+      const annualSavingsRub = Math.round(annualGenKwh * tariff);
+
+      let mpptHint = 'Без солнечных панелей (режим ИБП)';
+      if (panelCount > 0) {
+        if (panelCount <= 8 && state.roofOrientation === 'south') {
+          const vocSummer = Math.round(panelCount * activePanel.voc);
+          const vocWinter = Math.round(vocSummer * 1.12);
+          mpptHint = `1 стринг × ${panelCount} шт. (Voc ~${vocSummer}В, зимой до ${vocWinter}В — норма MPPT)`;
+        } else {
+          const s1 = Math.ceil(panelCount / 2);
+          const s2 = Math.floor(panelCount / 2);
+          const voc1 = Math.round(s1 * activePanel.voc);
+          mpptHint = `2 MPPT стринга: ${s1} шт. + ${s2} шт. (Voc ~${voc1}В на трекер)`;
+        }
+      }
+
+      // Сохраняем выбранные товары каталога для кнопки "Добавить в корзину"
+      currentConfigCartItems = [];
+      if (selectedInverter && inverterQty > 0) {
+        currentConfigCartItems.push({
+          sku: selectedInverter.sku,
+          title: selectedInverter.name,
+          price: selectedInverter.price,
+          qty: inverterQty,
+          img: selectedInverter.img || `img/catalog/inverters/${selectedInverter.sku}/main.webp`
+        });
+      }
+      if (selectedBattery && batteryQty > 0) {
+        currentConfigCartItems.push({
+          sku: selectedBattery.sku,
+          title: selectedBattery.name,
+          price: selectedBattery.price,
+          qty: batteryQty,
+          img: selectedBattery.img || `img/catalog/batteries/${selectedBattery.sku}/main.webp`
+        });
+      }
+      if (activePanel && panelCount > 0) {
+        currentConfigCartItems.push({
+          sku: activePanel.sku,
+          title: activePanel.name,
+          price: activePanel.price,
+          qty: panelCount,
+          img: activePanel.img || `img/catalog/panels/${activePanel.sku}/main.webp`
+        });
+      }
+
+      // Смета (BOM)
+      const bomItems = [];
+
+      bomItems.push({
+        title: `${selectedInverter.category} инвертор ${selectedInverter.name}`,
+        subtitle: `Арт: ${selectedInverter.sku} • ${selectedInverter.powerKw} кВт • ${selectedInverter.note}`,
+        qty: inverterQty,
+        unit: 'шт.',
+        price: selectedInverter.price,
+        total: selectedInverter.price * inverterQty,
+        isWork: false
+      });
+
+      if (selectedBattery && batteryQty > 0) {
+        bomItems.push({
+          title: `Аккумуляторный блок LiFePO4 ${selectedBattery.name}`,
+          subtitle: `Арт: ${selectedBattery.sku} • Емкость модуля: ${selectedBattery.capacityKwh} кВт·ч • ${selectedBattery.note}`,
+          qty: batteryQty,
+          unit: 'шт.',
+          price: selectedBattery.price,
+          total: selectedBattery.price * batteryQty,
+          isWork: false
+        });
+      }
+
+      if (panelCount > 0) {
+        bomItems.push({
+          title: activePanel.name,
+          subtitle: `Арт: ${activePanel.sku} • Мощность ${activePanel.watt} Вт (суммарно ${totalPvKw.toFixed(2)} кВт) • ${activePanel.note}`,
+          qty: panelCount,
+          unit: 'шт.',
+          price: activePanel.price,
+          total: activePanel.price * panelCount,
+          isWork: false
+        });
+
+        let mountPricePerPanel = catalog.bos.mountMetalPerPanel;
+        let roofLabel = 'Скатная кровля (профнастил / металлочерепица)';
+        if (state.roofType === 'soft') {
+          mountPricePerPanel = catalog.bos.mountSoftPerPanel;
+          roofLabel = 'Скатная кровля (мягкая / черепица)';
+        } else if (state.roofType === 'flat') {
+          mountPricePerPanel = catalog.bos.mountFlatPerPanel;
+          roofLabel = 'Плоская кровля / навес (сборные треугольники без сварки)';
+        }
+
+        bomItems.push({
+          title: `Комплект алюминиевых креплений для солнечных панелей`,
+          subtitle: `${roofLabel}: анодированный профиль, прижимы, метизы`,
+          qty: panelCount,
+          unit: 'компл.',
+          price: mountPricePerPanel,
+          total: mountPricePerPanel * panelCount,
+          isWork: false
+        });
+
+        const totalCableMeters = state.cableDistance * (panelCount > 8 ? 2 : 1);
+        bomItems.push({
+          title: `Солнечный кабель 6 мм² (пара PV1-F + коннекторы MC4)`,
+          subtitle: `Двухпроводная линия постоянного тока от массива панелей до щита (${totalCableMeters} м трассы)`,
+          qty: totalCableMeters,
+          unit: 'м',
+          price: catalog.bos.solarCablePerMeter,
+          total: totalCableMeters * catalog.bos.solarCablePerMeter,
+          isWork: false
+        });
+      }
+
+      if (selectedBattery && batteryQty > 0 && document.getElementById('chk-dc-breaker').checked) {
+        bomItems.push({
+          title: `Узел силовой защиты АКБ (Автомат DC 200А + кабели 35 мм²)`,
+          subtitle: `Защита линии постоянного тока между аккумулятором и инвертором`,
+          qty: inverterQty,
+          unit: 'компл.',
+          price: catalog.bos.dcBreakerKit,
+          total: catalog.bos.dcBreakerKit * inverterQty,
+          isWork: false
+        });
+      }
+
+      if (document.getElementById('chk-protection-box').checked) {
+        const isHeavy3P = (selectedInverter.phases === 3 || selectedInverter.powerKw >= 12 || inverterQty > 1);
+        const matchedShield = catalog.shields.find(s => isHeavy3P ? s.phases === 3 : s.phases === 1);
+        const boxPrice = matchedShield ? matchedShield.price : (isHeavy3P ? catalog.bos.protectionBox3P : catalog.bos.protectionBox1P);
+        const boxTitle = matchedShield ? matchedShield.name : `Щит защиты DC/AC в сборе (${isHeavy3P ? '3ф / усиленный' : '1ф базовый'})`;
+
+        bomItems.push({
+          title: boxTitle,
+          subtitle: `Бокс, УЗИП DC, держатели с плавкими вставками, автоматы AC, перекидной рубильник I-0-II`,
+          qty: 1,
+          unit: 'компл.',
+          price: boxPrice,
+          total: boxPrice,
+          isWork: false
+        });
+      }
+
+      if (document.getElementById('chk-installation').checked) {
+        bomItems.push({
+          title: `Монтаж силовой части (инвертор, АКБ, щит защиты) и пусконаладка`,
+          subtitle: `Навеска оборудования, силовая коммутация, настройка автоматики и BMS`,
+          qty: inverterQty,
+          unit: 'усл.',
+          price: catalog.bos.installBase,
+          total: catalog.bos.installBase * inverterQty,
+          isWork: true
+        });
+
+        if (panelCount > 0) {
+          bomItems.push({
+            title: `Монтаж солнечных панелей на кровлю и прокладка DC-трассы`,
+            subtitle: `Установка опорного профиля, крепление и коммутация модулей ${activePanel.watt} Вт`,
+            qty: panelCount,
+            unit: 'панель',
+            price: catalog.bos.installPerPanel,
+            total: catalog.bos.installPerPanel * panelCount,
+            isWork: true
+          });
+        }
+      }
+
+      const equipSubtotal = bomItems.filter(i => !i.isWork).reduce((acc, i) => acc + i.total, 0);
+      const workSubtotal = bomItems.filter(i => i.isWork).reduce((acc, i) => acc + i.total, 0);
+      const rawTotal = equipSubtotal + workSubtotal;
+
+      const discountPct = parseFloat(document.getElementById('pro-discount-pct').value) || 0;
+      const discountAmount = Math.round(rawTotal * (discountPct / 100));
+      const grandTotal = rawTotal + discountAmount;
+      const totalBatteryKwh = selectedBattery ? (selectedBattery.capacityKwh * batteryQty) : 0;
+
+      // Обновление правой сводки
+      document.getElementById('sum-inv-type').textContent = selectedInverter.category;
+      document.getElementById('sum-inv-power').textContent = totalInvPower + ' кВт';
+      document.getElementById('sum-inv-name').textContent = (inverterQty > 1 ? `${inverterQty}× ` : '') + selectedInverter.name;
+
+      const batBadge = document.getElementById('sum-bat-badge');
+      if (selectedBattery && batteryQty > 0) {
+        document.getElementById('sum-bat-kwh').textContent = totalBatteryKwh.toFixed(2) + ' кВт·ч';
+        document.getElementById('sum-bat-name').textContent = (batteryQty > 1 ? `${batteryQty}× ` : '') + selectedBattery.name;
+        batBadge.textContent = batteryBadgeText;
+        batBadge.style.display = 'inline-block';
+      } else {
+        document.getElementById('sum-bat-kwh').textContent = '0 кВт·ч';
+        document.getElementById('sum-bat-name').textContent = 'Без АКБ (Сетевая станция)';
+        batBadge.style.display = 'none';
+      }
+
+      document.getElementById('sum-pv-kw').textContent = totalPvKw.toFixed(2) + ' кВт';
+      document.getElementById('sum-pv-name').textContent = panelCount > 0 ? `${panelCount} шт. × ${activePanel.name.replace(/^Солнечная панель\s+/i, '')}` : 'Без солнечных панелей';
+      document.getElementById('sum-mppt-hint').textContent = mpptHint;
+
+      animateCurrency('sum-equip-price', equipSubtotal);
+      animateCurrency('sum-install-price', workSubtotal);
+      animateCurrency('sum-total-price', grandTotal);
+
+      // Обновление КП
+      const clientName = document.getElementById('client-name')?.value.trim() || '';
+      const clientPhone = document.getElementById('client-phone')?.value.trim() || '';
+      const clientLoc = document.getElementById('client-location')?.value || 'Махачкала';
+
+      document.getElementById('kp-date').textContent = new Date().toLocaleDateString('ru-RU');
+      document.getElementById('kp-client').textContent = clientName ? `${clientName} ${clientPhone ? '(' + clientPhone + ')' : ''}` : (state.objectType === 'commercial' ? 'Коммерческий объект' : 'Частный дом');
+      document.getElementById('kp-location').textContent = clientLoc;
+
+      document.getElementById('kp-kpi-inv').textContent = totalInvPower.toFixed(1) + ' кВт';
+      document.getElementById('kp-kpi-inv-sub').textContent = `${selectedInverter.category} • ${selectedInverter.phases === 3 ? '3 фазы (380В)' : '1 фаза (220В)'}`;
+
+      document.getElementById('kp-kpi-bat').textContent = totalBatteryKwh > 0 ? totalBatteryKwh.toFixed(2) + ' кВт·ч' : 'Без АКБ';
+      document.getElementById('kp-kpi-bat-sub').textContent = totalBatteryKwh > 0 ? `LiFePO4 (~${state.autonomyHours} ч резерва)` : 'Сетевой режим (On-Grid)';
+
+      document.getElementById('kp-kpi-pv').textContent = totalPvKw.toFixed(2) + ' кВт';
+      document.getElementById('kp-kpi-pv-sub').textContent = panelCount > 0 ? `${panelCount} шт. × ${activePanel.watt} Вт` : 'Опционально';
+
+      document.getElementById('kp-kpi-gen').textContent = panelCount > 0 ? `~${annualGenKwh.toLocaleString('ru-RU')} кВт·ч` : 'Резерв от сети';
+      document.getElementById('kp-kpi-savings').textContent = panelCount > 0 ? `До ~${formatRub(annualSavingsRub)} / год + резерв` : 'Защита дома и техники от аварий';
+
+      document.getElementById('kp-engineering-note').innerHTML =
+        `Расчетная рабочая нагрузка объекта: <b>${runningKw.toFixed(1)} кВт</b> (пиковая с учетом пусковых токов: <b>${peakKw.toFixed(1)} кВт</b>). ` +
+        `Из каталога подобран ${selectedInverter.category.toLowerCase()} инвертор <b>${selectedInverter.name}</b> мощностью <b>${totalInvPower} кВт</b>. ` +
+        (totalBatteryKwh > 0 ? `Энергоемкость LiFePO4 накопителя составляет <b>${totalBatteryKwh.toFixed(2)} кВт·ч</b> (${selectedBattery.name}). ` : '') +
+        (panelCount > 0 ? `Солнечный массив из <b>${panelCount} панелей ${activePanel.name.replace(/^Солнечная панель\s+/i, '')}</b> (${totalPvKw.toFixed(2)} кВт). Схема подключения: ${mpptHint}.` : '');
+
+      const tbody = document.getElementById('bom-table-body');
+      tbody.innerHTML = bomItems.map((item, idx) => `
+        <tr>
+          <td style="color: var(--calc-muted);">${idx + 1}</td>
+          <td>
+            <div class="print-dark-text" style="font-weight: 600; color: var(--calc-beige);">${item.title}</div>
+            <div style="font-size: 0.76rem; color: var(--calc-muted); margin-top: 0.15rem;">${item.subtitle}</div>
+          </td>
+          <td class="print-dark-text" style="text-align: center; font-weight: 600; white-space: nowrap;">${item.qty} ${item.unit}</td>
+          <td style="text-align: right; color: var(--calc-muted); white-space: nowrap;">${formatRub(item.price)}</td>
+          <td class="print-dark-text" style="text-align: right; font-weight: 700; color: var(--calc-gold); white-space: nowrap;">${formatRub(item.total)}</td>
+        </tr>
+      `).join('');
+
+      animateCurrency('kp-subtotal-equip', equipSubtotal);
+      animateCurrency('kp-subtotal-work', workSubtotal);
+
+      const discRow = document.getElementById('kp-discount-row');
+      if (discountAmount !== 0) {
+        discRow.classList.remove('is-hidden');
+        document.getElementById('kp-discount-val').textContent = (discountAmount > 0 ? '+' : '') + formatRub(discountAmount);
+      } else {
+        discRow.classList.add('is-hidden');
+      }
+      animateCurrency('kp-grand-total', grandTotal);
+
+      buildMessengerText({
+        clientName,
+        clientLoc,
+        selectedInverter,
+        inverterQty,
+        selectedBattery,
+        batteryQty,
+        totalBatteryKwh,
+        activePanel,
+        panelCount,
+        totalPvKw,
+        annualGenKwh,
+        bomItems,
+        equipSubtotal,
+        workSubtotal,
+        grandTotal
+      });
+    }
+
+    // Добавление подобранных в конфигураторе товаров напрямую в корзину сайта (cart.html)
+    function addConfiguredEquipmentToCart() {
+      if (!currentConfigCartItems || currentConfigCartItems.length === 0) {
+        showToast('Нет выбранного оборудования для добавления');
+        return;
+      }
+      if (typeof addToCart === 'function') {
+        currentConfigCartItems.forEach(item => addToCart({ ...item }));
+        showToast('Оборудование добавлено в вашу корзину!');
+        setTimeout(() => {
+          window.location.href = 'cart.html';
+        }, 700);
+      } else {
+        try {
+          const cart = JSON.parse(localStorage.getItem('caspian_cart')) || [];
+          currentConfigCartItems.forEach(item => {
+            const ex = cart.find(i => i.sku === item.sku);
+            if (ex) ex.qty += item.qty;
+            else cart.push({ ...item });
+          });
+          localStorage.setItem('caspian_cart', JSON.stringify(cart));
+          window.location.href = 'cart.html';
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+
+    function buildMessengerText(data) {
+      const lines = [];
+      lines.push(`☀️ *КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ — CASPIAN SUN*`);
+      lines.push(`📍 Объект: ${data.clientName ? data.clientName + ' (' + data.clientLoc + ')' : data.clientLoc}`);
+      lines.push(`────────────────────`);
+      lines.push(`⚡ *Характеристики вашей СЭС:*`);
+      lines.push(`• Инвертор (${data.selectedInverter.category}): *${data.selectedInverter.name}* (${data.selectedInverter.powerKw * data.inverterQty} кВт)`);
+      if (data.totalBatteryKwh > 0) {
+        lines.push(`• Запас энергии LiFePO4: *${data.totalBatteryKwh.toFixed(2)} кВт·ч* (${data.batteryQty}× ${data.selectedBattery.name})`);
+      }
+      if (data.panelCount > 0) {
+        lines.push(`• Солнечное поле: *${data.totalPvKw.toFixed(2)} кВт* (${data.panelCount} шт. × ${data.activePanel.name})`);
+        lines.push(`• Выработка за год: *~${data.annualGenKwh.toLocaleString('ru-RU')} кВт·ч*`);
+      }
+      lines.push(`────────────────────`);
+      lines.push(`📋 *Комплектация и стоимость:*`);
+      data.bomItems.forEach((item, i) => {
+        lines.push(`${i + 1}. ${item.title} (${item.qty} ${item.unit}) — *${formatRub(item.total)}*`);
+      });
+      lines.push(`────────────────────`);
+      lines.push(`🔧 Оборудование и защита: ${formatRub(data.equipSubtotal)}`);
+      lines.push(`👷 Монтаж и пусконаладка: ${formatRub(data.workSubtotal)}`);
+      lines.push(`💰 *ИТОГО ПОД КЛЮЧ: ${formatRub(data.grandTotal)}*`);
+      lines.push(`────────────────────`);
+      lines.push(`📞 Caspian Sun | Тел: +7 (963) 373-72-74 | CaspianSun.energy@gmail.com`);
+
+      lastProposalText = lines.join('\n');
+    }
+
+    function copyProposalToClipboard() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(lastProposalText).then(() => {
+          showToast('Готовое КП скопировано в буфер обмена!');
+        });
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = lastProposalText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Готовое КП скопировано в буфер обмена!');
+      }
+    }
+
+    function shareViaWhatsApp() {
+      window.open('https://wa.me/79633737274?text=' + encodeURIComponent(lastProposalText), '_blank');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('calc-toast');
+      document.getElementById('calc-toast-msg').textContent = msg;
+      toast.classList.add('is-visible');
+      setTimeout(() => {
+        toast.classList.remove('is-visible');
+      }, 3200);
+    }
+
+    // Отправка КП на почту через EmailJS + защита Honeypot
+    function initCalculatorEmailForm() {
+      const form = document.getElementById('calc-kp-send-form');
+      if (!form) return;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const hpInput = form.querySelector('input[name="company_website"]');
+        const elapsed = Date.now() - CALC_LOAD_TIME;
+
+        if ((hpInput && hpInput.value.trim() !== '') || elapsed < 1500) {
+          showToast('Заявка успешно отправлена!');
+          form.reset();
+          return;
+        }
+
+        const userName = document.getElementById('client-name').value.trim();
+        const userPhone = document.getElementById('client-phone').value.trim();
+        const userLoc = document.getElementById('client-location').value;
+        const userComment = document.getElementById('client-comment').value.trim() || 'Без комментария';
+        const totalStr = document.getElementById('kp-grand-total').textContent;
+
+        const submitBtn = document.getElementById('kp-submit-btn');
+        const originalHtml = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span>Отправка...</span>';
+
+        const templateParams = {
+          user_name: userName,
+          name: userName,
+          user_phone: userPhone,
+          user_email: `Локация: ${userLoc}`,
+          email: `Локация: ${userLoc}`,
+          message: `Комментарий: ${userComment}`,
+          cart_items: lastProposalText,
+          total_price: totalStr
+        };
+
+        if (typeof emailjs !== 'undefined') {
+          emailjs.send("service_gn15ngc", "template_3pwehbv", templateParams)
+            .then(function() {
+              showToast(`Спасибо, ${userName}! Ваша смета отправлена инженеру Caspian Sun.`);
+              submitBtn.innerHTML = '<span>✓ Смета отправлена</span>';
+            }, function(err) {
+              console.error('Ошибка отправки EmailJS:', err);
+              alert('Не удалось отправить заявку автоматически. Пожалуйста, нажмите кнопку «В WhatsApp» или позвоните нам: +7 (963) 373-72-74');
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalHtml;
+            });
+        } else {
+          shareViaWhatsApp();
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalHtml;
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderAppliances();
+      populateProDropdowns();
+      recalculateAll();
+      loadSiteCatalogIntoCalculator();
+      initCalculatorEmailForm();
+      initProPanelObserver();
     });
   </script>
 </body>
