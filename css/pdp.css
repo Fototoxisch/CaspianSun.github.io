@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    PRODUCT DETAIL PAGE (PDP) - СТРАНИЦА ТОВАРА
    ========================================================================== */
 .pdp-main {
@@ -209,16 +209,30 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); 
   backdrop-filter: blur(8px);
   border-radius: var(--radius-sm);
-  padding: 2.5rem;
-  margin-bottom: 2.5rem;
+  padding: 1.5rem 1.25rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .pdp-purchase {
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+  }
 }
 
 .pdp-price {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 400;
   color: var(--text-light); 
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   line-height: 1;
+}
+
+@media (min-width: 768px) {
+  .pdp-price {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 .pdp-features {
@@ -289,10 +303,20 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 1rem 0;
+  padding: 0.85rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
   font-size: 0.875rem;
-  gap: 2rem;
+  gap: 1.25rem;
+}
+
+@media (max-width: 540px) {
+  .pdp-spec-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .pdp-spec-value {
+    text-align: left;
+  }
 }
 
 .pdp-spec-row:first-child {
@@ -358,6 +382,24 @@
   font-weight: 500;
   color: var(--text-light);
   transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s ease;
+}
+
+.purchase-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .purchase-actions {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .pdp-add-to-cart {
+    flex: 1 1 100%;
+    justify-content: center;
+    text-align: center;
+  }
 }
 
 /* --- Related Products --- */

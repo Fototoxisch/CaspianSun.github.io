@@ -1,11 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>База знаний — Caspian Sun</title>
   <meta name="description" content="Гид по солнечной энергетике. Все, что нужно знать о солнечных электростанциях, накопителях энергии и автономном электроснабжении.">
+  <link rel="canonical" href="https://caspiansun.github.io/knowledge-base.html">
   <link rel="icon" type="image/x-icon" href="img/logo/favicon.ico">
+
+  <!-- Open Graph / VK / Telegram -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://caspiansun.github.io/knowledge-base.html">
+  <meta property="og:title" content="База знаний по солнечной энергетике — Caspian Sun">
+  <meta property="og:description" content="Полный гид: как устроены СЭС, выбор инвертора, современные панели N-Type и безопасные аккумуляторы LiFePO4.">
+  <meta property="og:image" content="https://caspiansun.github.io/img/knowledge-base/knowledge-base6.webp">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Preconnect Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+
   <link rel="stylesheet" href="css/core.css">
   <link rel="stylesheet" href="css/knowledge.css">
   <script src="main.js" defer></script>
@@ -17,7 +32,7 @@
   <main>
     <!-- 1. HERO SECTION -->
     <section class="kb-hero">
-      <img class="kb-hero__bg" src="img/knowledge-base/knowledge-base6.webp" alt="Гид по солнечной энергетике">
+      <img class="kb-hero__bg" src="img/knowledge-base/knowledge-base6.webp" alt="Гид по солнечной энергетике" fetchpriority="high">
       <div class="kb-hero__overlay"></div>
       
       <div class="container kb-hero__container">
@@ -52,7 +67,7 @@
         <div class="kb-topics-grid">
           <article class="kb-topic-card">
             <div class="kb-topic-card__img">
-              <img src="img/knowledge-base/knowledge-base1.webp" alt="ЧТО ТАКОЕ СЭС">
+              <img src="img/knowledge-base/knowledge-base1.webp" alt="ЧТО ТАКОЕ СЭС" loading="lazy">
             </div>
             <div class="kb-topic-card__body">
               <div class="kb-topic-card__num-row">
@@ -70,7 +85,7 @@
 
           <article class="kb-topic-card">
             <div class="kb-topic-card__img">
-              <img src="img/knowledge-base/knowledge-base3.webp" alt="ВЫБОР СИСТЕМЫ">
+              <img src="img/knowledge-base/knowledge-base3.webp" alt="ВЫБОР СИСТЕМЫ" loading="lazy">
             </div>
             <div class="kb-topic-card__body">
               <div class="kb-topic-card__num-row">
@@ -88,7 +103,7 @@
 
           <article class="kb-topic-card">
             <div class="kb-topic-card__img">
-              <img src="img/knowledge-base/knowledge-base4.webp" alt="СОЛНЕЧНЫЕ ПАНЕЛИ">
+              <img src="img/knowledge-base/knowledge-base4.webp" alt="СОЛНЕЧНЫЕ ПАНЕЛИ" loading="lazy">
             </div>
             <div class="kb-topic-card__body">
               <div class="kb-topic-card__num-row">
@@ -106,7 +121,7 @@
 
           <article class="kb-topic-card">
             <div class="kb-topic-card__img">
-              <img src="img/knowledge-base/knowledge-base5.webp" alt="ИНВЕРТОРЫ">
+              <img src="img/knowledge-base/knowledge-base5.webp" alt="ИНВЕРТОРЫ" loading="lazy">
             </div>
             <div class="kb-topic-card__body">
               <div class="kb-topic-card__num-row">
@@ -188,7 +203,7 @@
     <section class="kb-section kb-section--light">
       <div class="container kb-start-layout">
         <div class="kb-start-img">
-          <img src="img/knowledge-base/knowledge-base2.webp" alt="Подбор решения">
+          <img src="img/knowledge-base/knowledge-base2.webp" alt="Подбор решения" loading="lazy">
         </div>
         <div>
           <div class="kb-header__tag">
@@ -199,22 +214,22 @@
           <p class="kb-header__desc">Ответьте на несколько вопросов и мы подскажем подходящее решение.</p>
 
           <div class="kb-start-grid">
-            <a href="calculator.html" class="kb-solution-btn">
+            <a href="contacts.html" class="kb-solution-btn">
               <div class="kb-solution-btn__icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
               <span class="kb-solution-btn__title">Частный дом</span>
               <svg class="btn-arrow" viewBox="0 0 16 16" style="width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5;"><line x1="2" y1="8" x2="13" y2="8"></line><polyline points="9 4 13 8 9 12"></polyline></svg>
             </a>
-            <a href="calculator.html" class="kb-solution-btn">
+            <a href="contacts.html" class="kb-solution-btn">
               <div class="kb-solution-btn__icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
               <span class="kb-solution-btn__title">Бизнес</span>
               <svg class="btn-arrow" viewBox="0 0 16 16" style="width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5;"><line x1="2" y1="8" x2="13" y2="8"></line><polyline points="9 4 13 8 9 12"></polyline></svg>
             </a>
-            <a href="calculator.html" class="kb-solution-btn">
+            <a href="contacts.html" class="kb-solution-btn">
               <div class="kb-solution-btn__icon"><svg viewBox="0 0 24 24"><path d="M12 2L8 22M12 2L16 22M4 14L20 14M6 8L18 8"/></svg></div>
               <span class="kb-solution-btn__title">Автономный<br>объект</span>
               <svg class="btn-arrow" viewBox="0 0 16 16" style="width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5;"><line x1="2" y1="8" x2="13" y2="8"></line><polyline points="9 4 13 8 9 12"></polyline></svg>
             </a>
-            <a href="calculator.html" class="kb-solution-btn">
+            <a href="contacts.html" class="kb-solution-btn">
               <div class="kb-solution-btn__icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2"/><line x1="22" y1="10" x2="22" y2="14"/></svg></div>
               <span class="kb-solution-btn__title">Резервное<br>питание</span>
               <svg class="btn-arrow" viewBox="0 0 16 16" style="width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5;"><line x1="2" y1="8" x2="13" y2="8"></line><polyline points="9 4 13 8 9 12"></polyline></svg>

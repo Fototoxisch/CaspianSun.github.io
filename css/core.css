@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    CASPIAN SUN — CORE STYLES (VARIABLES, HEADER, FOOTER, BUTTONS)
    ========================================================================== */
 
@@ -55,8 +55,14 @@ img {
   object-fit: cover;
 }
 
-a, a:focus, button:focus {
+:focus:not(:focus-visible) {
   outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
 }
 
 a {
@@ -156,16 +162,67 @@ button {
   color: var(--text-muted);
 }
 
+/* Мобильные действия в шапке (Корзина + Бургер) */
+.header__mobile-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+  .header__mobile-actions {
+    display: none;
+  }
+}
+
+.header-cart-mobile-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-dark);
+  color: var(--text-light);
+  transition: var(--transition);
+}
+
+.header-cart-mobile-btn:hover,
+.header-cart-mobile-btn:active {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.header-cart-mobile-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.header-cart-mobile-btn .header-cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+}
+
 .header__burger {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 24px;
-  height: 16px;
-  background: none;
-  border: none;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  padding: 10px 9px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  padding: 0;
+  transition: var(--transition);
+}
+
+.header__burger:active {
+  border-color: var(--accent-gold);
 }
 
 .header__burger-bar {
@@ -174,6 +231,11 @@ button {
   background-color: var(--text-light);
   border-radius: 1px;
   transition: var(--transition);
+}
+
+body.no-scroll {
+  overflow: hidden !important;
+  touch-action: none;
 }
 
 .header__spacer {
@@ -216,7 +278,7 @@ button {
   font-size: 0.6875rem;
   font-weight: 700;
   background-color: var(--accent-gold);
-  color: #121315;
+  color: var(--text-dark);
   border-radius: 99px;
 }
 
@@ -478,7 +540,7 @@ button {
 
 .btn--gold {
   background-color: var(--accent-gold);
-  color: #121315;
+  color: var(--text-dark);
   border-color: transparent;
 }
 

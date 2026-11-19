@@ -1,10 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{SEO_TITLE}}</title>
   <meta name="description" content="{{SEO_DESC}}">
+  <link rel="canonical" href="https://caspiansun.github.io/products/{{SKU}}.html">
+  <link rel="icon" type="image/x-icon" href="../img/logo/favicon.ico">
+
+  <!-- Open Graph / VK / Telegram -->
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="https://caspiansun.github.io/products/{{SKU}}.html">
+  <meta property="og:title" content="{{SEO_TITLE}}">
+  <meta property="og:description" content="{{SEO_DESC}}">
+  <meta property="og:image" content="{{OG_IMAGE}}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Preconnect Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+
   <link rel="stylesheet" href="../css/core.css">
   <link rel="stylesheet" href="../css/catalog.css"> 
   <link rel="stylesheet" href="../css/pdp.css">
@@ -36,7 +52,7 @@
         <!-- Левая колонка: Галерея -->
         <div class="pdp-gallery">
           <div class="pdp-gallery__main">
-            <img src="../img/catalog/{{CATEGORY_ID}}/{{SKU}}/main.webp" alt="{{MODEL}}" id="pdpMainImage" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">
+            {{GALLERY_MAIN}}
           </div>
           <!-- Миниатюры (dop1.webp, dop2.webp) -->
           <div class="pdp-gallery__thumbs" id="pdpThumbs">
@@ -55,7 +71,7 @@
           <p class="pdp-info__short-desc">{{SHORT_DESC}}</p>
 
           <div class="pdp-purchase">
-            <div class="pdp-price">{{PRICE}} $</div>
+            <div class="pdp-price">{{PRICE}} ₽</div>
             
             <div class="purchase-actions">
               <div class="quantity-picker">

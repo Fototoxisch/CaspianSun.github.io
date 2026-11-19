@@ -1,11 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Калькулятор и конфигуратор СЭС | Caspian Sun</title>
-  <meta name="description" content="Интерактивный подбор солнечной электростанции и системы резервного питания под ключ в Дагестане и на Юге России.">
+  <title>Калькулятор и конфигуратор СЭС — Caspian Sun</title>
+  <meta name="description" content="Интерактивный подбор солнечной электростанции и системы резервного питания под ключ в Дагестане и на Юге России. Точный расчет окупаемости и сметы.">
+  <link rel="canonical" href="https://caspiansun.github.io/calculator.html">
   <link rel="icon" type="image/x-icon" href="img/logo/favicon.ico">
+
+  <!-- Open Graph / VK / Telegram -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://caspiansun.github.io/calculator.html">
+  <meta property="og:title" content="Калькулятор и конфигуратор СЭС — Caspian Sun">
+  <meta property="og:description" content="Интерактивный подбор солнечной электростанции и расчет системы резервного питания.">
+  <meta property="og:image" content="https://caspiansun.github.io/img/main/Main3.webp">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Preconnect Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+
   <link rel="stylesheet" href="css/core.css">
   <!-- EmailJS для отправки сметы инженеру -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
@@ -3159,6 +3174,29 @@
           cart_items: lastProposalText,
           total_price: totalStr
         };
+
+        const nowMsk = new Date().toLocaleString('ru-RU', {
+          timeZone: 'Europe/Moscow',
+          day: '2-digit', month: '2-digit', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+
+        const tgMessage = `⚡ <b>НОВАЯ ЗАЯВКА — КАЛЬКУЛЯТОР СЭС</b>
+
+👤 <b>Клиент:</b> ${escapeTg(userName)}
+📞 <b>Телефон:</b> <a href="tel:${escapeTg(userPhone)}">${escapeTg(userPhone)}</a>
+📍 <b>Локация:</b> ${escapeTg(userLoc)}
+📝 <b>Комментарий:</b> ${escapeTg(userComment)}
+
+📊 <b>Спецификация расчета:</b>
+<pre>${escapeTg(lastProposalText)}</pre>
+
+💰 <b>Итоговая сумма:</b> <b>${escapeTg(totalStr)}</b>
+🕒 <b>Время заявки:</b> ${nowMsk} (МСК)`;
+
+        if (typeof sendTelegramNotification === 'function') {
+          sendTelegramNotification(tgMessage);
+        }
 
         if (typeof emailjs !== 'undefined') {
           emailjs.send("service_gn15ngc", "template_3pwehbv", templateParams)

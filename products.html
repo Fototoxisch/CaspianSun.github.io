@@ -1,10 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caspian Sun — Каталог оборудования</title>
+  <meta name="description" content="Каталог сертифицированного оборудования для солнечных электростанций: инверторы, солнечные панели, аккумуляторы LiFePO4 и готовые комплекты в наличии.">
+  <link rel="canonical" href="https://caspiansun.github.io/products.html">
   <link rel="icon" type="image/x-icon" href="img/logo/favicon.ico">
+
+  <!-- Open Graph / VK / Telegram -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://caspiansun.github.io/products.html">
+  <meta property="og:title" content="Caspian Sun — Каталог оборудования">
+  <meta property="og:description" content="Каталог сертифицированного оборудования для солнечных электростанций: инверторы, солнечные панели, аккумуляторы LiFePO4 и готовые комплекты.">
+  <meta property="og:image" content="https://caspiansun.github.io/img/production/Production1.webp">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Preconnect Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+
   <link rel="stylesheet" href="css/core.css">
   <link rel="stylesheet" href="css/catalog.css">
   <script src="main.js" defer></script>
@@ -16,7 +32,7 @@
 
   <main>
     <section class="products-hero">
-      <img class="products-hero__bg-img" src="img/production/Production1.webp" alt="Комплектующие для солнечных электростанций">
+      <img class="products-hero__bg-img" src="img/production/Production1.webp" alt="Комплектующие для солнечных электростанций" fetchpriority="high">
       <div class="products-hero__overlay"></div>
       
       <div class="container products-hero__container">
@@ -54,10 +70,13 @@
     <section class="catalog-section">
       <div class="container catalog-container">
         
-        <aside class="catalog-sidebar">
+        <aside class="catalog-sidebar" id="catalogSidebar">
           <div class="catalog-sidebar__header">
             <h2 class="catalog-sidebar__title">ФИЛЬТРЫ</h2>
-            <button class="catalog-sidebar__reset" type="button" id="resetFiltersBtn">Сбросить</button>
+            <div class="catalog-sidebar__header-actions">
+              <button class="catalog-sidebar__reset" type="button" id="resetFiltersBtn">Сбросить</button>
+              <button class="catalog-sidebar__close" type="button" id="mobileFilterCloseBtn" aria-label="Закрыть фильтры">&times;</button>
+            </div>
           </div>
 
           <div class="catalog-filter" id="catalogFilters">
@@ -283,12 +302,37 @@
             </div>
 
           </div>
+          <div class="catalog-sidebar__footer">
+            <button type="button" class="btn btn--gold catalog-sidebar__apply" id="mobileFilterApplyBtn">Применить фильтры</button>
+          </div>
         </aside>
+
+        <!-- Подложка (Backdrop) для мобильных фильтров -->
+        <div class="catalog-sidebar-backdrop" id="catalogSidebarBackdrop"></div>
 
         <div class="catalog-main">
           <!-- Верхняя панель: Счетчик + Поиск + Сортировка + Корзина -->
           <div class="catalog-topbar">
-            <span class="catalog-topbar__count" id="catalogCount">Загрузка...</span>
+            <div class="catalog-topbar__header-row">
+              <span class="catalog-topbar__count" id="catalogCount">Загрузка...</span>
+
+              <!-- Кнопка мобильных фильтров (<1024px) -->
+              <button type="button" class="catalog-mobile-filter-btn" id="mobileFilterOpenBtn" aria-label="Открыть фильтры">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <line x1="4" y1="21" x2="4" y2="14"></line>
+                  <line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line>
+                  <line x1="20" y1="12" x2="20" y2="3"></line>
+                  <line x1="1" y1="14" x2="7" y2="14"></line>
+                  <line x1="9" y1="8" x2="15" y2="8"></line>
+                  <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
+                <span>Фильтры</span>
+                <span class="mobile-filter-badge" id="mobileFilterBadge" style="display:none;">0</span>
+              </button>
+            </div>
             
             <div class="catalog-topbar__controls">
               <!-- Органичный живой поиск -->
@@ -378,4 +422,4 @@
   <div id="footer-placeholder"></div>
 
 </body>
-</html>ы
+</html>

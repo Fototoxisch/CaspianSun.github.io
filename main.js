@@ -5,13 +5,88 @@ let globalProducts = [];
 const PAGE_LOAD_TIMESTAMP = Date.now();
 
 // ==========================================================================
-// 1. ИНИЦИАЛИЗАЦИЯ EMAILJS
+// 1. УВЕДОМЛЕНИЯ В TELEGRAM & EMAILJS
 // ==========================================================================
+const TELEGRAM_CONFIG = {
+  botToken: '8909009037:AAE1Zd8l3w2JuWhBIyBGe5Kxpdls5-Z4eLA',
+  chatId: '1000892889'
+};
+
 (function() {
   if (typeof emailjs !== 'undefined') {
     emailjs.init("lg-BVIl2gO1_gmeHs");
   }
 })();
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function escapeTg(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+async function sendTelegramNotification(htmlText) {
+  try {
+    const url = `https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CONFIG.chatId,
+        text: htmlText,
+        parse_mode: 'HTML'
+      })
+    });
+    const result = await resp.json();
+    return result && result.ok;
+  } catch (err) {
+    console.error('Ошибка отправки в Telegram:', err);
+    return false;
+  }
+}
+
+let catalogPromise = null;
+async function fetchCatalogData() {
+  if (globalProducts && globalProducts.length > 0) {
+    return globalProducts;
+  }
+  if (!catalogPromise) {
+    const isSubFolder = window.location.pathname.includes('/products/');
+    const dataPath = isSubFolder ? '../products/catalog.json' : 'products/catalog.json';
+    catalogPromise = fetch(dataPath)
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(rawProducts => {
+        globalProducts = rawProducts
+          .map(sanitizeProductItem)
+          .map(item => {
+            if (!item['Модель'] && item['Название комплекта']) item['Модель'] = item['Название комплекта'];
+            if (!item['Модель'] && item['Модель / Наименование']) item['Модель'] = item['Модель / Наименование'];
+            return item;
+          })
+          .filter(item => item['Модель'] && String(item['Модель']).trim() !== '' && item['Артикул'] && String(item['Артикул']).trim() !== '');
+        return globalProducts;
+      })
+      .catch(err => {
+        catalogPromise = null;
+        throw err;
+      });
+  }
+  return catalogPromise;
+}
 
 // ==========================================================================
 // 2. АВТОМАТИЧЕСКОЕ ИСПРАВЛЕНИЕ БАГА ДАТ И ФОРМАТИРОВАНИЕ ЦЕН
@@ -90,7 +165,7 @@ function buildKitCollageHtml(components, basePath = '') {
     const safeTitle = String(comp.title || comp.sku).replace(/"/g, '&quot;');
     return `
       <div class="kit-collage__cell" title="${safeTitle}">
-        <img src="${basePath}img/catalog/${comp.category}/${comp.sku}/main.webp" alt="${safeTitle}" onerror="this.onerror=null; this.src='${basePath}img/catalog/placeholder.webp'">
+        <img src="${basePath}img/catalog/${comp.category}/${comp.sku}/main.webp" alt="${safeTitle}" loading="lazy" onerror="this.onerror=null; this.src='${basePath}img/catalog/placeholder.webp'">
         ${qtyBadge}
       </div>
     `;
@@ -122,12 +197,10 @@ function ensureHoneypotField(form) {
 function isSpamSubmission(form) {
   const hpInput = form.querySelector('input[name="company_website"]');
   if (hpInput && hpInput.value.trim() !== '') {
-    console.warn('Заблокирована спам-отправка (сработала Honeypot-ловушка).');
     return true;
   }
   const elapsedMs = Date.now() - PAGE_LOAD_TIMESTAMP;
   if (elapsedMs < 1500) {
-    console.warn('Заблокирована спам-отправка (слишком быстрая отправка после загрузки).');
     return true;
   }
   return false;
@@ -436,7 +509,7 @@ function initCheckoutForm() {
 
   ensureHoneypotField(form);
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
     const cart = getCart();
     if (cart.length === 0) {
@@ -446,6 +519,10 @@ function initCheckoutForm() {
 
     const userName = document.getElementById('calc-name').value.trim();
     const userPhone = document.getElementById('calc-phone').value.trim();
+    const userEmail = document.getElementById('calc-email')?.value.trim() || 'Не указан';
+    const userMsg = document.getElementById('calc-msg')?.value.trim() || 'Без комментария';
+    const safeUserName = escapeHtml(userName);
+    const safeUserPhone = escapeHtml(userPhone);
 
     // Проверка на спам-бота (Honeypot + время на странице)
     if (isSpamSubmission(form)) {
@@ -453,7 +530,7 @@ function initCheckoutForm() {
         <div class="success-msg">
           <h3>Заявка успешно отправлена!</h3>
           <p style="font-size: 0.85rem; color: #55575A; line-height: 1.5;">
-            Спасибо, <strong>${userName || 'клиент'}</strong>! Мы свяжемся с вами в ближайшее время.
+            Спасибо, <strong>${safeUserName || 'клиент'}</strong>! Мы свяжемся с вами в ближайшее время.
           </p>
         </div>
       `;
@@ -466,17 +543,36 @@ function initCheckoutForm() {
     submitBtn.innerHTML = '<span>Отправка заявки...</span>';
 
     let cartText = '';
+    let tgCartList = '';
     let total = 0;
     cart.forEach((item, idx) => {
       const sub = (parseFloat(item.price) || 0) * (parseInt(item.qty, 10) || 1);
       total += sub;
       const kitNote = item.kitComposition ? ` [Состав: ${item.kitComposition}]` : '';
       cartText += `${idx + 1}. ${item.title} (Арт: ${item.sku})${kitNote} — ${item.qty} шт. × ${formatPriceStr(item.price)} ₽ = ${formatPriceStr(sub)} ₽\n`;
+      
+      const tgKitNote = item.kitComposition ? `\n   <i>Состав: ${escapeTg(item.kitComposition)}</i>` : '';
+      tgCartList += `${idx + 1}. <b>${escapeTg(item.title)}</b> (<code>${escapeTg(item.sku)}</code>)\n   ${item.qty} шт. × ${formatPriceStr(item.price)} ₽ = <b>${formatPriceStr(sub)} ₽</b>${tgKitNote}\n`;
     });
 
-    const userEmail = document.getElementById('calc-email').value.trim() || 'Не указан';
-    const userMsg = document.getElementById('calc-msg').value.trim() || 'Без комментария';
     const formattedTotal = `${formatPriceStr(total)} ₽`;
+    const nowMsk = new Date().toLocaleString('ru-RU', {
+      timeZone: 'Europe/Moscow',
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+
+    const tgMessage = `⚡ <b>НОВАЯ ЗАЯВКА С САЙТА — КОРЗИНА</b>
+
+👤 <b>Клиент:</b> ${escapeTg(userName)}
+📞 <b>Телефон:</b> <a href="tel:${escapeTg(userPhone)}">${escapeTg(userPhone)}</a>
+✉️ <b>Email:</b> ${escapeTg(userEmail)}
+📝 <b>Комментарий:</b> ${escapeTg(userMsg)}
+
+📦 <b>Состав спецификации:</b>
+${tgCartList}
+💰 <b>Итоговая сумма:</b> <b>${formattedTotal}</b>
+🕒 <b>Время заявки:</b> ${nowMsk} (МСК)`;
 
     const templateParams = {
       user_name: userName,
@@ -489,25 +585,34 @@ function initCheckoutForm() {
       total_price: formattedTotal
     };
 
-    emailjs.send("service_gn15ngc", "template_3pwehbv", templateParams)
-      .then(function() {
-        localStorage.removeItem('caspian_cart');
-        updateHeaderCartBadge();
-        form.innerHTML = `
-          <div class="success-msg">
-            <h3>Заявка успешно отправлена!</h3>
-            <p style="font-size: 0.85rem; color: #55575A; line-height: 1.5;">
-              Спасибо, <strong>${userName}</strong>! Инженер Caspian Sun получил вашу спецификацию на сумму <strong>${formattedTotal}</strong> и свяжется с вами по номеру <strong>${userPhone}</strong>.
-            </p>
-          </div>
-        `;
-        renderCartPage();
-      }, function(error) {
-        console.error('Ошибка отправки EmailJS:', error);
-        alert('Не удалось отправить заявку автоматически. Пожалуйста, свяжитесь с нами по телефону +7 (963) 373-72-74.');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnHtml;
-      });
+    try {
+      const tgPromise = sendTelegramNotification(tgMessage);
+      const emailPromise = (typeof emailjs !== 'undefined')
+        ? emailjs.send("service_gn15ngc", "template_3pwehbv", templateParams).catch(err => {
+            console.warn('EmailJS ошибка (Telegram сработал):', err);
+            return null;
+          })
+        : Promise.resolve();
+
+      await Promise.allSettled([tgPromise, emailPromise]);
+
+      localStorage.removeItem('caspian_cart');
+      updateHeaderCartBadge();
+      form.innerHTML = `
+        <div class="success-msg">
+          <h3>Заявка успешно отправлена!</h3>
+          <p style="font-size: 0.85rem; color: #55575A; line-height: 1.5;">
+            Спасибо, <strong>${safeUserName}</strong>! Инженер Caspian Sun получил вашу спецификацию на сумму <strong>${formattedTotal}</strong> и свяжется с вами по номеру <strong>${safeUserPhone}</strong>.
+          </p>
+        </div>
+      `;
+      renderCartPage();
+    } catch (error) {
+      console.error('Ошибка отправки заявки:', error);
+      alert('Не удалось отправить заявку автоматически. Пожалуйста, свяжитесь с нами по телефону +7 (963) 373-72-74.');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnHtml;
+    }
   });
 }
 
@@ -517,18 +622,23 @@ function initContactsPageForm() {
 
   ensureHoneypotField(form);
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const userName = document.getElementById('contact-name').value.trim();
     const userPhone = document.getElementById('contact-phone').value.trim();
+    const userEmail = document.getElementById('contact-email')?.value.trim() || 'Не указан';
+    const serviceType = document.getElementById('contact-service')?.value || 'Консультация';
+    const userMsg = document.getElementById('contact-message')?.value.trim() || 'Без сообщения';
+    const safeUserName = escapeHtml(userName);
+    const safeUserPhone = escapeHtml(userPhone);
 
     // Проверка на спам-бота (Honeypot + время на странице)
     if (isSpamSubmission(form)) {
       form.innerHTML = `
         <div style="text-align: center; padding: 2rem 1rem; color: var(--text-light);">
           <h3 style="color: var(--accent-gold); margin-bottom: 0.75rem; font-weight: 400; text-transform: uppercase;">Заявка отправлена!</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted);">Спасибо, ${userName || 'клиент'}! Мы свяжемся с вами в ближайшее время.</p>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Спасибо, ${safeUserName || 'клиент'}! Мы свяжемся с вами в ближайшее время.</p>
         </div>
       `;
       return;
@@ -539,9 +649,21 @@ function initContactsPageForm() {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span>Отправка...</span>';
 
-    const userEmail = document.getElementById('contact-email').value.trim() || 'Не указан';
-    const serviceType = document.getElementById('contact-service').value;
-    const userMsg = document.getElementById('contact-message').value.trim() || 'Без сообщения';
+    const nowMsk = new Date().toLocaleString('ru-RU', {
+      timeZone: 'Europe/Moscow',
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+
+    const tgMessage = `⚡ <b>НОВАЯ ЗАЯВКА — КОНТАКТЫ</b>
+
+👤 <b>Клиент:</b> ${escapeTg(userName)}
+📞 <b>Телефон:</b> <a href="tel:${escapeTg(userPhone)}">${escapeTg(userPhone)}</a>
+✉️ <b>Email:</b> ${escapeTg(userEmail)}
+🛠 <b>Услуга:</b> ${escapeTg(serviceType)}
+📝 <b>Сообщение:</b> ${escapeTg(userMsg)}
+
+🕒 <b>Время заявки:</b> ${nowMsk} (МСК)`;
 
     const templateParams = {
       user_name: userName,
@@ -554,20 +676,29 @@ function initContactsPageForm() {
       total_price: 'Индивидуальный расчет'
     };
 
-    emailjs.send("service_gn15ngc", "template_3pwehbv", templateParams)
-      .then(function() {
-        form.innerHTML = `
-          <div style="text-align: center; padding: 2rem 1rem; color: var(--text-light);">
-            <h3 style="color: var(--accent-gold); margin-bottom: 0.75rem; font-weight: 400; text-transform: uppercase;">Заявка отправлена!</h3>
-            <p style="font-size: 0.9rem; color: var(--text-muted);">Спасибо, ${userName}! Мы свяжемся с вами по номеру ${userPhone} в ближайшее время.</p>
-          </div>
-        `;
-      }, function(error) {
-        console.error('Ошибка отправки формы контактов:', error);
-        alert('Не удалось отправить заявку. Позвоните нам: +7 (963) 373-72-74');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalHtml;
-      });
+    try {
+      const tgPromise = sendTelegramNotification(tgMessage);
+      const emailPromise = (typeof emailjs !== 'undefined')
+        ? emailjs.send("service_gn15ngc", "template_3pwehbv", templateParams).catch(err => {
+            console.warn('EmailJS ошибка (Telegram сработал):', err);
+            return null;
+          })
+        : Promise.resolve();
+
+      await Promise.allSettled([tgPromise, emailPromise]);
+
+      form.innerHTML = `
+        <div style="text-align: center; padding: 2rem 1rem; color: var(--text-light);">
+          <h3 style="color: var(--accent-gold); margin-bottom: 0.75rem; font-weight: 400; text-transform: uppercase;">Заявка отправлена!</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Спасибо, ${safeUserName}! Мы свяжемся с вами по номеру ${safeUserPhone} в ближайшее время.</p>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Ошибка отправки формы контактов:', error);
+      alert('Не удалось отправить заявку. Позвоните нам: +7 (963) 373-72-74');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalHtml;
+    }
   });
 }
 
@@ -842,22 +973,7 @@ async function loadCatalog() {
   grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-dark-muted); padding: 4rem 0;">Загрузка оборудования...</p>';
 
   try {
-    const isSubFolder = window.location.pathname.includes('/products/');
-    const dataPath = isSubFolder ? '../products/catalog.json' : 'products/catalog.json';
-    
-    const response = await fetch(dataPath);
-    if (!response.ok) throw new Error('Network response was not ok');
-    
-    const rawProducts = await response.json();
-    globalProducts = rawProducts
-      .map(sanitizeProductItem)
-      .map(item => {
-        if (!item['Модель'] && item['Название комплекта']) item['Модель'] = item['Название комплекта'];
-        if (!item['Модель'] && item['Модель / Наименование']) item['Модель'] = item['Модель / Наименование'];
-        return item;
-      })
-      .filter(item => item['Модель'] && String(item['Модель']).trim() !== '' && item['Артикул'] && String(item['Артикул']).trim() !== '');
-
+    globalProducts = await fetchCatalogData();
     grid.innerHTML = ''; 
 
     globalProducts.forEach((item, index) => {
@@ -877,7 +993,7 @@ async function loadCatalog() {
       const imgBoxClass = isKitCollage ? 'product-card__img-box product-card__img-box--collage' : 'product-card__img-box';
       const imgContentHtml = isKitCollage
         ? buildKitCollageHtml(kitInfo.components, '')
-        : `<img src="img/catalog/${attrs.category}/${attrs.sku}/main.webp" alt="${attrs.model}" onerror="this.onerror=null; this.src='img/catalog/placeholder.webp'">`;
+        : `<img src="img/catalog/${attrs.category}/${attrs.sku}/main.webp" alt="${attrs.model}" loading="lazy" onerror="this.onerror=null; this.src='img/catalog/placeholder.webp'">`;
 
       const cardHtml = `
         <article class="product-card" 
@@ -1070,6 +1186,13 @@ function initCatalogFilters() {
     if (catalogCount) {
       catalogCount.textContent = `Найдено: ${visibleCount}`;
     }
+
+    const activeFiltersCount = filterContainer.querySelectorAll('input[type="checkbox"]:checked').length;
+    const mobileBadge = document.getElementById('mobileFilterBadge');
+    if (mobileBadge) {
+      mobileBadge.textContent = activeFiltersCount;
+      mobileBadge.style.display = activeFiltersCount > 0 ? 'inline-flex' : 'none';
+    }
   }
 
   filterCheckboxes.forEach(input => {
@@ -1117,6 +1240,30 @@ function initCatalogFilters() {
       updateCatalog();
     });
   }
+
+  // Управление мобильной шторкой фильтров
+  const catalogSidebar = document.getElementById('catalogSidebar') || document.querySelector('.catalog-sidebar');
+  const mobileOpenBtn = document.getElementById('mobileFilterOpenBtn');
+  const mobileCloseBtn = document.getElementById('mobileFilterCloseBtn');
+  const mobileApplyBtn = document.getElementById('mobileFilterApplyBtn');
+  const sidebarBackdrop = document.getElementById('catalogSidebarBackdrop');
+
+  function openMobileFilters() {
+    if (catalogSidebar) catalogSidebar.classList.add('is-mobile-open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.add('is-active');
+    document.body.classList.add('no-scroll');
+  }
+
+  function closeMobileFilters() {
+    if (catalogSidebar) catalogSidebar.classList.remove('is-mobile-open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.remove('is-active');
+    document.body.classList.remove('no-scroll');
+  }
+
+  if (mobileOpenBtn) mobileOpenBtn.addEventListener('click', openMobileFilters);
+  if (mobileCloseBtn) mobileCloseBtn.addEventListener('click', closeMobileFilters);
+  if (mobileApplyBtn) mobileApplyBtn.addEventListener('click', closeMobileFilters);
+  if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeMobileFilters);
 
   updateCatalog();
 }
@@ -1290,6 +1437,32 @@ function initProductGallery() {
       }
     });
   });
+
+  // Поддержка свайпов на смартфонах и планшетах
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  mainContainer.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  mainContainer.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchEndX - touchStartX;
+    if (Math.abs(diff) < 40) return; // порог свайпа 40px
+    const visibleThumbs = getVisibleThumbs();
+    if (!visibleThumbs.length) return;
+
+    if (diff < 0) {
+      // Свайп влево -> следующий слайд
+      const nextIdx = (currentIndex + 1) % visibleThumbs.length;
+      slideTo(nextIdx, 'next');
+    } else {
+      // Свайп вправо -> предыдущий слайд
+      const prevIdx = (currentIndex - 1 + visibleThumbs.length) % visibleThumbs.length;
+      slideTo(prevIdx, 'prev');
+    }
+  }, { passive: true });
 }
 
 async function initRelatedProducts() {
@@ -1300,9 +1473,8 @@ async function initRelatedProducts() {
   const currentSku = relatedGrid.getAttribute('data-sku');
 
   try {
-    const response = await fetch('../products/catalog.json');
-    if (!response.ok) return;
-    const allItems = (await response.json()).map(sanitizeProductItem);
+    const allItems = await fetchCatalogData();
+    if (!allItems || !allItems.length) return;
 
     // Если мы находимся на странице комплекта (KIT-...), и там еще нет коллажа — отрисовываем его
     if (category === 'kits') {
@@ -1334,7 +1506,7 @@ async function initRelatedProducts() {
       const imgBoxClass = isKitCollage ? 'product-card__img-box product-card__img-box--collage' : 'product-card__img-box';
       const imgContentHtml = isKitCollage
         ? buildKitCollageHtml(kitInfo.components, '../')
-        : `<img src="../img/catalog/${category}/${sku}/main.webp" alt="${model}" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">`;
+        : `<img src="../img/catalog/${category}/${sku}/main.webp" alt="${model}" loading="lazy" onerror="this.onerror=null; this.src='../img/catalog/placeholder.webp'">`;
 
       relatedGrid.insertAdjacentHTML('beforeend', `
         <article class="product-card">
@@ -1433,26 +1605,33 @@ function initScrollSpy() {
 
   if (!sections.length) return;
 
+  let ticking = false;
   window.addEventListener('scroll', () => {
-    let current = '';
-    const scrollY = window.pageYOffset;
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        let current = '';
+        const scrollY = window.pageYOffset;
 
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 160; 
-      if (scrollY >= sectionTop) {
-        current = section.getAttribute('id');
-      }
-    });
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 160; 
+          if (scrollY >= sectionTop) {
+            current = section.getAttribute('id');
+          }
+        });
 
-    if (current) {
-      links.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-          link.classList.add('active');
+        if (current) {
+          links.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${current}`) {
+              link.classList.add('active');
+            }
+          });
         }
+        ticking = false;
       });
+      ticking = true;
     }
-  });
+  }, { passive: true });
 }
 
 // ==========================================================================

@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    KNOWLEDGE BASE (БАЗА ЗНАНИЙ) & SERVICES
    ========================================================================== */
 
@@ -2363,12 +2363,14 @@
 }
 
 /* --- КАРТОЧКИ: БАЗА ЗНАНИЙ VS ПАНЕЛИ --- */
+.kb-topic-card__img.panel-card-img,
 .panel-card-img {
-  aspect-ratio: 4 / 5 !important;
-  padding: 2.5rem !important;
-  background-color: rgba(0, 0, 0, 0.03) !important;
+  aspect-ratio: 4 / 5;
+  padding: 2.5rem;
+  background-color: rgba(0, 0, 0, 0.03);
 }
+.kb-topic-card__img.panel-card-img img,
 .panel-card-img img {
-  object-fit: contain !important;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)) !important;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
 }

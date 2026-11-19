@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin-generator.html
+Disallow: /calculator.html
+Disallow: /header.html
+Disallow: /footer.html
+Disallow: /product-template.html
+
+Sitemap: https://caspiansun.github.io/sitemap.xml
